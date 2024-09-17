@@ -23,6 +23,7 @@
 		A96E5C672C954EBA0056B657 /* ExploreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96E5C662C954EBA0056B657 /* ExploreView.swift */; };
 		A96E5C692C954EE60056B657 /* GeneralLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96E5C682C954EE60056B657 /* GeneralLoginView.swift */; };
 		A96E5C6B2C9550340056B657 /* GenCbView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96E5C6A2C9550340056B657 /* GenCbView.swift */; };
+		A9AEED642C9A147D00DE3FA4 /* CbMessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9AEED632C9A147D00DE3FA4 /* CbMessageModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +44,7 @@
 		A96E5C662C954EBA0056B657 /* ExploreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreView.swift; sourceTree = "<group>"; };
 		A96E5C682C954EE60056B657 /* GeneralLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralLoginView.swift; sourceTree = "<group>"; };
 		A96E5C6A2C9550340056B657 /* GenCbView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenCbView.swift; sourceTree = "<group>"; };
+		A9AEED632C9A147D00DE3FA4 /* CbMessageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CbMessageModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +99,7 @@
 		A96E5C492C954C990056B657 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				A9AEED632C9A147D00DE3FA4 /* CbMessageModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -238,6 +241,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A96E5C552C954DA70056B657 /* ClientLoginView.swift in Sources */,
+				A9AEED642C9A147D00DE3FA4 /* CbMessageModel.swift in Sources */,
 				A96E5C5B2C954DD20056B657 /* ClientsView.swift in Sources */,
 				A96E5C5D2C954DF00056B657 /* ForumNewPostView.swift in Sources */,
 				A96E5C592C954DC60056B657 /* ProfileView.swift in Sources */,

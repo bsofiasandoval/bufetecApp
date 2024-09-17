@@ -8,9 +8,14 @@
 import SwiftUI
 
 struct GenCbView: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
+    @State private var isInternalUser: Bool = true
+       var body: some View {
+           if isInternalUser {
+               InternalCbView()
+           } else {
+               NewClientCbView()
+           }
+       }
 }
 
 #Preview {
