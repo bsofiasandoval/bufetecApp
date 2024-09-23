@@ -9,6 +9,9 @@ import SwiftUI
 
 @main
 struct BufeTecApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    @AppStorage("signIn") var isSignIn = false
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
