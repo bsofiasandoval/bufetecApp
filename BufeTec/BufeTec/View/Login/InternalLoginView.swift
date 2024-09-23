@@ -18,10 +18,6 @@ struct InternalLoginView: View {
     var body: some View {
         ZStack {
             // Degradado de fondo
-            LinearGradient(gradient: Gradient(colors: [Color(hex: "#13295D") ?? .blue, Color(hex: "#2756C3") ?? .blue]),
-                           startPoint: .top,
-                           endPoint: .bottom)
-                .edgesIgnoringSafeArea(.all)
             
             VStack {
                 Image("LogoTec")
