@@ -13,17 +13,10 @@ BufeTec is an iOS application designed to support the Bufetec community, providi
 ## Technical Stack
 
 - Frontend: SwiftUI
-- Backend: [Your backend technology, e.g., Firebase, custom server, etc.]
+- Backend: Python, Firebase, Custom Server
 - Authentication: Firebase Authentication
-- Database: [Your database, e.g., Firestore, CoreData, etc.]
+- Database: MongoDB
 - AI Integration: OpenAI API
-
-## Requirements
-
-- iOS 14.0+
-- Xcode 12.0+
-- Swift 5.3+
-- CocoaPods (for managing dependencies)
 
 ## Installation
 
