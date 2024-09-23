@@ -11,64 +11,53 @@ import GoogleSignIn
 import Firebase
 
 struct InternalLoginView: View {
-    @State var email: String = ""
+    @State var username: String = ""
     @State var password: String = ""
     @State private var errorMessage: ErrorMessage? = nil
-    @State private var isLoggedIn: Bool = false
     
     var body: some View {
-        NavigationView {
-            ZStack {
-                // Background gradient
-                LinearGradient(gradient: Gradient(colors: [Color(hex: "#13295D") ?? .blue, Color(hex: "#2756C3") ?? .blue]),
-                               startPoint: .top,
-                               endPoint: .bottom)
-                    .edgesIgnoringSafeArea(.all)
+        ZStack {
+            // Degradado de fondo
+            LinearGradient(gradient: Gradient(colors: [Color(hex: "#13295D") ?? .blue, Color(hex: "#2756C3") ?? .blue]),
+                           startPoint: .top,
+                           endPoint: .bottom)
+                .edgesIgnoringSafeArea(.all)
+            
+            VStack {
+                Image("LogoTec")
+                    .resizable()
+                    .frame(width: 100, height: 100)
                 
                 VStack {
-                    Image("LogoTec")
-                        .resizable()
-                        .frame(width: 100, height: 100)
                     
-                    VStack {
-                        GoogleSignInBtn {
-                            signInWithGoogle()
+                    GoogleSignInBtn {
+                        FireBaseAuth.shared.signinWithGoogle(presenting: getRootViewController()) { error in
+                            if let error = error {
+                                errorMessage = ErrorMessage(message: error.localizedDescription)
+                            } else {
+                                print("Successfully signed in with Google")
+                            }
                         }
                     }
-                    .padding(.top, 52)
-                    .alert(item: $errorMessage) { error in
-                        Alert(title: Text("Error"), message: Text(error.message), dismissButton: .default(Text("OK")))
-                    }
-                    Spacer()
                 }
-                .padding()
+                .padding(.top, 52)
+                .alert(item: $errorMessage) { error in
+                    Alert(title: Text("Error"), message: Text(error.message), dismissButton: .default(Text("OK")))
+                }
+                Spacer()
             }
-            .navigationDestination(isPresented: $isLoggedIn) {
-                // Navigate to your home screen or dashboard
-                Text("Welcome! You are logged in.")
-                    .navigationBarBackButtonHidden(true)
-            }
-        }
-    }
-
-    
-    private func signInWithGoogle() {
-        FireBAuth.shared.signInWithGoogle(presenting: getRootViewController()) { error in
-            if let error = error {
-                errorMessage = ErrorMessage(message: error.localizedDescription)
-            } else {
-                print("Successfully signed in with Google")
-                isLoggedIn = true
-            }
+            .padding()
         }
     }
 }
 
+// Estructura para manejar el mensaje de error
 struct ErrorMessage: Identifiable {
-    let id = UUID()
+    let id = UUID() // Proporcionar un ID único
     let message: String
 }
 
+// Extensión para convertir el hex a Color
 extension Color {
     init?(hex: String) {
         var hexSanitized = hex.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -85,21 +74,10 @@ extension Color {
     }
 }
 
-// Helper function to get the root view controller
-func getRootViewController() -> UIViewController {
-    guard let screen = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
-        return .init()
-    }
-
-    guard let root = screen.windows.first?.rootViewController else {
-        return .init()
-    }
-    
-    return root
+#Preview {
+    InternalLoginView()
 }
 
-struct InternalLoginView_Previews: PreviewProvider {
-    static var previews: some View {
-        InternalLoginView()
-    }
-}
+
+
+

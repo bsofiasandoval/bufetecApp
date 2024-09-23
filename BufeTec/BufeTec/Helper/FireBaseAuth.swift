@@ -11,7 +11,7 @@ import GoogleSignIn
 import Firebase
 
 struct FireBaseAuth {
-    static let share = FireBaseAuth()
+    static let shared = FireBaseAuth()
     
     private init() {}
     
@@ -23,31 +23,31 @@ struct FireBaseAuth {
         let config = GIDConfiguration(clientID: clientID)
 
         // Start the sign in flow!
-        GIDSignIn.sharedInstance.signIn(with: config, presenting: presenting) {user, error in
+        GIDSignIn.sharedInstance.signIn(withPresenting: presenting) { result, error in
+            if let error = error {
+                completion(error)
+                return
+            }
 
-          if let error = error {
-              completion(error)
-            return
-          }
+            guard
+              let user = result?.user,
+              let idToken = user.idToken?.tokenString
+            else {
+              return
+            }
 
-          guard
-            let authentication = user?.authentication,
-            let idToken = authentication.idToken
-          else {
-            return
-          }
-
-          let credential = GoogleAuthProvider.credential(withIDToken: idToken,
-                                                         accessToken: authentication.accessToken)
+            let credential = GoogleAuthProvider.credential(withIDToken: idToken,
+                                                           accessToken: user.accessToken.tokenString)
 
             Auth.auth().signIn(with: credential) { result, error in
-                guard error == nil else {
+                if let error = error {
                     completion(error)
                     return
                 }
+                UserDefaults.standard.set(true, forKey: "signIn")
                 print("SIGN IN")
-                UserDefaults.standard.set(true, forKey: "signIn") // When this change to true, it will go to the home screen
             }
         }
+
     }
 }

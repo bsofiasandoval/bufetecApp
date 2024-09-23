@@ -14,7 +14,12 @@ struct BufeTecApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            if !isSignIn {
+                GeneralLoginView()
+            } else {
+                ExploreView()
+            }
         }
     }
 }
+
