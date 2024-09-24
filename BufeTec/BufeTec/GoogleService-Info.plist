@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>337279642634-32p729tvo3b4o7ahfb8skn2n39k5m6lh.apps.googleusercontent.com</string>
+	<string>337279642634-r1gnav29vf2t7hpv25u5k6g4k0hvqh0l.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.337279642634-32p729tvo3b4o7ahfb8skn2n39k5m6lh</string>
+	<string>com.googleusercontent.apps.337279642634-r1gnav29vf2t7hpv25u5k6g4k0hvqh0l</string>
 	<key>API_KEY</key>
 	<string>AIzaSyAfb0iCMNTPEGXEoh6L-olAUZ0bVMpuNVA</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +13,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>kovomie.BufeTec</string>
+	<string>kovomie.BufeTecApp</string>
 	<key>PROJECT_ID</key>
 	<string>prueba1-ffaf8</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:337279642634:ios:eee3f2c7c2bced39e8c3f3</string>
+	<string>1:337279642634:ios:ba9993885f2cde0ee8c3f3</string>
 </dict>
 </plist>

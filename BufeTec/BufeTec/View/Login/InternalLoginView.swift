@@ -11,69 +11,34 @@ import GoogleSignIn
 import Firebase
 
 struct InternalLoginView: View {
-    @State var username: String = ""
-    @State var password: String = ""
-    @State private var errorMessage: ErrorMessage? = nil
-    
+    @State private var err: String = ""
+    @Environment(\.dismiss) var dismiss  // Used for dismissing the current view if needed
+
     var body: some View {
-        ZStack {
-            // Degradado de fondo
-            
-            VStack {
-                Image("LogoTec")
-                    .resizable()
-                    .frame(width: 100, height: 100)
-                
-                VStack {
-                    
-                    GoogleSignInBtn {
-                        FireBaseAuth.shared.signinWithGoogle(presenting: getRootViewController()) { error in
-                            if let error = error {
-                                errorMessage = ErrorMessage(message: error.localizedDescription)
-                            } else {
-                                print("Successfully signed in with Google")
-                            }
-                        }
+        VStack {
+            Text("Login")
+            Button {
+                Task {
+                    do {
+                        try await Authentication().googleOauth()
+                        dismiss()  // This will navigate back to the HomeView and automatically show ContentView
+                    } catch AuthenticationError.runtimeError(let errorMessage) {
+                        err = errorMessage
                     }
                 }
-                .padding(.top, 52)
-                .alert(item: $errorMessage) { error in
-                    Alert(title: Text("Error"), message: Text(error.message), dismissButton: .default(Text("OK")))
-                }
-                Spacer()
+            } label: {
+                HStack {
+                    Image(systemName: "person.badge.key.fill")
+                    Text("Sign in with Google")
+                }.padding(8)
             }
-            .padding()
+            .buttonStyle(.borderedProminent)
+            
+            Text(err).foregroundColor(.red).font(.caption)
         }
-    }
-}
-
-// Estructura para manejar el mensaje de error
-struct ErrorMessage: Identifiable {
-    let id = UUID() // Proporcionar un ID único
-    let message: String
-}
-
-// Extensión para convertir el hex a Color
-extension Color {
-    init?(hex: String) {
-        var hexSanitized = hex.trimmingCharacters(in: .whitespacesAndNewlines)
-        hexSanitized = hexSanitized.replacingOccurrences(of: "#", with: "")
-        
-        var rgb: UInt64 = 0
-        Scanner(string: hexSanitized).scanHexInt64(&rgb)
-        
-        let r = Double((rgb >> 16) & 0xFF) / 255.0
-        let g = Double((rgb >> 8) & 0xFF) / 255.0
-        let b = Double(rgb & 0xFF) / 255.0
-        
-        self.init(red: r, green: g, blue: b)
     }
 }
 
 #Preview {
     InternalLoginView()
 }
-
-
-
-

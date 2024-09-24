@@ -9,11 +9,26 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.337279642634-32p729tvo3b4o7ahfb8skn2n39k5m6lh</string>
+				<string>com.googleusercontent.apps.337279642634-r1gnav29vf2t7hpv25u5k6g4k0hvqh0l</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>app-1-337279642634-ios-ba9993885f2cde0ee8c3f3</string>
 			</array>
 		</dict>
 	</array>
 	<key>GIDClientID</key>
 	<string>337279642634-32p729tvo3b4o7ahfb8skn2n39k5m6lh.apps.googleusercontent.com</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
+    <key>FirebaseAppDelegateProxyEnabled</key>
+    <false/>
 </dict>
 </plist>

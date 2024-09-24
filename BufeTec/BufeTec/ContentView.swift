@@ -8,29 +8,43 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var selectedTab: Int
+    @Binding var isLoggedOut: Bool
+
+    init(initialTab: Int = 0, isLoggedOut: Binding<Bool>) {
+        _selectedTab = State(initialValue: initialTab)
+        self._isLoggedOut = isLoggedOut
+    }
+    
     var body: some View {
-        TabView{
-            ExploreView()
-                .navigationTitle("Explora")
+        TabView(selection: $selectedTab) {
+            ExploreView(isLoggedOut: $isLoggedOut)
                 .tabItem {
                     Label("Explora", systemImage: "magnifyingglass")
                 }
+                .tag(0)
             
             ForumView()
-                .navigationTitle("Foro")
                 .tabItem {
                     Label("Foro", systemImage: "person.2")
                 }
+                .tag(1)
             
             GenCbView()
-                .navigationTitle("BufeBot")
                 .tabItem {
-                    Label("BufeBot",systemImage: "sparkles")
+                    Label("BufeBot", systemImage: "sparkles")
                 }
+                .tag(2)
+        }
+        .onAppear {
+            selectedTab = 0
         }
     }
 }
 
 #Preview {
-    ContentView()
+    ContentView(isLoggedOut: .constant(false))  // Provide a default value for the preview
 }
+
+
+
