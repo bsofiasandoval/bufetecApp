@@ -18,15 +18,16 @@ struct ExploreView: View {
     // Mock user data - replace this with actual user data fetching logic
     let userData = UserData(
         id: "lawyer789",
-        name: "Natalie Garcia",
-        email: "natalie.garcia@bufetec.com",
+        name: "Sofia Sandoval",
+        email: "sofia.sandoval@bufetec.com",
         userType: .lawyer,
-        phoneNumber: "+52 1 55 1234 5678",
+        phoneNumber: "+1 956 600 0773",
         cedulaProfesional: "LXXXXXX",
-        especialidad: "Derecho Penal",
+        especialidad: "Derecho Mercantil",
         yearsOfExperience: 10,
         clientId: nil // This is nil for lawyers
     )
+    
 
     var body: some View {
         ScrollView {

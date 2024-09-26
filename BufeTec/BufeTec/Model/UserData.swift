@@ -10,7 +10,7 @@ import Foundation
 struct UserData {
     let id: String
     let name: String
-    let email: String
+    let email: String?
     let userType: UserType
     let phoneNumber: String?
     

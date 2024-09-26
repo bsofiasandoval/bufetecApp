@@ -15,10 +15,10 @@ struct CasesView: View {
     // This is a placeholder. In a real app, you'd fetch this data from your backend or local storage.
         let userData = UserData(
             id: "client123",
-            name: "John Doe",
-            email: "john.doe@example.com",
+            name: "Sofia Sandoval",
+            email: nil,
             userType: .client,
-            phoneNumber: "+1234567890",
+            phoneNumber: "+19566000773",
             cedulaProfesional: nil,
             especialidad: nil,
             yearsOfExperience: nil,
@@ -47,12 +47,12 @@ struct CasesView: View {
         .sheet(isPresented: $showingProfile) {
             ProfileView(isLoggedOut: $isLoggedOut, userData: userData)
         }
-//        .onChange(of: isLoggedOut) { newValue in
-//            if newValue {
-//                authState.isLoggedIn = false
-//                // Additional logic to navigate back to login view if needed
-//            }
-//        }
+        .onChange(of: isLoggedOut) { newValue in
+            if newValue {
+                authState.isLoggedIn = false
+                // Additional logic to navigate back to login view if needed
+            }
+        }
     }
 }
 

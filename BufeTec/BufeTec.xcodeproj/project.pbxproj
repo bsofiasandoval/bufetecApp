@@ -21,7 +21,6 @@
 		A9571A292CA533A9000EFFC1 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9571A282CA533A9000EFFC1 /* Data.swift */; };
 		A9571A2D2CA533CE000EFFC1 /* APIdata.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9571A2C2CA533CE000EFFC1 /* APIdata.swift */; };
 		A9571A2F2CA53458000EFFC1 /* AddPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9571A2E2CA53458000EFFC1 /* AddPostView.swift */; };
-		A9571A312CA5347B000EFFC1 /* PostDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9571A302CA5347B000EFFC1 /* PostDetailView.swift */; };
 		A9571A332CA53956000EFFC1 /* UserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9571A322CA53956000EFFC1 /* UserData.swift */; };
 		A96E5C4D2C954CDB0056B657 /* ForumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96E5C4C2C954CDB0056B657 /* ForumView.swift */; };
 		A96E5C512C954D380056B657 /* NewClientCbView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96E5C502C954D380056B657 /* NewClientCbView.swift */; };
@@ -33,6 +32,9 @@
 		A96E5C672C954EBA0056B657 /* ExploreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96E5C662C954EBA0056B657 /* ExploreView.swift */; };
 		A96E5C692C954EE60056B657 /* GeneralLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96E5C682C954EE60056B657 /* GeneralLoginView.swift */; };
 		A96E5C6B2C9550340056B657 /* GenCbView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96E5C6A2C9550340056B657 /* GenCbView.swift */; };
+		A981ED392CA5CDCF000ACCB7 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = A981ED382CA5CDCF000ACCB7 /* Message.swift */; };
+		A981ED3B2CA5CDE9000ACCB7 /* MessageDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A981ED3A2CA5CDE9000ACCB7 /* MessageDetailView.swift */; };
+		A981ED3D2CA5CE0A000ACCB7 /* AskQuestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A981ED3C2CA5CE0A000ACCB7 /* AskQuestionView.swift */; };
 		A9947D882CA21D76001F8D24 /* Authentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9947D872CA21D76001F8D24 /* Authentication.swift */; };
 		A9947D8C2CA22018001F8D24 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9947D8B2CA22018001F8D24 /* HomeView.swift */; };
 		A9947D8E2CA24165001F8D24 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A9947D8D2CA24165001F8D24 /* LaunchScreen.storyboard */; };
@@ -57,7 +59,6 @@
 		A9571A282CA533A9000EFFC1 /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
 		A9571A2C2CA533CE000EFFC1 /* APIdata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIdata.swift; sourceTree = "<group>"; };
 		A9571A2E2CA53458000EFFC1 /* AddPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPostView.swift; sourceTree = "<group>"; };
-		A9571A302CA5347B000EFFC1 /* PostDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailView.swift; sourceTree = "<group>"; };
 		A9571A322CA53956000EFFC1 /* UserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserData.swift; sourceTree = "<group>"; };
 		A96E5C4C2C954CDB0056B657 /* ForumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForumView.swift; sourceTree = "<group>"; };
 		A96E5C502C954D380056B657 /* NewClientCbView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NewClientCbView.swift; path = BufeTec/View/Chatbot/NewClientCbView.swift; sourceTree = SOURCE_ROOT; };
@@ -69,6 +70,9 @@
 		A96E5C662C954EBA0056B657 /* ExploreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreView.swift; sourceTree = "<group>"; };
 		A96E5C682C954EE60056B657 /* GeneralLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralLoginView.swift; sourceTree = "<group>"; };
 		A96E5C6A2C9550340056B657 /* GenCbView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenCbView.swift; sourceTree = "<group>"; };
+		A981ED382CA5CDCF000ACCB7 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		A981ED3A2CA5CDE9000ACCB7 /* MessageDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageDetailView.swift; sourceTree = "<group>"; };
+		A981ED3C2CA5CE0A000ACCB7 /* AskQuestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AskQuestionView.swift; sourceTree = "<group>"; };
 		A9947D872CA21D76001F8D24 /* Authentication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authentication.swift; sourceTree = "<group>"; };
 		A9947D8B2CA22018001F8D24 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		A9947D8D2CA24165001F8D24 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -169,6 +173,7 @@
 				A9571A282CA533A9000EFFC1 /* Data.swift */,
 				A9571A2C2CA533CE000EFFC1 /* APIdata.swift */,
 				A9571A322CA53956000EFFC1 /* UserData.swift */,
+				A981ED382CA5CDCF000ACCB7 /* Message.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -191,7 +196,8 @@
 			children = (
 				A96E5C4C2C954CDB0056B657 /* ForumView.swift */,
 				A9571A2E2CA53458000EFFC1 /* AddPostView.swift */,
-				A9571A302CA5347B000EFFC1 /* PostDetailView.swift */,
+				A981ED3A2CA5CDE9000ACCB7 /* MessageDetailView.swift */,
+				A981ED3C2CA5CE0A000ACCB7 /* AskQuestionView.swift */,
 			);
 			path = Forum;
 			sourceTree = "<group>";
@@ -319,6 +325,8 @@
 				A96E5C592C954DC60056B657 /* ProfileView.swift in Sources */,
 				A900EBE82C954AED001E5311 /* ContentView.swift in Sources */,
 				A9571A252CA507E6000EFFC1 /* ClientRegisterView.swift in Sources */,
+				A981ED392CA5CDCF000ACCB7 /* Message.swift in Sources */,
+				A981ED3B2CA5CDE9000ACCB7 /* MessageDetailView.swift in Sources */,
 				A96E5C512C954D380056B657 /* NewClientCbView.swift in Sources */,
 				A96E5C572C954DB30056B657 /* InternalLoginView.swift in Sources */,
 				A96E5C532C954D4A0056B657 /* InternalCbView.swift in Sources */,
@@ -326,12 +334,12 @@
 				A91535662CA0F2CE00DA3289 /* GoogleSignInBtn.swift in Sources */,
 				A9571A292CA533A9000EFFC1 /* Data.swift in Sources */,
 				A96E5C4D2C954CDB0056B657 /* ForumView.swift in Sources */,
+				A981ED3D2CA5CE0A000ACCB7 /* AskQuestionView.swift in Sources */,
 				A900EBE62C954AED001E5311 /* BufeTecApp.swift in Sources */,
 				A96E5C6B2C9550340056B657 /* GenCbView.swift in Sources */,
 				A9947D8C2CA22018001F8D24 /* HomeView.swift in Sources */,
 				A9571A2F2CA53458000EFFC1 /* AddPostView.swift in Sources */,
 				A96E5C672C954EBA0056B657 /* ExploreView.swift in Sources */,
-				A9571A312CA5347B000EFFC1 /* PostDetailView.swift in Sources */,
 				A96E5C692C954EE60056B657 /* GeneralLoginView.swift in Sources */,
 				A91535692CA0F3ED00DA3289 /* AppDelegate.swift in Sources */,
 				A915356B2CA0F40900DA3289 /* ViewExt.swift in Sources */,

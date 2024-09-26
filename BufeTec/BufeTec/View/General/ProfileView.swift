@@ -34,7 +34,10 @@ struct ProfileView: View {
                     
                     // Common Info Cards
                     VStack(spacing: 15) {
-                        infoCard(title: "Email", value: userData.email)
+                        
+                        if let email = userData.email {
+                            infoCard(title: "Email", value: email)
+                        }
                         if let phoneNumber = userData.phoneNumber {
                             infoCard(title: "Phone Number", value: phoneNumber)
                         }
@@ -78,7 +81,7 @@ struct ProfileView: View {
                 title: Text("Logout"),
                 message: Text("Are you sure you want to logout?"),
                 primaryButton: .destructive(Text("Logout")) {
-                    demoLogout()
+                    logout()
                 },
                 secondaryButton: .cancel()
             )
@@ -100,34 +103,17 @@ struct ProfileView: View {
         .cornerRadius(10)
     }
     
-//    private func logout() {
-//            do {
-//                try Auth.auth().signOut()
-//                DispatchQueue.main.async {
-//                    authState.isLoggedIn = false
-//                    authState.user = nil
-//                    isLoggedOut = true
-//                    presentationMode.wrappedValue.dismiss()
-//                }
-//            } catch {
-//                print("Error signing out: \(error.localizedDescription)")
-//            }
-//        }
-    private func demoLogout() {
-        // For demo purposes, always "log out" regardless of the actual session state
-        DispatchQueue.main.async {
-            authState.isLoggedIn = false
-            authState.user = nil
-            isLoggedOut = true
-            presentationMode.wrappedValue.dismiss()
-        }
-        
-        // Attempt to sign out from Firebase if a session exists
+    private func logout() {
         do {
             try Auth.auth().signOut()
+            DispatchQueue.main.async {
+                authState.isLoggedIn = false
+                authState.user = nil
+                isLoggedOut = true
+                presentationMode.wrappedValue.dismiss()
+            }
         } catch {
-            print("Error signing out from Firebase: \(error.localizedDescription)")
-            // Continue with the demo logout even if Firebase signout fails
+            print("Error signing out: \(error.localizedDescription)")
         }
     }
 }
