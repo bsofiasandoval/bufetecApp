@@ -17,8 +17,10 @@ struct BufeTecApp: App {
     
     var body: some Scene {
         WindowGroup {
-            HomeView()
-                .environmentObject(authState)
+            NavigationView{
+                HomeView()
+                    .environmentObject(authState)
+            }
         }
     }
 }

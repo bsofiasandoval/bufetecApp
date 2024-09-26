@@ -2,7 +2,7 @@
 //  InternalCbView.swift
 //  BufeTec
 //
-//  Created by Sofia Sandoval on 9/13/24.
+//  Created by Sofia Sandoval y Felipe Alonzo on 9/13/24.
 //
 
 import SwiftUI
@@ -12,16 +12,16 @@ struct InternalCbView: View {
     @State private var messages: [CbMessageModel] = []
     @State private var threadId: String? = nil
     @FocusState private var isFocused: Bool
+   
     @Environment(\.colorScheme) var colorScheme
     
     let assistantId = "asst_yMrGnZxDMUosMEcbOnEJFooo"
     let baseURL = "https://chatbot-production-d7fc.up.railway.app"
     
     var body: some View {
-        NavigationStack {
             VStack(spacing: 0) {
-                ScrollView {
-                    ScrollViewReader { proxy in
+                ScrollViewReader { proxy in
+                    ScrollView {
                         LazyVStack(spacing: 12) {
                             ForEach(messages) { message in
                                 MessageBubble(message: message)
@@ -30,6 +30,11 @@ struct InternalCbView: View {
                         .padding(.horizontal)
                         .padding(.top, 8)
                         .padding(.bottom, 16)
+                    }
+                    .onChange(of: messages) { _ in
+                        withAnimation {
+                            proxy.scrollTo(messages.last?.id, anchor: .bottom)
+                        }
                     }
                 }
                 
@@ -60,12 +65,9 @@ struct InternalCbView: View {
                 }
                 .padding()
             }
-            .navigationTitle("BufeBot")
-        }
-        .ignoresSafeArea(.keyboard, edges: .bottom)
-        .task {
-            await createThread()
-        }
+            .task {
+                await createThread()
+            }
     }
     
     private func createThread() async {
@@ -104,7 +106,7 @@ struct InternalCbView: View {
         // Clear the input field
         DispatchQueue.main.async {
             self.chat = ""
-            self.isFocused = false
+           
         }
         
         // Create message via API

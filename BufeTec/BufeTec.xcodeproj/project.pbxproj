@@ -16,15 +16,20 @@
 		A91535662CA0F2CE00DA3289 /* GoogleSignInBtn.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91535652CA0F2CE00DA3289 /* GoogleSignInBtn.swift */; };
 		A91535692CA0F3ED00DA3289 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91535682CA0F3ED00DA3289 /* AppDelegate.swift */; };
 		A915356B2CA0F40900DA3289 /* ViewExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = A915356A2CA0F40900DA3289 /* ViewExt.swift */; };
+		A9571A252CA507E6000EFFC1 /* ClientRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9571A242CA507E6000EFFC1 /* ClientRegisterView.swift */; };
+		A9571A272CA511E5000EFFC1 /* CasesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9571A262CA511E5000EFFC1 /* CasesView.swift */; };
+		A9571A292CA533A9000EFFC1 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9571A282CA533A9000EFFC1 /* Data.swift */; };
+		A9571A2D2CA533CE000EFFC1 /* APIdata.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9571A2C2CA533CE000EFFC1 /* APIdata.swift */; };
+		A9571A2F2CA53458000EFFC1 /* AddPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9571A2E2CA53458000EFFC1 /* AddPostView.swift */; };
+		A9571A312CA5347B000EFFC1 /* PostDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9571A302CA5347B000EFFC1 /* PostDetailView.swift */; };
+		A9571A332CA53956000EFFC1 /* UserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9571A322CA53956000EFFC1 /* UserData.swift */; };
 		A96E5C4D2C954CDB0056B657 /* ForumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96E5C4C2C954CDB0056B657 /* ForumView.swift */; };
-		A96E5C4F2C954CF20056B657 /* ForumReplyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96E5C4E2C954CF20056B657 /* ForumReplyView.swift */; };
 		A96E5C512C954D380056B657 /* NewClientCbView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96E5C502C954D380056B657 /* NewClientCbView.swift */; };
 		A96E5C532C954D4A0056B657 /* InternalCbView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96E5C522C954D4A0056B657 /* InternalCbView.swift */; };
 		A96E5C552C954DA70056B657 /* ClientLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96E5C542C954DA70056B657 /* ClientLoginView.swift */; };
 		A96E5C572C954DB30056B657 /* InternalLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96E5C562C954DB30056B657 /* InternalLoginView.swift */; };
 		A96E5C592C954DC60056B657 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96E5C582C954DC60056B657 /* ProfileView.swift */; };
 		A96E5C5B2C954DD20056B657 /* ClientsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96E5C5A2C954DD20056B657 /* ClientsView.swift */; };
-		A96E5C5D2C954DF00056B657 /* ForumNewPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96E5C5C2C954DF00056B657 /* ForumNewPostView.swift */; };
 		A96E5C672C954EBA0056B657 /* ExploreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96E5C662C954EBA0056B657 /* ExploreView.swift */; };
 		A96E5C692C954EE60056B657 /* GeneralLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96E5C682C954EE60056B657 /* GeneralLoginView.swift */; };
 		A96E5C6B2C9550340056B657 /* GenCbView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96E5C6A2C9550340056B657 /* GenCbView.swift */; };
@@ -47,15 +52,20 @@
 		A91535682CA0F3ED00DA3289 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A915356A2CA0F40900DA3289 /* ViewExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExt.swift; sourceTree = "<group>"; };
 		A91535702CA0F45A00DA3289 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		A9571A242CA507E6000EFFC1 /* ClientRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientRegisterView.swift; sourceTree = "<group>"; };
+		A9571A262CA511E5000EFFC1 /* CasesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CasesView.swift; sourceTree = "<group>"; };
+		A9571A282CA533A9000EFFC1 /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
+		A9571A2C2CA533CE000EFFC1 /* APIdata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIdata.swift; sourceTree = "<group>"; };
+		A9571A2E2CA53458000EFFC1 /* AddPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPostView.swift; sourceTree = "<group>"; };
+		A9571A302CA5347B000EFFC1 /* PostDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailView.swift; sourceTree = "<group>"; };
+		A9571A322CA53956000EFFC1 /* UserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserData.swift; sourceTree = "<group>"; };
 		A96E5C4C2C954CDB0056B657 /* ForumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForumView.swift; sourceTree = "<group>"; };
-		A96E5C4E2C954CF20056B657 /* ForumReplyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForumReplyView.swift; sourceTree = "<group>"; };
 		A96E5C502C954D380056B657 /* NewClientCbView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NewClientCbView.swift; path = BufeTec/View/Chatbot/NewClientCbView.swift; sourceTree = SOURCE_ROOT; };
 		A96E5C522C954D4A0056B657 /* InternalCbView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternalCbView.swift; sourceTree = "<group>"; };
 		A96E5C542C954DA70056B657 /* ClientLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientLoginView.swift; sourceTree = "<group>"; };
 		A96E5C562C954DB30056B657 /* InternalLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternalLoginView.swift; sourceTree = "<group>"; };
 		A96E5C582C954DC60056B657 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		A96E5C5A2C954DD20056B657 /* ClientsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientsView.swift; sourceTree = "<group>"; };
-		A96E5C5C2C954DF00056B657 /* ForumNewPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForumNewPostView.swift; sourceTree = "<group>"; };
 		A96E5C662C954EBA0056B657 /* ExploreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreView.swift; sourceTree = "<group>"; };
 		A96E5C682C954EE60056B657 /* GeneralLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralLoginView.swift; sourceTree = "<group>"; };
 		A96E5C6A2C9550340056B657 /* GenCbView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenCbView.swift; sourceTree = "<group>"; };
@@ -143,10 +153,22 @@
 			path = Helper;
 			sourceTree = "<group>";
 		};
+		A9571A232CA507D3000EFFC1 /* Customers */ = {
+			isa = PBXGroup;
+			children = (
+				A9571A242CA507E6000EFFC1 /* ClientRegisterView.swift */,
+				A9571A262CA511E5000EFFC1 /* CasesView.swift */,
+			);
+			path = Customers;
+			sourceTree = "<group>";
+		};
 		A96E5C492C954C990056B657 /* Model */ = {
 			isa = PBXGroup;
 			children = (
 				A9AEED632C9A147D00DE3FA4 /* CbMessageModel.swift */,
+				A9571A282CA533A9000EFFC1 /* Data.swift */,
+				A9571A2C2CA533CE000EFFC1 /* APIdata.swift */,
+				A9571A322CA53956000EFFC1 /* UserData.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -154,6 +176,7 @@
 		A96E5C4A2C954CA40056B657 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				A9571A232CA507D3000EFFC1 /* Customers */,
 				A96E5C642C954E550056B657 /* General */,
 				A96E5C612C954E260056B657 /* Bufetec */,
 				A96E5C602C954E100056B657 /* Login */,
@@ -166,9 +189,9 @@
 		A96E5C5E2C954DF60056B657 /* Forum */ = {
 			isa = PBXGroup;
 			children = (
-				A96E5C4E2C954CF20056B657 /* ForumReplyView.swift */,
-				A96E5C5C2C954DF00056B657 /* ForumNewPostView.swift */,
 				A96E5C4C2C954CDB0056B657 /* ForumView.swift */,
+				A9571A2E2CA53458000EFFC1 /* AddPostView.swift */,
+				A9571A302CA5347B000EFFC1 /* PostDetailView.swift */,
 			);
 			path = Forum;
 			sourceTree = "<group>";
@@ -289,24 +312,29 @@
 			files = (
 				A96E5C552C954DA70056B657 /* ClientLoginView.swift in Sources */,
 				A9AEED642C9A147D00DE3FA4 /* CbMessageModel.swift in Sources */,
+				A9571A272CA511E5000EFFC1 /* CasesView.swift in Sources */,
+				A9571A332CA53956000EFFC1 /* UserData.swift in Sources */,
 				A96E5C5B2C954DD20056B657 /* ClientsView.swift in Sources */,
 				A9947D882CA21D76001F8D24 /* Authentication.swift in Sources */,
-				A96E5C5D2C954DF00056B657 /* ForumNewPostView.swift in Sources */,
 				A96E5C592C954DC60056B657 /* ProfileView.swift in Sources */,
 				A900EBE82C954AED001E5311 /* ContentView.swift in Sources */,
+				A9571A252CA507E6000EFFC1 /* ClientRegisterView.swift in Sources */,
 				A96E5C512C954D380056B657 /* NewClientCbView.swift in Sources */,
 				A96E5C572C954DB30056B657 /* InternalLoginView.swift in Sources */,
 				A96E5C532C954D4A0056B657 /* InternalCbView.swift in Sources */,
+				A9571A2D2CA533CE000EFFC1 /* APIdata.swift in Sources */,
 				A91535662CA0F2CE00DA3289 /* GoogleSignInBtn.swift in Sources */,
+				A9571A292CA533A9000EFFC1 /* Data.swift in Sources */,
 				A96E5C4D2C954CDB0056B657 /* ForumView.swift in Sources */,
 				A900EBE62C954AED001E5311 /* BufeTecApp.swift in Sources */,
 				A96E5C6B2C9550340056B657 /* GenCbView.swift in Sources */,
 				A9947D8C2CA22018001F8D24 /* HomeView.swift in Sources */,
+				A9571A2F2CA53458000EFFC1 /* AddPostView.swift in Sources */,
 				A96E5C672C954EBA0056B657 /* ExploreView.swift in Sources */,
+				A9571A312CA5347B000EFFC1 /* PostDetailView.swift in Sources */,
 				A96E5C692C954EE60056B657 /* GeneralLoginView.swift in Sources */,
 				A91535692CA0F3ED00DA3289 /* AppDelegate.swift in Sources */,
 				A915356B2CA0F40900DA3289 /* ViewExt.swift in Sources */,
-				A96E5C4F2C954CF20056B657 /* ForumReplyView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -2,7 +2,7 @@
 //  ExploreView.swift
 //  BufeTec
 //
-//  Created by Sofia Sandoval on 9/13/24.
+//  Created by Sofia Sandoval y Lorna on 9/13/24.
 //
 
 import SwiftUI
@@ -17,41 +17,43 @@ struct ExploreView: View {
     
     // Mock user data - replace this with actual user data fetching logic
     let userData = UserData(
+        id: "lawyer789",
         name: "Natalie Garcia",
+        email: "natalie.garcia@bufetec.com",
+        userType: .lawyer,
+        phoneNumber: "+52 1 55 1234 5678",
         cedulaProfesional: "LXXXXXX",
         especialidad: "Derecho Penal",
         yearsOfExperience: 10,
-        email: "natalie.garcia@bufetec.com"
+        clientId: nil // This is nil for lawyers
     )
 
     var body: some View {
-        NavigationView {
-            ScrollView {
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: 110))], spacing: 20) {
-                    ExploreButton(title: "Biblioteca Legal", icon: "book.fill", colors: [Color(hex: "4A69BD"), Color(hex: "1E3799")]) {
-                        showingBibliotecaLegal = true
-                    }
-                    ExploreButton(title: "Guías", icon: "map.fill", colors: [Color(hex: "60A3BC"), Color(hex: "3C6382")]) {
-                        // Placeholder action
-                    }
-                    ExploreButton(title: "Artículos", icon: "doc.text.fill", colors: [Color(hex: "6A89CC"), Color(hex: "4A69BD")]) {
-                        // Placeholder action
-                    }
-                    ExploreButton(title: "Noticias", icon: "newspaper.fill", colors: [Color(hex: "82CCDD"), Color(hex: "60A3BC")]) {
-                        // Placeholder action
-                    }
-                    ExploreButton(title: "Videos", icon: "video.fill", colors: [Color(hex: "4A69BD"), Color(hex: "1E3799")]) {
-                        // Placeholder action
-                    }
+        ScrollView {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 110))], spacing: 20) {
+                ExploreButton(title: "Biblioteca Legal", icon: "book.fill", colors: [Color(hex: "4A69BD"), Color(hex: "1E3799")]) {
+                    showingBibliotecaLegal = true
                 }
-                .padding()
+                ExploreButton(title: "Guías", icon: "map.fill", colors: [Color(hex: "60A3BC"), Color(hex: "3C6382")]) {
+                    // Placeholder action
+                }
+                ExploreButton(title: "Artículos", icon: "doc.text.fill", colors: [Color(hex: "6A89CC"), Color(hex: "4A69BD")]) {
+                    // Placeholder action
+                }
+                ExploreButton(title: "Noticias", icon: "newspaper.fill", colors: [Color(hex: "82CCDD"), Color(hex: "60A3BC")]) {
+                    // Placeholder action
+                }
+                ExploreButton(title: "Videos", icon: "video.fill", colors: [Color(hex: "4A69BD"), Color(hex: "1E3799")]) {
+                    // Placeholder action
+                }
             }
-            .navigationBarTitle("Explora")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: { showingProfile = true }) {
-                        Image(systemName: "person.fill")
-                    }
+            .padding()
+        }
+        .navigationBarTitle("Explora")
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: { showingProfile = true }) {
+                    Image(systemName: "person.fill")
                 }
             }
         }

@@ -1,3 +1,11 @@
+//
+//  ClientLoginView.swift
+//  BufeTec
+//
+//  Created by Sofia Sandoval y Diego Sabillon on 9/13/24.
+//
+
+
 import SwiftUI
 import FirebaseAuth
 import os
@@ -27,6 +35,10 @@ struct ClientLoginView: View {
     @State private var isCodeSent: Bool = false
     @Binding var isLoggedOut: Bool
     @State private var isLoading: Bool = false
+    
+    @State private var shouldNavigateToCases: Bool = false
+    @EnvironmentObject var authState: AuthState
+    
     @Environment(\.presentationMode) var presentationMode
     
     private let countries = [
@@ -42,7 +54,7 @@ struct ClientLoginView: View {
     }
     
     var body: some View {
-        NavigationView {
+        
             VStack(spacing: 0) {
                 GeometryReader { geometry in
                     ZStack {
@@ -123,24 +135,30 @@ struct ClientLoginView: View {
                         }
                     }
                     .padding()
+                    
                 }
             }
+            .navigationBarBackButtonHidden(true)
             .edgesIgnoringSafeArea(.top)
             .alert(item: $errorMessage) { error in
-                Alert(title: Text("Error"), message: Text(error.message), dismissButton: .default(Text("OK")))
+               Alert(title: Text("Error"), message: Text(error.message), dismissButton: .default(Text("OK")))
             }
-        }
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: {
-                    presentationMode.wrappedValue.dismiss()
-                }) {
-                    Image(systemName: "chevron.left")
-                        .foregroundColor(.white)
-                }
+            .toolbar {
+               ToolbarItem(placement: .navigationBarLeading) {
+                   Button(action: {
+                       presentationMode.wrappedValue.dismiss()
+                   }) {
+                       Image(systemName: "chevron.left")
+                           .foregroundColor(.white)
+                   }
+               }
             }
-        }
+            .fullScreenCover(isPresented: $shouldNavigateToCases) {
+               NavigationView {
+                   CasesView(isLoggedOut: $isLoggedOut)
+               }
+            }
+    
     }
     
     func sendOTP() {
@@ -182,47 +200,49 @@ struct ClientLoginView: View {
     }
 
     func verifyCode() {
-        logger.info("Attempting to verify code")
-        isLoading = true
-        guard let verificationID = verificationID else {
-            logger.error("Verification ID is missing")
-            errorMessage = LoginErrorMessage(message: "Verification ID is missing. Please try sending the code again.")
-            isLoading = false
-            return
-        }
-
-        guard !verificationCode.isEmpty else {
-            logger.error("Verification code is empty")
-            errorMessage = LoginErrorMessage(message: "Please enter the verification code.")
-            isLoading = false
-            return
-        }
-
-        logger.info("Verifying code: \(verificationCode) with ID: \(verificationID)")
-
-        let credential = PhoneAuthProvider.provider().credential(
-            withVerificationID: verificationID,
-            verificationCode: verificationCode
-        )
-
-        Auth.auth().signIn(with: credential) { authResult, error in
-            isLoading = false
-            if let error = error {
-                logger.error("Sign in error: \(error.localizedDescription)")
-                errorMessage = LoginErrorMessage(message: error.localizedDescription)
+            logger.info("Attempting to verify code")
+            isLoading = true
+            guard let verificationID = verificationID else {
+                logger.error("Verification ID is missing")
+                errorMessage = LoginErrorMessage(message: "Verification ID is missing. Please try sending the code again.")
+                isLoading = false
                 return
             }
-            if let user = authResult?.user {
-                logger.info("Successfully signed in with UID: \(user.uid)")
-                DispatchQueue.main.async {
-                    self.isLoggedOut = false
+
+            guard !verificationCode.isEmpty else {
+                logger.error("Verification code is empty")
+                errorMessage = LoginErrorMessage(message: "Please enter the verification code.")
+                isLoading = false
+                return
+            }
+
+            logger.info("Verifying code: \(verificationCode) with ID: \(verificationID)")
+
+            let credential = PhoneAuthProvider.provider().credential(
+                withVerificationID: verificationID,
+                verificationCode: verificationCode
+            )
+
+            Auth.auth().signIn(with: credential) { authResult, error in
+                isLoading = false
+                if let error = error {
+                    logger.error("Sign in error: \(error.localizedDescription)")
+                    errorMessage = LoginErrorMessage(message: error.localizedDescription)
+                    return
                 }
-            } else {
-                logger.error("No user returned after sign in")
-                errorMessage = LoginErrorMessage(message: "Failed to sign in. Please try again.")
+                if let user = authResult?.user {
+                    logger.info("Successfully signed in with UID: \(user.uid)")
+                    DispatchQueue.main.async {
+                        self.isLoggedOut = false
+                        self.authState.isLoggedIn = true
+                        self.shouldNavigateToCases = true
+                    }
+                } else {
+                    logger.error("No user returned after sign in")
+                    errorMessage = LoginErrorMessage(message: "Failed to sign in. Please try again.")
+                }
             }
         }
-    }
 }
 
 struct LoginErrorMessage: Identifiable {

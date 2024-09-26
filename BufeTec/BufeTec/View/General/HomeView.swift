@@ -10,23 +10,20 @@ import FirebaseAuth
 
 struct HomeView: View {
     @EnvironmentObject var authState: AuthState
-
+    @State private var isLoggedOut = true
+    
     var body: some View {
-        NavigationStack {
-            Group {
-                if authState.isLoggedIn {
-                    ContentView(initialTab: 0, isLoggedOut: .constant(false))
-                } else {
-                    GeneralLoginView()
-                }
+        Group {
+            if authState.isLoggedIn {
+                ContentView(isLoggedOut: $isLoggedOut)
+            } else {
+                GeneralLoginView()
             }
+        }
+        .navigationBarHidden(true)
+        .onChange(of: authState.isLoggedIn) { newValue in
+                isLoggedOut = !newValue
         }
     }
 }
-
-#Preview {
-    HomeView()
-        .environmentObject(AuthState())
-}
-
 

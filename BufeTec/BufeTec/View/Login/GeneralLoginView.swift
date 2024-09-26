@@ -9,66 +9,66 @@ import SwiftUI
 
 struct GeneralLoginView: View {
     @State private var isLoggedOut = true
+    @EnvironmentObject var authState: AuthState
     
     var body: some View {
-        NavigationView {
-            ZStack {
-                LinearGradient(gradient: Gradient(colors: [Color(hex: "#13295D"), Color(hex: "#2756C3")]),
-                               startPoint: .top,
-                               endPoint: .bottom)
-                    .edgesIgnoringSafeArea(.all)
+        ZStack {
+            LinearGradient(gradient: Gradient(colors: [Color(hex: "#13295D"), Color(hex: "#2756C3")]),
+                           startPoint: .top,
+                           endPoint: .bottom)
+                .edgesIgnoringSafeArea(.all)
+            
+            VStack(spacing: 0) {
+                Spacer()
                 
-                VStack(spacing: 0) {
-                    Spacer()
-                    
-                    
-                    Image(.bufeTecLogo)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(height: 150)
-                      
-                    Text("Tu derecho, nuestra vocación.")
-                        .foregroundColor(.white)
-                        .fontDesign(.serif)
-                        .font(.title3)
-                    
-                    
-                    Spacer()
-                    Spacer()
-                    
-                    VStack(spacing: 20) {
-                        NavigationLink(destination: NewClientCbView()) {
-                            Text("Requiero Asesoría Legal")
-                                .frame(minWidth: 200)
-                                .fontWeight(.medium)
-                                .padding()
-                                .background(.white)
-                                .foregroundColor(.blue)
-                                .cornerRadius(10)
-                        }
-                        
-                        NavigationLink(destination: ClientLoginView(isLoggedOut: $isLoggedOut)) {
-                            Text("Consultar Caso Existente")
-                                .frame(minWidth: 200)
-                                .fontWeight(.medium)
-                                .padding()
-                                .background(Color.white)
-                                .foregroundColor(.blue)
-                                .cornerRadius(10)
-                        }
-                    }
-                    
-                    Spacer()
-                    
-                    NavigationLink(destination: InternalLoginView()) {
-                        Text("Soy LED o Bufetec")
-                            .foregroundColor(.white)
+                
+                Image(.bufeTecLogo)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(height: 150)
+                  
+                Text("Tu derecho, nuestra vocación.")
+                    .foregroundColor(.white)
+                    .fontDesign(.serif)
+                    .font(.title3)
+                
+                
+                Spacer()
+                Spacer()
+                
+                VStack(spacing: 20) {
+                    NavigationLink(destination: NewClientCbView(isLoggedOut: $isLoggedOut)) {
+                        Text("Requiero Asesoría Legal")
+                            .frame(minWidth: 200)
                             .fontWeight(.medium)
+                            .padding()
+                            .background(.white)
+                            .foregroundColor(.blue)
+                            .cornerRadius(10)
                     }
-                    .padding(.bottom, 10)
+                    
+                    NavigationLink(destination: ClientLoginView(isLoggedOut: $isLoggedOut).environmentObject(authState)) {
+                        Text("Consultar Caso Existente")
+                            .frame(minWidth: 200)
+                            .fontWeight(.medium)
+                            .padding()
+                            .background(Color.white)
+                            .foregroundColor(.blue)
+                            .cornerRadius(10)
+                    }
                 }
+                
+                Spacer()
+                
+                NavigationLink(destination: InternalLoginView()) {
+                    Text("Soy LED o Bufetec")
+                        .foregroundColor(.white)
+                        .fontWeight(.medium)
+                }
+                .padding(.bottom, 10)
             }
         }
+        .navigationBarHidden(true)
     }
 }
 
