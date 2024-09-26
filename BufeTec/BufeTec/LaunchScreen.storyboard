@@ -16,11 +16,11 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" fixedFrame="YES" image="BlueGradient" translatesAutoresizingMaskIntoConstraints="NO" id="bbl-ZC-al0">
-                                <rect key="frame" x="-177" y="-525" width="892" height="1761"/>
+                                <rect key="frame" x="-306" y="-525" width="1021" height="1761"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" fixedFrame="YES" image="BufeTecLogo" translatesAutoresizingMaskIntoConstraints="NO" id="m3k-gH-bY7">
-                                <rect key="frame" x="0.0" y="-159" width="393" height="1080"/>
+                                <rect key="frame" x="55" y="36" width="283" height="780"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                         </subviews>
@@ -35,6 +35,6 @@
     </scenes>
     <resources>
         <image name="BlueGradient" width="1080" height="1920"/>
-        <image name="BufeTecLogo" width="1080" height="1080"/>
+        <image name="BufeTecLogo" width="2622" height="1206"/>
     </resources>
 </document>

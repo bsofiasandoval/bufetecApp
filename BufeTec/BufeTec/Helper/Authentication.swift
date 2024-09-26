@@ -15,7 +15,7 @@ struct Authentication {
     func googleOauth() async throws {
         // google sign in
         guard let clientID = FirebaseApp.app()?.options.clientID else {
-            fatalError("no firbase clientID found")
+            fatalError("no firebase clientID found")
         }
 
         // Create Google Sign In configuration object.

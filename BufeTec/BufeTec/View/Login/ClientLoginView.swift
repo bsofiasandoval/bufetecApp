@@ -1,15 +1,25 @@
-//
-//  ClientLoginView.swift
-//  BufeTec
-//
-//  Created by Sofia Sandoval on 9/13/24.
-//
-
 import SwiftUI
 import FirebaseAuth
 import os
 
+struct Country: Identifiable, Hashable {
+    let id = UUID()
+    let name: String
+    let code: String
+    let flag: String
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
+    static func == (lhs: Country, rhs: Country) -> Bool {
+        lhs.id == rhs.id
+    }
+}
+
+
 struct ClientLoginView: View {
+    @State private var selectedCountry: Country
     @State private var phoneNumber: String = ""
     @State private var verificationCode: String = ""
     @State private var verificationID: String? = nil
@@ -17,60 +27,125 @@ struct ClientLoginView: View {
     @State private var isCodeSent: Bool = false
     @Binding var isLoggedOut: Bool
     @State private var isLoading: Bool = false
+    @Environment(\.presentationMode) var presentationMode
     
-    private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "com.yourapp", category: "ClientLoginView")
+    private let countries = [
+        Country(name: "Mexico", code: "+52", flag: "🇲🇽"),
+        Country(name: "United States", code: "+1", flag: "🇺🇸")
+    ]
+    
+    private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "kovomie.BufeTecApp", category: "ClientLoginView")
+    
+    init(isLoggedOut: Binding<Bool>) {
+        self._isLoggedOut = isLoggedOut
+        self._selectedCountry = State(initialValue: Country(name: "Mexico", code: "+52", flag: "🇲🇽"))
+    }
     
     var body: some View {
         NavigationView {
-            VStack {
-                if isCodeSent {
-                    TextField("Enter verification code", text: $verificationCode)
-                        .padding()
-                        .background(Color.gray.opacity(0.2))
-                        .cornerRadius(5)
-                        .keyboardType(.numberPad)
-
-                    Button(action: verifyCode) {
-                        Text("Verify Code")
-                            .foregroundColor(.white)
-                            .padding()
-                            .background(Color.blue)
-                            .cornerRadius(5)
+            VStack(spacing: 0) {
+                GeometryReader { geometry in
+                    ZStack {
+                        LinearGradient(gradient: Gradient(colors: [Color(hex: "#13295D"), Color(hex: "#2756C3")]),
+                                       startPoint: .top,
+                                       endPoint: .bottom)
+                        
+                        VStack {
+                            Spacer()
+                            Text("Iniciar sesión")
+                                .font(.largeTitle)
+                                .fontWeight(.bold)
+                                .foregroundColor(.white)
+                        }
+                        .frame(width: geometry.size.width, height: geometry.size.height / 2)
                     }
-                    .disabled(isLoading)
-                } else {
-                    TextField("Enter phone number", text: $phoneNumber)
-                        .padding()
-                        .background(Color.gray.opacity(0.2))
-                        .cornerRadius(5)
-                        .keyboardType(.phonePad)
-
-                    Button(action: sendOTP) {
-                        Text("Send SMS")
-                            .foregroundColor(.white)
-                            .padding()
-                            .background(Color.blue)
-                            .cornerRadius(5)
-                    }
-                    .disabled(isLoading)
+                    .frame(height: UIScreen.main.bounds.height / 3)
                 }
+                .frame(height: UIScreen.main.bounds.height / 3)
                 
-                if isLoading {
-                    ProgressView()
-                        .padding()
+                ScrollView {
+                    VStack(spacing: 20) {
+                        if isCodeSent {
+                            TextField("Enter verification code", text: $verificationCode)
+                                .padding()
+                                .background(Color.gray.opacity(0.2))
+                                .cornerRadius(10)
+                                .keyboardType(.numberPad)
+
+                            Button(action: verifyCode) {
+                                Text("Verify Code")
+                                    .foregroundColor(.white)
+                                    .padding()
+                                    .frame(maxWidth: .infinity)
+                                    .background(Color.blue)
+                                    .cornerRadius(10)
+                            }
+                            .disabled(isLoading)
+                        } else {
+                            VStack(spacing: 20) {
+                                Spacer()
+                                
+                                HStack {
+                                    CustomCountryPicker(selectedCountry: $selectedCountry, countries: countries)
+                                        .frame(width: 100)
+                                    
+                                    Spacer()
+                                    TextField("Ingresa tu número tel.", text: $phoneNumber)
+                                        .padding()
+                                        .background(Color.gray.opacity(0.2))
+                                        .cornerRadius(10)
+                                        .keyboardType(.phonePad)
+                                }
+                                .padding()
+                                    
+                                VStack {
+                                    Spacer()
+                                    Button(action: sendOTP) {
+                                        Text("Enviar Verificación")
+                                            .foregroundColor(.white)
+                                            .fontWeight(.medium)
+                                            .padding()
+                                            .frame(minWidth: 200)
+                                            .background(LinearGradient(gradient: Gradient(colors: [Color(hex: "#13295D"), Color(hex: "#2756C3")]),
+                                                                       startPoint: .top,
+                                                                       endPoint: .bottom))
+                                            .cornerRadius(10)
+                                    }
+                                    .disabled(isLoading)
+                                }
+                                .padding(.top,300)
+                            }
+                        }
+                        
+                        if isLoading {
+                            ProgressView()
+                                .padding()
+                        }
+                    }
+                    .padding()
                 }
             }
-            .padding(.top, 52)
+            .edgesIgnoringSafeArea(.top)
             .alert(item: $errorMessage) { error in
                 Alert(title: Text("Error"), message: Text(error.message), dismissButton: .default(Text("OK")))
             }
-            .padding()
-            .navigationBarTitle("Login", displayMode: .inline)
+        }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
+                    presentationMode.wrappedValue.dismiss()
+                }) {
+                    Image(systemName: "chevron.left")
+                        .foregroundColor(.white)
+                }
+            }
         }
     }
     
     func sendOTP() {
-        print("Attempting to send OTP to: \(phoneNumber)")
+        let fullPhoneNumber = selectedCountry.code + phoneNumber
+        print("Attempting to send OTP to: \(fullPhoneNumber)")
         isLoading = true
         guard !phoneNumber.isEmpty else {
             print("Phone number is empty")
@@ -78,13 +153,13 @@ struct ClientLoginView: View {
             isLoading = false
             return
         }
-        
+
         print("Configuring Firebase Auth settings")
         Auth.auth().settings?.appVerificationDisabledForTesting = false // Set to true only for testing
-        
+
         print("Initiating phone number verification")
         PhoneAuthProvider.provider()
-            .verifyPhoneNumber(phoneNumber, uiDelegate: nil) { verificationID, error in
+            .verifyPhoneNumber(fullPhoneNumber, uiDelegate: nil) { verificationID, error in
                 isLoading = false
                 if let error = error {
                     print("Error sending OTP: \(error.localizedDescription)")
@@ -105,8 +180,7 @@ struct ClientLoginView: View {
                 isCodeSent = true
             }
     }
-    
-    
+
     func verifyCode() {
         logger.info("Attempting to verify code")
         isLoading = true
@@ -156,12 +230,34 @@ struct LoginErrorMessage: Identifiable {
     let message: String
 }
 
-
-
-
-struct ClientLoginView_Previews: PreviewProvider {
-    static var previews: some View {
-        ClientLoginView(isLoggedOut: .constant(true))
+struct CustomCountryPicker: View {
+    @Binding var selectedCountry: Country
+    let countries: [Country]
+    
+    var body: some View {
+        Menu {
+            Picker("", selection: $selectedCountry) {
+                ForEach(countries) { country in
+                    Text("\(country.flag) \(country.code)").tag(country)
+                }
+            }
+        } label: {
+            HStack {
+                Text(selectedCountry.flag)
+                    .font(.title3)  // Increased font size
+                Image(systemName: "chevron.down")
+                    .font(.caption)
+                    
+            }
+            .padding()
+            .background(Color.gray.opacity(0.2))
+            .cornerRadius(10)
+        }
     }
 }
 
+
+
+#Preview {
+    ClientLoginView(isLoggedOut: .constant(true))
+}

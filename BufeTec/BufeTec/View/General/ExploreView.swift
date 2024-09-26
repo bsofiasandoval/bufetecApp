@@ -4,67 +4,138 @@
 //
 //  Created by Sofia Sandoval on 9/13/24.
 //
+
 import SwiftUI
 import FirebaseAuth
 
 struct ExploreView: View {
     @Binding var isLoggedOut: Bool
-    @State private var showingLogoutAlert = false
+    @State private var showingProfile = false
     @State private var errorMessage: String?
     @State private var showingErrorAlert = false
+    @State private var showingBibliotecaLegal = false
+    
+    // Mock user data - replace this with actual user data fetching logic
+    let userData = UserData(
+        name: "Natalie Garcia",
+        cedulaProfesional: "LXXXXXX",
+        especialidad: "Derecho Penal",
+        yearsOfExperience: 10,
+        email: "natalie.garcia@bufetec.com"
+    )
 
     var body: some View {
         NavigationView {
-            VStack {
-                Text("Hello, World!")
-                if let user = Auth.auth().currentUser {
-                    Text("Logged in as: \(user.email ?? "Unknown")")
+            ScrollView {
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 110))], spacing: 20) {
+                    ExploreButton(title: "Biblioteca Legal", icon: "book.fill", colors: [Color(hex: "4A69BD"), Color(hex: "1E3799")]) {
+                        showingBibliotecaLegal = true
+                    }
+                    ExploreButton(title: "Guías", icon: "map.fill", colors: [Color(hex: "60A3BC"), Color(hex: "3C6382")]) {
+                        // Placeholder action
+                    }
+                    ExploreButton(title: "Artículos", icon: "doc.text.fill", colors: [Color(hex: "6A89CC"), Color(hex: "4A69BD")]) {
+                        // Placeholder action
+                    }
+                    ExploreButton(title: "Noticias", icon: "newspaper.fill", colors: [Color(hex: "82CCDD"), Color(hex: "60A3BC")]) {
+                        // Placeholder action
+                    }
+                    ExploreButton(title: "Videos", icon: "video.fill", colors: [Color(hex: "4A69BD"), Color(hex: "1E3799")]) {
+                        // Placeholder action
+                    }
+                }
+                .padding()
+            }
+            .navigationBarTitle("Explora")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: { showingProfile = true }) {
+                        Image(systemName: "person.fill")
+                    }
                 }
             }
-            .navigationBarTitle("Explora", displayMode: .inline)
-            .navigationBarItems(trailing:
-                Button(action: {
-                    showingLogoutAlert = true
-                }) {
-                    Text("Logout")
-                }
-            )
         }
-        .alert(isPresented: $showingLogoutAlert) {
-            Alert(
-                title: Text("Logout"),
-                message: Text("Are you sure you want to logout?"),
-                primaryButton: .destructive(Text("Logout")) {
-                    logout()
-                },
-                secondaryButton: .cancel()
-            )
+        .sheet(isPresented: $showingProfile) {
+            ProfileView(isLoggedOut: $isLoggedOut, userData: userData)
         }
         .alert("Error", isPresented: $showingErrorAlert, presenting: errorMessage) { _ in
             Button("OK", role: .cancel) {}
         } message: { error in
             Text(error)
         }
+        .sheet(isPresented: $showingBibliotecaLegal) {
+            NavigationView {
+                BibliotecaLegalView()
+                    .navigationBarTitle("Biblioteca Legal")
+                    .navigationBarItems(trailing: Button("Close") {
+                        showingBibliotecaLegal = false
+                    })
+            }
+        }
     }
+}
 
-    func logout() {
-        do {
-            print("Attempting to sign out...")
-            try Auth.auth().signOut()
-            print("Firebase sign out successful")
-            isLoggedOut = true
-            print("isLoggedOut set to true")
-        } catch {
-            print("Error signing out: \(error.localizedDescription)")
-            errorMessage = error.localizedDescription
-            showingErrorAlert = true
-        }
-        
-        // Double-check the authentication state
-        if Auth.auth().currentUser == nil {
-            print("Auth.auth().currentUser is nil after logout")
-        } else {
-            print("Warning: Auth.auth().currentUser is not nil after logout")
+struct ExploreButton: View {
+    let title: String
+    let icon: String
+    let colors: [Color]
+    let action: () -> Void
+    
+    var body: some View {
+        Button(action: action) {
+            VStack {
+                Spacer()
+                Text(title)
+                    
+                    .foregroundColor(.white)
+                    .multilineTextAlignment(.center)
+                    .fontWeight(.medium)
+                
+                Spacer()
+
+                Image(systemName: icon)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 40, height: 40)
+                    .foregroundColor(.white)
+
+                Spacer()
+            }
+            .frame(width: 110, height: 110)
+            .background(
+                LinearGradient(gradient: Gradient(colors: colors), startPoint: .topLeading, endPoint: .bottomTrailing)
+            )
+            .cornerRadius(15)
+            .shadow(color: Color.black.opacity(0.2), radius: 5, x: 0, y: 2)
         }
     }
+}
+
+struct LogoutButton: View {
+    @Binding var showingLogoutAlert: Bool
+    
+    var body: some View {
+        Button(action: {
+            showingLogoutAlert = true
+        }) {
+            Text("Logout")
+        }
+    }
+}
+
+struct BibliotecaLegalView: View {
+    var body: some View {
+        List {
+            Text("Legal Document 1")
+            Text("Legal Document 2")
+            Text("Legal Document 3")
+        }
+    }
+}
+
+
+
+
+#Preview{
+    ExploreView(isLoggedOut: .constant(false))
 }

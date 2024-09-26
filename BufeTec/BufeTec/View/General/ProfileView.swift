@@ -4,10 +4,14 @@
 //
 //  Created by Sofia Sandoval on 9/13/24.
 //
-
 import SwiftUI
+import FirebaseAuth
 
 struct ProfileView: View {
+    @Binding var isLoggedOut: Bool
+    @State private var showingLogoutAlert = false
+    let userData: UserData
+    
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -16,29 +20,44 @@ struct ProfileView: View {
                     Image("profile") // Replace with image from API
                         .resizable()
                         .scaledToFill()
-                        .frame(width: 150, height: 150)
+                        .frame(width: 140, height: 140)
                         .clipShape(Circle())
-                        
                         .shadow(radius: 10)
                         .padding(.top, 40)
                     
                     // Name
-                    Text("Natalie Garcia") // Replace with name from API
+                    Text(userData.name)
                         .font(.title)
                         .fontWeight(.bold)
                     
                     // Info Cards
                     VStack(spacing: 15) {
-                        infoCard(title: "Cédula Profesional", value: "LXXXXXX")
-                        infoCard(title: "Especialidad", value: "Derecho Penal")
-                        infoCard(title: "Años de Experiencia", value: "10")
-                        infoCard(title: "Email", value: "natalie.garcia@bufetec.com")
+                        infoCard(title: "Cédula Profesional", value: userData.cedulaProfesional)
+                        infoCard(title: "Especialidad", value: userData.especialidad)
+                        infoCard(title: "Años de Experiencia", value: "\(userData.yearsOfExperience)")
+                        infoCard(title: "Email", value: userData.email)
                     }
+                    .padding()
+                    
+                    Button("Logout") {
+                        showingLogoutAlert = true
+                    }
+                    .foregroundColor(.red)
                     .padding()
                 }
             }
             .navigationTitle("Perfil")
             .background(Color(UIColor.systemGroupedBackground))
+        }
+        .alert(isPresented: $showingLogoutAlert) {
+            Alert(
+                title: Text("Logout"),
+                message: Text("Are you sure you want to logout?"),
+                primaryButton: .destructive(Text("Logout")) {
+                    logout()
+                },
+                secondaryButton: .cancel()
+            )
         }
     }
     
@@ -57,10 +76,21 @@ struct ProfileView: View {
         .cornerRadius(10)
         .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
     }
+    
+    private func logout() {
+        do {
+            try Auth.auth().signOut()
+            isLoggedOut = true
+        } catch {
+            print("Error signing out: \(error.localizedDescription)")
+        }
+    }
 }
 
-
-
-#Preview {
-    ProfileView()
+struct UserData {
+    let name: String
+    let cedulaProfesional: String
+    let especialidad: String
+    let yearsOfExperience: Int
+    let email: String
 }

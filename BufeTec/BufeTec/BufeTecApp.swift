@@ -26,7 +26,6 @@ struct BufeTecApp: App {
 
 
 
-
 class AuthState: ObservableObject {
     @Published var isLoggedIn: Bool
     @Published var user: User?
