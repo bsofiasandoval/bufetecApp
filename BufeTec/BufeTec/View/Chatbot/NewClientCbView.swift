@@ -75,13 +75,13 @@ struct NewClientCbView: View {
     private func sendMessage() {
         guard !chat.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
         
-        let newMessage = CbMessageModel(text: chat, isFromCurrentUser: true)
+        let newMessage = CbMessageModel(text: chat, isFromCurrentUser: true, citations: nil)
         messages.append(newMessage)
         chat = ""
         
         // Simulate a response from BufeBot
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            let botResponse = CbMessageModel(text: "Thanks for your message! This is a simulated response.", isFromCurrentUser: false)
+            let botResponse = CbMessageModel(text: "Thanks for your message! This is a simulated response.", isFromCurrentUser: false, citations: nil)
             messages.append(botResponse)
         }
     }
