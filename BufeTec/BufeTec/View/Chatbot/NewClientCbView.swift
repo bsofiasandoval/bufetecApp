@@ -62,7 +62,7 @@ struct NewClientCbView: View {
         .navigationTitle("BufeBot")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                NavigationLink(destination: ClientRegisterView()) {
+                NavigationLink(destination: ClientRegisterView().environmentObject(authState)) {
                     Text("Continuar")
                         .foregroundColor(.blue)
                 }

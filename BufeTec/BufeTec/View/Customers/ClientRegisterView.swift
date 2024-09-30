@@ -40,7 +40,7 @@ struct ClientRegisterView: View {
                 }
                 
                 HStack {
-                    Text("Correo Electrónico")
+                    Text("Correo Electrónico (Opcional)")
                     TextField("Correo Electrónico", text: $correo)
                         .keyboardType(.emailAddress)
                         .autocapitalization(.none)
@@ -73,37 +73,32 @@ struct ClientRegisterView: View {
             }
         }
         .sheet(isPresented: $showVerificationSheet) {
-            PhoneVerificationView(phoneNumber: telefono, shouldNavigateToCases: $shouldNavigateToCases, onVerificationComplete: registerClient)
-                
+            PhoneVerificationView(phoneNumber: telefono, shouldNavigateToCases: $shouldNavigateToCases, onVerificationComplete: { uid in
+                registerClient(uid: uid)
+                showVerificationSheet = false
+            })
         }
         .onChange(of: showVerificationSheet) { newValue in
             logger.info("showVerificationSheet changed to: \(newValue)")
         }
         .fullScreenCover(isPresented: $shouldNavigateToCases) {
-            NavigationView {
-                CasesView()
-                    .environmentObject(authState)
+            NavigationView{
+                CasesView().environmentObject(authState)
             }
         }
-    }
-    
-    // Function to start phone verification
-    private func startPhoneVerification() {
-        // Initiate phone verification process
-        showVerificationSheet = true
     }
     
     // Function to register client with Firebase UID
     private func registerClient(uid: String) {
         isLoading = true
-        logger.info("Starting client registration with Firebase UID: \(uid)")
+     
         
         // Prepare the client data
-        let clientData: [String: Any] = [
+        var clientData: [String: Any] = [
             "_id": uid,  // Firebase UID as MongoDB _id
             "nombre": nombre,
             "numero_telefonico": telefono,
-            "correo": correo,
+            "correo": "",
             "tramite": tramite,
             "expediente": "",
             "juzgado": "",
@@ -113,6 +108,12 @@ struct ClientRegisterView: View {
             "ultimaVezInf": Date().ISO8601Format(),
             "rol": "cliente"
         ]
+        
+    // Only add email if not empty
+        if !correo.isEmpty {
+            clientData["correo"] = correo
+        }
+
         
         guard let url = URL(string: "http://10.14.255.51:4000/clientes") else {
             logger.error("Invalid URL")
@@ -157,7 +158,7 @@ struct ClientRegisterView: View {
                     }
                     
                     logger.info("API call successful, showing verification sheet")
-                    self.showVerificationSheet = true
+                    shouldNavigateToCases =  true
                 } else {
                     if let data = data, let responseString = String(data: data, encoding: .utf8) {
                         logger.error("Server error. Status: \(httpResponse.statusCode), Body: \(responseString)")
@@ -177,6 +178,40 @@ struct ClientRegisterView: View {
         showError = true
         isLoading = false
     }
+    
+    // Phone Number Validation
+    func isValidPhoneNumber(_ phone: String) -> Bool {
+        let phoneRegex = "^[+]?[0-9]{10,14}$"
+        return NSPredicate(format: "SELF MATCHES %@", phoneRegex).evaluate(with: phone)
+    }
+    func isValidEmailAddress(_ email: String) -> Bool {
+        let emailRegex = "^$|^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
+        return NSPredicate(format: "SELF MATCHES %@", emailRegex).evaluate(with: email)
+    }
+    
+    private func startPhoneVerification() {
+        guard canProceedWithRegistration() else { return }
+        showVerificationSheet = true
+    }
+    
+    func canProceedWithRegistration() -> Bool {
+        if nombre.isEmpty || telefono.isEmpty {
+            showError(message: "Please fill all required fields.")
+            return false
+        }
+        
+        if !isValidPhoneNumber(telefono) {
+            showError(message: "Please provide a valid phone number.")
+            return false
+        }
+        if !correo.isEmpty && !isValidEmailAddress(correo) {
+                   showError(message: "Please provide a valid email address or leave it empty.")
+                   return false
+               }
+        
+        return true
+    }
+
 }
 
 
@@ -257,6 +292,8 @@ struct PhoneVerificationView: View {
                         onVerificationComplete(uid)
                     }
                     presentationMode.wrappedValue.dismiss()
+                    shouldNavigateToCases = true;
+                   
                 }
             }
         }
