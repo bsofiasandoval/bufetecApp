@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -80,6 +80,10 @@
 		A9DC15402CA24A9600858D21 /* BufeTec.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BufeTec.entitlements; sourceTree = "<group>"; };
 		A9DC15472CA24B3B00858D21 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		C11C28D12CAB382E00C0AA01 /* News */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = News; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		A900EBDF2C954AED001E5311 /* Frameworks */ = {
@@ -181,6 +185,7 @@
 		A96E5C4A2C954CA40056B657 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				C11C28D12CAB382E00C0AA01 /* News */,
 				A9571A232CA507D3000EFFC1 /* Customers */,
 				A96E5C642C954E550056B657 /* General */,
 				A96E5C612C954E260056B657 /* Bufetec */,
@@ -254,6 +259,9 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				C11C28D12CAB382E00C0AA01 /* News */,
 			);
 			name = BufeTec;
 			productName = BufeTec;
