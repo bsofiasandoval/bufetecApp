@@ -10,7 +10,6 @@ import FirebaseAuth
 import GoogleSignIn
 import Firebase
 
-
 struct InternalLoginView: View {
     @State private var err: String = ""
     @Environment(\.dismiss) var dismiss
@@ -19,7 +18,7 @@ struct InternalLoginView: View {
     var body: some View {
         VStack {
             ZStack {
-                LinearGradient(gradient: Gradient(colors: [Color(hex: "#13295D") , Color(hex: "#2756C3")]),
+                LinearGradient(gradient: Gradient(colors: [Color(hex: "#13295D"), Color(hex: "#2756C3")]),
                                startPoint: .top,
                                endPoint: .bottom)
                     .edgesIgnoringSafeArea(.all)
@@ -28,36 +27,56 @@ struct InternalLoginView: View {
                     Spacer()
                     Text("Bienvenid@ a BufeTec")
                         .font(.title)
-                       
                         .foregroundColor(.white)
                     
-                    HStack{
+                    HStack {
                         Spacer()
                         Text("Al iniciar sesión, no solo accedes a tu profesión, accedes a cambiar vidas.")
                             .font(.title3)
                             .fontDesign(.serif)
                             .foregroundColor(.white)
                             .multilineTextAlignment(.center)
-                        
-                        
                         Spacer()
                     }
                     .padding()
                     .padding()
-                   
+                    
                     Spacer()
                     Spacer()
+                    
+                    // Google Sign-In Button
                     GoogleSignInBtn {
                         Task {
                             do {
+                                // Perform Google OAuth and get user info
                                 try await Authentication().googleOauth()
-                                dismiss()
+                                
+                                // After successful login, push user to MongoDB
+                                if let user = Auth.auth().currentUser {
+                                    let uid = user.uid
+                                    let email = user.email ?? ""
+                                    let name = user.displayName ?? "No Name"
+                                    
+                                    // Determine role based on email
+                                    if isStudent(email: email) {
+                                        // Student logic
+                                        pushStudentToMongoDB(uid: uid, email: email, name: name)
+                                    } else if isLawyer(email: email) {
+                                        // Lawyer logic
+                                        pushLawyerToMongoDB(uid: uid, email: email, name: name)
+                                    } else {
+                                        print("Email format not recognized")
+                                    }
+                                }
+                                
+                                dismiss() // Dismiss view after login
+                                
                             } catch AuthenticationError.runtimeError(let errorMessage) {
                                 err = errorMessage
                             }
                         }
                     }
-                    .padding(.bottom,50)
+                    .padding(.bottom, 50)
                 }
             }
         }
@@ -70,9 +89,80 @@ struct InternalLoginView: View {
                 .foregroundColor(.white)
         })
     }
+    
+    // Helper function to check if email belongs to a student
+    func isStudent(email: String) -> Bool {
+        // Check if the email starts with "A" and ends with "@tec.mx"
+        return email.hasPrefix("A") || email.hasPrefix("a") && email.hasSuffix("@tec.mx")
+    }
+    
+    // Helper function to check if email belongs to a lawyer
+    func isLawyer(email: String) -> Bool {
+        // Check if the email ends with "@tec.mx" but does not start with "A"
+        return email.hasSuffix("@tec.mx") && !email.hasPrefix("A")
+    }
+    
+    // Function to push student (becario) to MongoDB
+    func pushStudentToMongoDB(uid: String, email: String, name: String) {
+        let url = URL(string: "http://10.14.255.51:4000/becarios")!  // Endpoint for students
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let userInfo: [String: Any] = [
+            "_id": uid,
+            "nombre": name,
+            "correo": email,
+            "rol": "becario"  // Set role to becario for students
+        ]
+        
+        guard let httpBody = try? JSONSerialization.data(withJSONObject: userInfo, options: []) else { return }
+        request.httpBody = httpBody
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error pushing student to MongoDB: \(error)")
+                return
+            }
+            
+            guard let data = data else { return }
+            if let responseString = String(data: data, encoding: .utf8) {
+                print("MongoDB response for student: \(responseString)")
+            }
+        }.resume()
+    }
+    
+    // Function to push lawyer (abogado) to MongoDB
+    func pushLawyerToMongoDB(uid: String, email: String, name: String) {
+        let url = URL(string: "http://10.14.255.51:4000/abogados")!  // Endpoint for lawyers
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let userInfo: [String: Any] = [
+            "id": uid,
+            "nombre": name,
+            "correo": email,
+            "rol": "abogado"  // Set role to abogado for lawyers
+        ]
+        
+        guard let httpBody = try? JSONSerialization.data(withJSONObject: userInfo, options: []) else { return }
+        request.httpBody = httpBody
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error pushing lawyer to MongoDB: \(error)")
+                return
+            }
+            
+            guard let data = data else { return }
+            if let responseString = String(data: data, encoding: .utf8) {
+                print("MongoDB response for lawyer: \(responseString)")
+            }
+        }.resume()
+    }
 }
 
 #Preview {
     InternalLoginView()
 }
-

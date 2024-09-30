@@ -9,7 +9,7 @@ import SwiftUI
 import FirebaseAuth
 
 struct ExploreView: View {
-    @Binding var isLoggedOut: Bool
+    @EnvironmentObject var authState: AuthState
     @State private var showingProfile = false
     @State private var errorMessage: String?
     @State private var showingErrorAlert = false
@@ -59,7 +59,8 @@ struct ExploreView: View {
             }
         }
         .sheet(isPresented: $showingProfile) {
-            ProfileView(isLoggedOut: $isLoggedOut, userData: userData)
+            ProfileView( userData: userData)
+                .environmentObject(authState)
         }
         .alert("Error", isPresented: $showingErrorAlert, presenting: errorMessage) { _ in
             Button("OK", role: .cancel) {}
@@ -140,5 +141,6 @@ struct BibliotecaLegalView: View {
 
 
 #Preview{
-    ExploreView(isLoggedOut: .constant(false))
+    ExploreView()
+        .environmentObject(AuthState())
 }

@@ -6,56 +6,61 @@
 //
 
 import SwiftUI
+import FirebaseAuth
 
 struct CasesView: View {
-    @Binding var isLoggedOut: Bool
     @State private var showingProfile = false
-    @EnvironmentObject var authState: AuthState
+    @EnvironmentObject var authState: AuthState  // Use global authState
     
-    // This is a placeholder. In a real app, you'd fetch this data from your backend or local storage.
-        let userData = UserData(
-            id: "client123",
-            name: "Sofia Sandoval",
-            email: nil,
-            userType: .client,
-            phoneNumber: "+19566000773",
-            cedulaProfesional: nil,
-            especialidad: nil,
-            yearsOfExperience: nil,
-            clientId: "CL001"
+    // Example user data
+    let userData = UserData(
+        id: "client123",
+        name: "Sofia Sandoval",
+        email: nil,
+        userType: .client,
+        phoneNumber: "+19566000773",
+        cedulaProfesional: nil,
+        especialidad: nil,
+        yearsOfExperience: nil,
+        clientId: "CL001"
     )
     
     var body: some View {
-        VStack {
-            
-            // Add your cases list or grid here
-            List {
-                Text("Case 1")
-                Text("Case 2")
-                Text("Case 3")
-            }
-        }
-        .navigationBarTitle("Mis Casos")
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: { showingProfile = true }) {
-                    Image(systemName: "person.fill")
+        Group {
+            if authState.isLoggedIn {
+                // Display cases when the user is logged in
+                VStack {
+                    List {
+                        Text("Case 1")
+                        Text("Case 2")
+                        Text("Case 3")
+                    }
                 }
+                .navigationBarTitle("Mis Casos", displayMode: .inline)
+                .navigationBarBackButtonHidden(true)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(action: { showingProfile = true }) {
+                            Image(systemName: "person.fill")
+                        }
+                    }
+                }
+                .sheet(isPresented: $showingProfile) {
+                    ProfileView(userData: userData)
+                        .environmentObject(authState)  // Pass authState to ProfileView
+                }
+            } else {
+                // Show the GeneralLoginView when the user is not logged in
+                GeneralLoginView()
+                    .environmentObject(authState)
+                    .transition(.slide)  // Optional: Add a smooth transition
             }
         }
-        .sheet(isPresented: $showingProfile) {
-            ProfileView(isLoggedOut: $isLoggedOut, userData: userData)
-        }
-        .onChange(of: isLoggedOut) { newValue in
-            if newValue {
-                authState.isLoggedIn = false
-                // Additional logic to navigate back to login view if needed
-            }
-        }
+        .animation(.easeInOut, value: authState.isLoggedIn)  // Smooth transition between states
     }
 }
 
 #Preview {
-    CasesView(isLoggedOut: .constant(false))
+    CasesView()
+        .environmentObject(AuthState())  // Provide a sample authState for previews
 }

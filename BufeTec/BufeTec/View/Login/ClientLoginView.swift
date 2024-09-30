@@ -33,7 +33,6 @@ struct ClientLoginView: View {
     @State private var verificationID: String? = nil
     @State private var errorMessage: LoginErrorMessage? = nil
     @State private var isCodeSent: Bool = false
-    @Binding var isLoggedOut: Bool
     @State private var isLoading: Bool = false
     @State private var shouldNavigateToCases: Bool = false
     @EnvironmentObject var authState: AuthState
@@ -47,7 +46,6 @@ struct ClientLoginView: View {
     private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "kovomie.BufeTecApp", category: "ClientLoginView")
     
     init(isLoggedOut: Binding<Bool>) {
-        self._isLoggedOut = isLoggedOut
         self._selectedCountry = State(initialValue: Country(name: "Mexico", code: "+52", flag: "🇲🇽"))
     }
     
@@ -99,7 +97,7 @@ struct ClientLoginView: View {
         }
         .fullScreenCover(isPresented: $shouldNavigateToCases) {
             NavigationView {
-                CasesView(isLoggedOut: $isLoggedOut)
+                CasesView()
             }
         }
     }
@@ -111,7 +109,7 @@ struct ClientLoginView: View {
                     .frame(width: 100)
                 
                 TextField("Ingresa tu número tel.", text: $phoneNumber)
-                    .keyboardType(.phonePad)
+                    .keyboardType(.numberPad)
                     .padding()
                     .background(Color.white.opacity(0.2))
                     .cornerRadius(10)
@@ -166,78 +164,91 @@ struct ClientLoginView: View {
             return
         }
         
-        print("Configuring Firebase Auth settings")
-        Auth.auth().settings?.appVerificationDisabledForTesting = false // Set to true only for testing
-        
-        print("Initiating phone number verification")
         PhoneAuthProvider.provider()
             .verifyPhoneNumber(fullPhoneNumber, uiDelegate: nil) { verificationID, error in
                 isLoading = false
                 if let error = error {
-                    print("Error sending OTP: \(error.localizedDescription)")
-                    print("Error details: \(error)")
-                    if let errorCode = AuthErrorCode(rawValue: error._code) {
-                        print("Firebase Auth Error Code: \(errorCode)")
-                    }
-                    errorMessage = LoginErrorMessage(message: "Failed to send verification code: \(error.localizedDescription)")
+                    errorMessage = LoginErrorMessage(message: error.localizedDescription)
                     return
                 }
-                guard let verificationID = verificationID else {
-                    print("Verification ID is nil")
-                    errorMessage = LoginErrorMessage(message: "Failed to send verification code.")
-                    return
-                }
-                print("Verification ID received: \(verificationID)")
                 self.verificationID = verificationID
                 isCodeSent = true
             }
     }
     
     func verifyCode() {
-        logger.info("Attempting to verify code")
         isLoading = true
         guard let verificationID = verificationID else {
-            logger.error("Verification ID is missing")
             errorMessage = LoginErrorMessage(message: "Verification ID is missing. Please try sending the code again.")
             isLoading = false
             return
         }
-        
-        guard !verificationCode.isEmpty else {
-            logger.error("Verification code is empty")
-            errorMessage = LoginErrorMessage(message: "Please enter the verification code.")
-            isLoading = false
-            return
-        }
-        
-        logger.info("Verifying code: \(verificationCode) with ID: \(verificationID)")
         
         let credential = PhoneAuthProvider.provider().credential(
             withVerificationID: verificationID,
             verificationCode: verificationCode
         )
         
+        // After successful login:
         Auth.auth().signIn(with: credential) { authResult, error in
-            isLoading = false
             if let error = error {
-                logger.error("Sign in error: \(error.localizedDescription)")
-                errorMessage = LoginErrorMessage(message: error.localizedDescription)
+                print("Error during login: \(error.localizedDescription)")
                 return
             }
+            
             if let user = authResult?.user {
-                logger.info("Successfully signed in with UID: \(user.uid)")
+                // Update the authState when login succeeds
                 DispatchQueue.main.async {
-                    self.isLoggedOut = false
-                    self.authState.isLoggedIn = true
+                    authState.isLoggedIn = true     // This updates the global auth state
+                    authState.user = user
                     self.shouldNavigateToCases = true
                 }
-            } else {
-                logger.error("No user returned after sign in")
-                errorMessage = LoginErrorMessage(message: "Failed to sign in. Please try again.")
             }
         }
     }
+
+
+    
+    func pushClientToMongoDB(uid: String, phoneNumber: String, name:String) {
+        let url = URL(string: "http://10.14.255.51:4000/clientes")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        // Pass the Firebase uid as _id
+        let userInfo: [String: Any] = [
+            "_id": uid,  // Use Firebase uid as MongoDB _id
+            "nombre": name,
+            "numero_telefonico": phoneNumber,
+            "correo": "",   // Add email if needed
+            "tramite": "Caso Legal",  // Example tramite, replace with actual data
+            "expediente": "",
+            "juzgado": "",
+            "seguimiento": "",
+            "alumno": "",
+            "folio": "",
+            "ultimaVezInf": ISO8601DateFormatter().string(from: Date()),  // Set current date in ISO format
+            "rol": "cliente"
+        ]
+        
+        guard let httpBody = try? JSONSerialization.data(withJSONObject: userInfo, options: []) else { return }
+        request.httpBody = httpBody
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error pushing user to MongoDB: \(error)")
+                return
+            }
+            
+            guard let data = data else { return }
+            if let responseString = String(data: data, encoding: .utf8) {
+                print("MongoDB response: \(responseString)")
+            }
+        }.resume()
+    }
 }
+
+
 
 struct LoginErrorMessage: Identifiable {
     let id = UUID()

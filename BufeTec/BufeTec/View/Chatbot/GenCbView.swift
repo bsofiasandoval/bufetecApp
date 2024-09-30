@@ -9,7 +9,7 @@ import SwiftUI
 
 struct GenCbView: View {
     @State private var isInternalUser: Bool = true
-    @Binding var isLoggedOut: Bool
+    @EnvironmentObject var authState: AuthState
     @State private var showingProfile = false
     
     let userData = UserData(
@@ -29,7 +29,7 @@ struct GenCbView: View {
            if isInternalUser {
                InternalCbView()
            } else {
-               NewClientCbView(isLoggedOut: $isLoggedOut)
+               NewClientCbView()
            }
        }
        .navigationTitle("BufeBot")
@@ -41,11 +41,12 @@ struct GenCbView: View {
            }
        }
        .sheet(isPresented: $showingProfile) {
-           ProfileView(isLoggedOut: $isLoggedOut, userData: userData)
+           ProfileView(userData: userData)
        }
    }
 }
 
 #Preview {
-    GenCbView(isLoggedOut: .constant(false))
+    GenCbView()
+        .environmentObject(AuthState())
 }

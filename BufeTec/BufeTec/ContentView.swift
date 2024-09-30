@@ -7,21 +7,20 @@
 
 import SwiftUI
 
+
 struct ContentView: View {
     @State private var selectedTab: Int
-    @Binding var isLoggedOut: Bool
     @State private var showingProfile = false
+    @EnvironmentObject var authState: AuthState  // Use global authState
 
-    init(initialTab: Int = 0, isLoggedOut: Binding<Bool>) {
+    init(initialTab: Int = 0) {
         _selectedTab = State(initialValue: initialTab)
-        self._isLoggedOut = isLoggedOut
-        
     }
     
     var body: some View {
         TabView(selection: $selectedTab) {
             NavigationView {
-                ExploreView(isLoggedOut: $isLoggedOut)
+                ExploreView()  // No need for isLoggedOut, use authState inside ExploreView
             }
             .tabItem {
                 Label("Explora", systemImage: "magnifyingglass")
@@ -37,7 +36,7 @@ struct ContentView: View {
             .tag(1)
             
             NavigationView {
-                GenCbView(isLoggedOut: $isLoggedOut)
+                GenCbView()  // Similarly, remove isLoggedOut from this view as well
             }
             .tabItem {
                 Label("BufeBot", systemImage: "sparkles")
@@ -48,27 +47,11 @@ struct ContentView: View {
         .onAppear {
             selectedTab = 0
         }
-        
     }
-    
-    private func getNavigationTitle() -> String {
-        switch selectedTab {
-        case 0:
-            return "Explora"
-        case 1:
-            return "Foro"
-        case 2:
-            return "BufeBot"
-        default:
-            return ""
-        }
-    }
-    
 }
 
 #Preview {
-    ContentView(isLoggedOut: .constant(false))  // Provide a default value for the preview
+    ContentView()  // No need for isLoggedOut
+        .environmentObject(AuthState())  // Provide a default AuthState for previews
 }
-
-
 
