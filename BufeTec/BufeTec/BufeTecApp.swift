@@ -5,6 +5,7 @@
 //  Created by Sofia Sandoval on 9/13/24.
 //
 
+// arreglar la parte de que cuando hago pruebas en flows de client login me sale view de casos al meterme desde internal login view.
 
 import SwiftUI
 import Firebase
@@ -17,14 +18,13 @@ struct BufeTecApp: App {
     
     var body: some Scene {
         WindowGroup {
-            NavigationView{
+            NavigationView {
                 HomeView()
-                    .environmentObject(authState)
+                    .environmentObject(authState)  // Pass the global authState to HomeView
             }
         }
     }
 }
-
 
 
 

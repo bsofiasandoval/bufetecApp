@@ -15,14 +15,13 @@ struct ClientRegisterView: View {
     @State private var correo: String = ""
     @State private var tramite: String = "Caso Legal"
     @State private var folio: String = ""
-    @Binding var isLoggedOut: Bool
     @State private var shouldNavigateToCases = false
     @Environment(\.presentationMode) var presentationMode
     @State private var isLoading = false
     @State private var showError = false
     @State private var errorMessage = ""
     @State private var showVerificationSheet = false
-    @StateObject private var authState = AuthState()
+    @EnvironmentObject var authState: AuthState
     
     private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "kovomie.BufeTec", category: "ClientRegisterView")
     
@@ -38,7 +37,6 @@ struct ClientRegisterView: View {
                     Text("# Teléfono")
                     TextField("+52XXXXXXXX", text: $telefono)
                         .keyboardType(.phonePad)
-                    // hacer validaciones
                 }
                 
                 HStack {
@@ -68,32 +66,41 @@ struct ClientRegisterView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button("Guardar") {
-                    registerClient()
+                    // Initiate phone verification and registration process
+                    startPhoneVerification()
                 }
                 .disabled(isLoading)
             }
         }
         .sheet(isPresented: $showVerificationSheet) {
-            PhoneVerificationView(phoneNumber: telefono, isLoggedOut: $isLoggedOut, shouldNavigateToCases: $shouldNavigateToCases)
-                .environmentObject(authState)
+            PhoneVerificationView(phoneNumber: telefono, shouldNavigateToCases: $shouldNavigateToCases, onVerificationComplete: registerClient)
+                
         }
         .onChange(of: showVerificationSheet) { newValue in
             logger.info("showVerificationSheet changed to: \(newValue)")
         }
         .fullScreenCover(isPresented: $shouldNavigateToCases) {
             NavigationView {
-                CasesView(isLoggedOut: $isLoggedOut)
+                CasesView()
                     .environmentObject(authState)
             }
         }
     }
     
-    private func registerClient() {
+    // Function to start phone verification
+    private func startPhoneVerification() {
+        // Initiate phone verification process
+        showVerificationSheet = true
+    }
+    
+    // Function to register client with Firebase UID
+    private func registerClient(uid: String) {
         isLoading = true
-        logger.info("Starting client registration")
+        logger.info("Starting client registration with Firebase UID: \(uid)")
         
         // Prepare the client data
         let clientData: [String: Any] = [
+            "_id": uid,  // Firebase UID as MongoDB _id
             "nombre": nombre,
             "numero_telefonico": telefono,
             "correo": correo,
@@ -103,7 +110,8 @@ struct ClientRegisterView: View {
             "seguimiento": "",
             "alumno": "",
             "folio": folio,
-            "ultimaVezInf": Date().ISO8601Format()
+            "ultimaVezInf": Date().ISO8601Format(),
+            "rol": "cliente"
         ]
         
         guard let url = URL(string: "http://10.14.255.51:4000/clientes") else {
@@ -171,16 +179,17 @@ struct ClientRegisterView: View {
     }
 }
 
+
 struct PhoneVerificationView: View {
     let phoneNumber: String
-    @Binding var isLoggedOut: Bool
     @Binding var shouldNavigateToCases: Bool
+    var onVerificationComplete: (String) -> Void
     @State private var verificationCode: String = ""
     @State private var isLoading = false
     @State private var showError = false
     @State private var errorMessage = ""
     @Environment(\.presentationMode) var presentationMode
-    @EnvironmentObject var authState: AuthState
+    
     
     private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "kovomie.BufeTecApp", category: "PhoneVerificationView")
     
@@ -244,12 +253,10 @@ struct PhoneVerificationView: View {
                     }
                     
                     logger.info("Authentication successful")
-                    DispatchQueue.main.async {
-                        self.isLoggedOut = false
-                        self.authState.isLoggedIn = true
-                        self.shouldNavigateToCases = true
-                        self.presentationMode.wrappedValue.dismiss()
+                    if let uid = authResult?.user.uid {
+                        onVerificationComplete(uid)
                     }
+                    presentationMode.wrappedValue.dismiss()
                 }
             }
         }
@@ -263,5 +270,7 @@ struct PhoneVerificationView: View {
 
 
 #Preview {
-    ClientRegisterView(isLoggedOut: .constant(true))
+    ClientRegisterView()
+        .environmentObject(AuthState())
 }
+

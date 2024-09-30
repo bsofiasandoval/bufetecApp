@@ -8,8 +8,7 @@
 import SwiftUI
 
 struct GeneralLoginView: View {
-    @State private var isLoggedOut = true
-    @EnvironmentObject var authState: AuthState
+    @EnvironmentObject var authState: AuthState  // Use global authState
     
     var body: some View {
         ZStack {
@@ -21,7 +20,6 @@ struct GeneralLoginView: View {
             VStack(spacing: 0) {
                 Spacer()
                 
-                
                 Image(.bufeTecLogo)
                     .resizable()
                     .scaledToFit()
@@ -32,12 +30,11 @@ struct GeneralLoginView: View {
                     .fontDesign(.serif)
                     .font(.title3)
                 
-                
                 Spacer()
                 Spacer()
                 
                 VStack(spacing: 20) {
-                    NavigationLink(destination: NewClientCbView(isLoggedOut: $isLoggedOut)) {
+                    NavigationLink(destination: NewClientCbView().environmentObject(authState)) {
                         Text("Requiero Asesoría Legal")
                             .frame(minWidth: 200)
                             .fontWeight(.medium)
@@ -47,7 +44,7 @@ struct GeneralLoginView: View {
                             .cornerRadius(10)
                     }
                     
-                    NavigationLink(destination: ClientLoginView(isLoggedOut: $isLoggedOut).environmentObject(authState)) {
+                    NavigationLink(destination: ClientLoginView(isLoggedOut: .constant(!authState.isLoggedIn)).environmentObject(authState)) {
                         Text("Consultar Caso Existente")
                             .frame(minWidth: 200)
                             .fontWeight(.medium)
@@ -60,7 +57,7 @@ struct GeneralLoginView: View {
                 
                 Spacer()
                 
-                NavigationLink(destination: InternalLoginView()) {
+                NavigationLink(destination: InternalLoginView().environmentObject(authState)) {
                     Text("Soy LED o Bufetec")
                         .foregroundColor(.white)
                         .fontWeight(.medium)
@@ -71,6 +68,7 @@ struct GeneralLoginView: View {
         .navigationBarHidden(true)
     }
 }
+
 
 
 
@@ -118,6 +116,7 @@ extension Color {
 #Preview {
     GeneralLoginView()
 }
+
 
 
 

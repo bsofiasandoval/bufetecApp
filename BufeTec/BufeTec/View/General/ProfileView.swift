@@ -9,73 +9,70 @@ import SwiftUI
 import FirebaseAuth
 
 struct ProfileView: View {
-    @Binding var isLoggedOut: Bool
     @State private var showingLogoutAlert = false
     let userData: UserData
-    @Environment(\.presentationMode) var presentationMode
     @EnvironmentObject var authState: AuthState
+    @Environment(\.presentationMode) var presentationMode  // To dismiss the view
     
     var body: some View {
-        NavigationView {
-            ScrollView {
-                VStack(spacing: 20) {
-                    // Profile Image
-                    Image(systemName: "person.circle.fill")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 150, height: 150)
-                        .foregroundColor(.blue)
-                        .padding(.top, 40)
+        ScrollView {
+            VStack(spacing: 20) {
+                // Profile Image
+                Image(systemName: "person.circle.fill")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 150, height: 150)
+                    .foregroundColor(.blue)
+                    .padding(.top, 40)
+                
+                // Name
+                Text(userData.name)
+                    .font(.title)
+                    .fontWeight(.bold)
+                
+                // Common Info Cards
+                VStack(spacing: 15) {
                     
-                    // Name
-                    Text(userData.name)
-                        .font(.title)
-                        .fontWeight(.bold)
+                    if let email = userData.email {
+                        infoCard(title: "Email", value: email)
+                    }
+                    if let phoneNumber = userData.phoneNumber {
+                        infoCard(title: "Phone Number", value: phoneNumber)
+                    }
                     
-                    // Common Info Cards
-                    VStack(spacing: 15) {
-                        
-                        if let email = userData.email {
-                            infoCard(title: "Email", value: email)
+                    // User Type Specific Info
+                    switch userData.userType {
+                    case .lawyer:
+                        if let cedula = userData.cedulaProfesional {
+                            infoCard(title: "Cédula Profesional", value: cedula)
                         }
-                        if let phoneNumber = userData.phoneNumber {
-                            infoCard(title: "Phone Number", value: phoneNumber)
+                        if let especialidad = userData.especialidad {
+                            infoCard(title: "Especialidad", value: especialidad)
                         }
-                        
-                        // User Type Specific Info
-                        switch userData.userType {
-                        case .lawyer:
-                            if let cedula = userData.cedulaProfesional {
-                                infoCard(title: "Cédula Profesional", value: cedula)
-                            }
-                            if let especialidad = userData.especialidad {
-                                infoCard(title: "Especialidad", value: especialidad)
-                            }
-                            if let years = userData.yearsOfExperience {
-                                infoCard(title: "Years of Experience", value: "\(years)")
-                            }
-                        case .client:
-                            if let clientId = userData.clientId {
-                                infoCard(title: "Client ID", value: clientId)
-                            }
+                        if let years = userData.yearsOfExperience {
+                            infoCard(title: "Years of Experience", value: "\(years)")
+                        }
+                    case .client:
+                        if let clientId = userData.clientId {
+                            infoCard(title: "Client ID", value: clientId)
                         }
                     }
-                    .padding()
-                    
-                    Button("Logout") {
-                        showingLogoutAlert = true
-                    }
-                    .foregroundColor(.white)
-                    .padding()
-                    .background(Color.red)
-                    .cornerRadius(10)
                 }
+                .padding()
+                
+                Button("Logout") {
+                    showingLogoutAlert = true
+                }
+                .foregroundColor(.white)
+                .padding()
+                .background(Color.red)
+                .cornerRadius(10)
             }
-            .navigationBarTitle("Profile", displayMode: .inline)
-            .navigationBarItems(trailing: Button("Close") {
-                presentationMode.wrappedValue.dismiss()
-            })
         }
+        .navigationBarTitle("Profile", displayMode: .inline)
+        .navigationBarItems(trailing: Button("Close") {
+            presentationMode.wrappedValue.dismiss()
+        })
         .alert(isPresented: $showingLogoutAlert) {
             Alert(
                 title: Text("Logout"),
@@ -107,26 +104,12 @@ struct ProfileView: View {
         do {
             try Auth.auth().signOut()
             DispatchQueue.main.async {
-                authState.isLoggedIn = false
-                authState.user = nil
-                isLoggedOut = true
-                presentationMode.wrappedValue.dismiss()
+                authState.isLoggedIn = false  // Ensure this is called
+                authState.user = nil  // Clear user data
+                presentationMode.wrappedValue.dismiss()  // Dismiss ProfileView
             }
         } catch {
             print("Error signing out: \(error.localizedDescription)")
         }
     }
 }
-
-//struct ProfileView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ProfileView(isLoggedOut: .constant(false), userData: UserData(
-//            name: "Natalie Garcia",
-//            cedulaProfesional: "LXXXXXX",
-//            especialidad: "Derecho Penal",
-//            yearsOfExperience: 10,
-//            email: "natalie.garcia@bufetec.com"
-//        ))
-//        .environmentObject(AuthState())
-//    }
-//}

@@ -13,7 +13,7 @@ struct NewClientCbView: View {
     @State private var messages: [CbMessageModel] = []
     @FocusState private var isFocused: Bool
     @Environment(\.colorScheme) var colorScheme
-    @Binding var isLoggedOut: Bool
+    @EnvironmentObject var authState: AuthState
     @State private var shouldNavigateToRegister = false
     
     var body: some View {
@@ -62,10 +62,9 @@ struct NewClientCbView: View {
         .navigationTitle("BufeBot")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                NavigationLink(destination: ClientRegisterView(isLoggedOut: $isLoggedOut)) {
+                NavigationLink(destination: ClientRegisterView()) {
                     Text("Continuar")
                         .foregroundColor(.blue)
-                    
                 }
             }
         }
@@ -89,5 +88,6 @@ struct NewClientCbView: View {
 
 
 #Preview {
-    NewClientCbView(isLoggedOut: .constant(false))
+    NewClientCbView()
+        .environmentObject(AuthState())
 }
