@@ -39,10 +39,21 @@ struct NewsResponse: Codable {
 
 class NewsViewModel: ObservableObject {
     @Published var articles: [Article] = []
+    @Published var searchText: String = ""
     @Published var isLoading = false
     @Published var errorMessage: String?
     
+    private var allArticles: [Article] = []
     private var cancellables = Set<AnyCancellable>()
+    
+    init() {
+        $searchText
+            .debounce(for: .milliseconds(300), scheduler: RunLoop.main)
+            .sink { [weak self] searchText in
+                self?.filterArticles()
+            }
+            .store(in: &cancellables)
+    }
     
     func fetchNews() {
         isLoading = true
@@ -71,9 +82,21 @@ class NewsViewModel: ObservableObject {
                     self.errorMessage = error.localizedDescription
                 }
             } receiveValue: { response in
-                self.articles = response.articles.results
+                self.allArticles = response.articles.results
+                self.filterArticles()
             }
             .store(in: &cancellables)
+    }
+    
+    private func filterArticles() {
+        if searchText.isEmpty {
+            articles = allArticles
+        } else {
+            articles = allArticles.filter { article in
+                article.title.lowercased().contains(searchText.lowercased()) ||
+                article.body.lowercased().contains(searchText.lowercased())
+            }
+        }
     }
 }
 
@@ -82,46 +105,84 @@ struct NewsView: View {
     
     var body: some View {
         NavigationView {
-            List {
-                if viewModel.isLoading {
-                    ProgressView()
-                } else if let errorMessage = viewModel.errorMessage {
-                    Text(errorMessage)
-                        .foregroundColor(.red)
-                } else {
-                    ForEach(viewModel.articles) { article in
-                        NavigationLink(destination: ArticleDetailView(article: article)) {
-                            HStack(spacing: 16) {
-                                AsyncImage(url: URL(string: article.image ?? "")) { image in
-                                    image.resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .frame(width: 80, height: 80)
-                                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                                } placeholder: {
-                                    RoundedRectangle(cornerRadius: 8)
-                                        .fill(Color.gray.opacity(0.3))
-                                        .frame(width: 80, height: 80)
+            VStack {
+                SearchBar(text: $viewModel.searchText)
+                
+                List {
+                    if viewModel.isLoading {
+                        ProgressView()
+                    } else if let errorMessage = viewModel.errorMessage {
+                        Text(errorMessage)
+                            .foregroundColor(.red)
+                    } else {
+                        ForEach(viewModel.articles) { article in
+                            NavigationLink(destination: ArticleDetailView(article: article)) {
+                                HStack(spacing: 16) {
+                                    AsyncImage(url: URL(string: article.image ?? "")) { image in
+                                        image.resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .frame(width: 80, height: 80)
+                                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                                    } placeholder: {
+                                        RoundedRectangle(cornerRadius: 8)
+                                            .fill(Color.gray.opacity(0.3))
+                                            .frame(width: 80, height: 80)
+                                    }
+                                    
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text(article.title)
+                                            .font(.headline)
+                                            .lineLimit(2)
+                                        Text(article.dateTime)
+                                            .font(.subheadline)
+                                            .foregroundColor(.secondary)
+                                    }
                                 }
-                                
-                                VStack(alignment: .leading, spacing: 4) {
-                                    Text(article.title)
-                                        .font(.headline)
-                                        .lineLimit(2)
-                                    Text(article.dateTime)
-                                        .font(.subheadline)
-                                        .foregroundColor(.secondary)
-                                }
+                                .padding(.vertical, 8)
                             }
-                            .padding(.vertical, 8)
                         }
                     }
                 }
+                .listStyle(PlainListStyle())
             }
-            .navigationTitle("Legal News")
+            .navigationTitle("Noticias")
             .onAppear {
                 viewModel.fetchNews()
             }
         }
+    }
+}
+
+struct SearchBar: View {
+    @Binding var text: String
+    
+    var body: some View {
+        HStack {
+            TextField("Search...", text: $text)
+                .padding(8)
+                .padding(.horizontal, 24)
+                .background(Color(.systemGray6))
+                .cornerRadius(8)
+                .overlay(
+                    HStack {
+                        Image(systemName: "magnifyingglass")
+                            .foregroundColor(.gray)
+                            .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
+                            .padding(.leading, 8)
+                        
+                        if !text.isEmpty {
+                            Button(action: {
+                                self.text = ""
+                            }) {
+                                Image(systemName: "multiply.circle.fill")
+                                    .foregroundColor(.gray)
+                                    .padding(.trailing, 8)
+                            }
+                        }
+                    }
+                )
+        }
+        .padding(.horizontal)
     }
 }
 

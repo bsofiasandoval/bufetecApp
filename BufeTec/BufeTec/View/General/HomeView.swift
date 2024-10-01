@@ -19,7 +19,7 @@ struct HomeView: View {
                 if authState.userRole == .internalUser {
                     ContentView()
                 } else if authState.userRole == .client {
-                    CasesView()
+                    CasesView(clientId: Auth.auth().currentUser!.uid)
                 } else {
                     Text("Unknown user role")
                 }

@@ -32,6 +32,8 @@
 		A96E5C672C954EBA0056B657 /* ExploreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96E5C662C954EBA0056B657 /* ExploreView.swift */; };
 		A96E5C692C954EE60056B657 /* GeneralLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96E5C682C954EE60056B657 /* GeneralLoginView.swift */; };
 		A96E5C6B2C9550340056B657 /* GenCbView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96E5C6A2C9550340056B657 /* GenCbView.swift */; };
+		A97036E32CACA20500A4ACCC /* Case.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97036E22CACA20500A4ACCC /* Case.swift */; };
+		A97036E62CACA22300A4ACCC /* CasesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97036E52CACA22300A4ACCC /* CasesViewModel.swift */; };
 		A981ED392CA5CDCF000ACCB7 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = A981ED382CA5CDCF000ACCB7 /* Message.swift */; };
 		A981ED3B2CA5CDE9000ACCB7 /* MessageDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A981ED3A2CA5CDE9000ACCB7 /* MessageDetailView.swift */; };
 		A981ED3D2CA5CE0A000ACCB7 /* AskQuestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A981ED3C2CA5CE0A000ACCB7 /* AskQuestionView.swift */; };
@@ -70,6 +72,8 @@
 		A96E5C662C954EBA0056B657 /* ExploreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreView.swift; sourceTree = "<group>"; };
 		A96E5C682C954EE60056B657 /* GeneralLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralLoginView.swift; sourceTree = "<group>"; };
 		A96E5C6A2C9550340056B657 /* GenCbView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenCbView.swift; sourceTree = "<group>"; };
+		A97036E22CACA20500A4ACCC /* Case.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Case.swift; sourceTree = "<group>"; };
+		A97036E52CACA22300A4ACCC /* CasesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CasesViewModel.swift; sourceTree = "<group>"; };
 		A981ED382CA5CDCF000ACCB7 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		A981ED3A2CA5CDE9000ACCB7 /* MessageDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageDetailView.swift; sourceTree = "<group>"; };
 		A981ED3C2CA5CE0A000ACCB7 /* AskQuestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AskQuestionView.swift; sourceTree = "<group>"; };
@@ -119,6 +123,7 @@
 		A900EBE42C954AED001E5311 /* BufeTec */ = {
 			isa = PBXGroup;
 			children = (
+				A97036E42CACA21200A4ACCC /* ViewModel */,
 				A9DC15402CA24A9600858D21 /* BufeTec.entitlements */,
 				A9DC15472CA24B3B00858D21 /* GoogleService-Info.plist */,
 				A91535702CA0F45A00DA3289 /* Info.plist */,
@@ -178,6 +183,7 @@
 				A9571A2C2CA533CE000EFFC1 /* APIdata.swift */,
 				A9571A322CA53956000EFFC1 /* UserData.swift */,
 				A981ED382CA5CDCF000ACCB7 /* Message.swift */,
+				A97036E22CACA20500A4ACCC /* Case.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -243,6 +249,14 @@
 				A96E5C662C954EBA0056B657 /* ExploreView.swift */,
 			);
 			path = General;
+			sourceTree = "<group>";
+		};
+		A97036E42CACA21200A4ACCC /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				A97036E52CACA22300A4ACCC /* CasesViewModel.swift */,
+			);
+			path = ViewModel;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -324,6 +338,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A97036E62CACA22300A4ACCC /* CasesViewModel.swift in Sources */,
 				A96E5C552C954DA70056B657 /* ClientLoginView.swift in Sources */,
 				A9AEED642C9A147D00DE3FA4 /* CbMessageModel.swift in Sources */,
 				A9571A272CA511E5000EFFC1 /* CasesView.swift in Sources */,
@@ -335,6 +350,7 @@
 				A9571A252CA507E6000EFFC1 /* ClientRegisterView.swift in Sources */,
 				A981ED392CA5CDCF000ACCB7 /* Message.swift in Sources */,
 				A981ED3B2CA5CDE9000ACCB7 /* MessageDetailView.swift in Sources */,
+				A97036E32CACA20500A4ACCC /* Case.swift in Sources */,
 				A96E5C512C954D380056B657 /* NewClientCbView.swift in Sources */,
 				A96E5C572C954DB30056B657 /* InternalLoginView.swift in Sources */,
 				A96E5C532C954D4A0056B657 /* InternalCbView.swift in Sources */,

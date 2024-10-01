@@ -8,9 +8,13 @@
 import SwiftUI
 import FirebaseAuth
 
+
+
 struct CasesView: View {
     @State private var showingProfile = false
     @EnvironmentObject var authState: AuthState  // Use global authState
+    @State private var viewModel = CasesViewModel()
+    let clientId: String
     
     // Example user data
     let userData = UserData(
@@ -27,16 +31,23 @@ struct CasesView: View {
     
     var body: some View {
         Group {
-            if authState.isLoggedIn {
-                // Display cases when the user is logged in
-                VStack {
-                    List {
-                        Text("Case 1")
-                        Text("Case 2")
-                        Text("Case 3")
+            if authState.isLoggedIn && authState.userRole == .client {
+                List(viewModel.cases) { legalCase in
+                    VStack(alignment: .leading) {
+                        Text(legalCase.tipo_de_caso)
+                            .font(.headline)
+                        Text("Estado: \(legalCase.estado)")
+                            .font(.subheadline)
+                        Text("Fecha de inicio: \(legalCase.fecha_inicio)")
+                            .font(.caption)
+                        Text(legalCase.descripcion)
+                            .font(.body)
                     }
                 }
-                .navigationBarTitle("Mis Casos", displayMode: .inline)
+                .navigationTitle("Mis Casos")
+                .onAppear {
+                    viewModel.fetchCases(for: clientId)
+                }
                 .navigationBarBackButtonHidden(true)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
@@ -61,6 +72,6 @@ struct CasesView: View {
 }
 
 #Preview {
-    CasesView()
+    CasesView(clientId: "c7BH89up7bNXLKou3RTyvBP3Lmr1")
         .environmentObject(AuthState())  // Provide a sample authState for previews
 }
