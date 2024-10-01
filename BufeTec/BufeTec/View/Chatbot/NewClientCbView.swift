@@ -15,6 +15,7 @@ struct NewClientCbView: View {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var authState: AuthState
     @State private var shouldNavigateToRegister = false
+    @State private var isLoggedOut: Bool = true  // Add this line
     
     var body: some View {
         VStack(spacing: 0) {
@@ -62,7 +63,7 @@ struct NewClientCbView: View {
         .navigationTitle("BufeBot")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                NavigationLink(destination: ClientRegisterView().environmentObject(authState)) {
+                NavigationLink(destination: ClientRegisterView(isLoggedOut: $isLoggedOut).environmentObject(authState)) {
                     Text("Continuar")
                         .foregroundColor(.blue)
                 }

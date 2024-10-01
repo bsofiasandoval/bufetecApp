@@ -15,9 +15,10 @@ struct ClientRegisterView: View {
     @State private var correo: String = ""
     @State private var tramite: String = "Caso Legal"
     @State private var folio: String = ""
-    @State private var shouldNavigateToCases = false
     @Environment(\.presentationMode) var presentationMode
     @State private var isLoading = false
+    @Binding var isLoggedOut: Bool
+    @State private var shouldNavigateToCases = false
     @State private var showError = false
     @State private var errorMessage = ""
     @State private var showVerificationSheet = false
@@ -73,19 +74,21 @@ struct ClientRegisterView: View {
             }
         }
         .sheet(isPresented: $showVerificationSheet) {
-            PhoneVerificationView(phoneNumber: telefono, shouldNavigateToCases: $shouldNavigateToCases, onVerificationComplete: { uid in
-                registerClient(uid: uid)
-                showVerificationSheet = false
-            })
-        }
+                    PhoneVerificationView(
+                        phoneNumber: telefono,
+                        shouldNavigateToCases: $shouldNavigateToCases,
+                        onVerificationComplete: { uid in
+                            registerClient(uid: uid)
+                            showVerificationSheet = false
+                        },
+                        isLoggedOut: $isLoggedOut
+                    )
+                }
         .onChange(of: showVerificationSheet) { newValue in
             logger.info("showVerificationSheet changed to: \(newValue)")
         }
-        .fullScreenCover(isPresented: $shouldNavigateToCases) {
-            NavigationView{
-                CasesView().environmentObject(authState)
-            }
-        }
+        .navigate(to: CasesView().environmentObject(authState), when: $shouldNavigateToCases)
+        
     }
     
     // Function to register client with Firebase UID
@@ -158,7 +161,6 @@ struct ClientRegisterView: View {
                     }
                     
                     logger.info("API call successful, showing verification sheet")
-                    shouldNavigateToCases =  true
                 } else {
                     if let data = data, let responseString = String(data: data, encoding: .utf8) {
                         logger.error("Server error. Status: \(httpResponse.statusCode), Body: \(responseString)")
@@ -223,7 +225,9 @@ struct PhoneVerificationView: View {
     @State private var isLoading = false
     @State private var showError = false
     @State private var errorMessage = ""
+    @Binding var isLoggedOut: Bool
     @Environment(\.presentationMode) var presentationMode
+    @EnvironmentObject var authState : AuthState
     
     
     private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "kovomie.BufeTecApp", category: "PhoneVerificationView")
@@ -288,12 +292,13 @@ struct PhoneVerificationView: View {
                     }
                     
                     logger.info("Authentication successful")
-                    if let uid = authResult?.user.uid {
-                        onVerificationComplete(uid)
+                    if let user = authResult?.user {
+                        self.authState.isLoggedIn = true
+                        self.authState.user = user
+                        self.authState.setUserRole(.client)
+                        self.isLoggedOut = false
+                        self.presentationMode.wrappedValue.dismiss()
                     }
-                    presentationMode.wrappedValue.dismiss()
-                    shouldNavigateToCases = true;
-                   
                 }
             }
         }
@@ -307,7 +312,23 @@ struct PhoneVerificationView: View {
 
 
 #Preview {
-    ClientRegisterView()
+    ClientRegisterView(isLoggedOut: .constant(false))
         .environmentObject(AuthState())
 }
 
+
+extension View {
+    func navigate<NewView: View>(to view: NewView, when binding: Binding<Bool>) -> some View {
+        ZStack {
+            self
+            NavigationLink(
+                destination: view
+                    .navigationBarTitle("")
+                    .navigationBarHidden(true),
+                isActive: binding
+            ) {
+                EmptyView()
+            }
+        }
+    }
+}

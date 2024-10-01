@@ -4,35 +4,55 @@
 //
 //  Created by Sofia Sandoval on 9/23/24.
 //
-
 import SwiftUI
 import FirebaseAuth
 
 struct HomeView: View {
     @EnvironmentObject var authState: AuthState
-    @State private var showingLoginView = false
+    @State private var isLoading = true
 
     var body: some View {
         Group {
-            if authState.isLoggedIn {
-                ContentView()  // Show content when logged in
+            if isLoading {
+                ProgressView() // Show loading indicator while checking auth state
+            } else if authState.isLoggedIn {
+                if authState.userRole == .internalUser {
+                    ContentView()
+                } else if authState.userRole == .client {
+                    CasesView()
+                } else {
+                    Text("Unknown user role")
+                }
             } else {
-                GeneralLoginView()  // Redirect to login view when logged out
+                GeneralLoginView()
             }
         }
-        .onAppear {
-            checkLoginStatus()
-        }
-        .onChange(of: authState.isLoggedIn) { isLoggedIn in
-            if !authState.isLoggedIn {
-                showingLoginView = true  // Show login view when logged out
+        .navigationViewStyle(StackNavigationViewStyle())
+        .onAppear(perform: setupAuthStateListener)
+    }
+    
+    private func setupAuthStateListener() {
+        Auth.auth().addStateDidChangeListener { auth, user in
+            DispatchQueue.main.async {
+                if let user = user {
+                    self.authState.isLoggedIn = true
+                    self.authState.user = user
+                    self.authState.userRole = self.getUserRole(user)
+                } else {
+                    self.authState.isLoggedIn = false
+                    self.authState.user = nil
+                    self.authState.userRole = nil
+                }
+                self.isLoading = false
             }
         }
     }
     
-    private func checkLoginStatus() {
-        if !authState.isLoggedIn {
-            showingLoginView = true
+    private func getUserRole(_ user: User) -> UserRole? {
+        if user.email?.contains("tec.mx") == true {
+            return .internalUser
+        } else {
+            return .client
         }
     }
 }
