@@ -7,7 +7,34 @@
 
 import Foundation
 
-// MARK: - WelcomeElement
+// MARK: - UserInformationElement
+struct UserInformationElement: Codable {
+    let apellido, areaEspecializacion: JSONNull?
+    let casosAsignados: [JSONAny]
+    let cedula: JSONNull?
+    let correo: String
+    let horariosAtencion: HorariosAtencion
+    let id, nombre, rol: String
+    let telefono: JSONNull?
+
+    enum CodingKeys: String, CodingKey {
+        case apellido
+        case areaEspecializacion = "area_especializacion"
+        case casosAsignados = "casos_asignados"
+        case cedula, correo
+        case horariosAtencion = "horarios_atencion"
+        case id, nombre, rol, telefono
+    }
+}
+
+// MARK: - HorariosAtencion
+struct HorariosAtencion: Codable {
+}
+
+typealias UserInformation = [UserInformationElement]
+
+
+// MARK: - ForumResponses
 struct WelcomeElement: Codable {
     let autorID, contenido, fechaCreacion, id: String
     let readUsers: [JSONAny]
