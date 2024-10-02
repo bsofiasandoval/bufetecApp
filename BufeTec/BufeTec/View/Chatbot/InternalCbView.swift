@@ -297,13 +297,13 @@ struct MessageBubble: View {
             HStack {
                 if message.isFromCurrentUser {
                     Spacer()
-                    Text(message.text)
+                    formatMessageText(message.text)
                         .padding(12)
                         .background(Color.userMessageBackground)
                         .foregroundColor(Color.userMessageText)
                         .clipShape(BubbleShape(isFromCurrentUser: true))
                 } else {
-                    Text(message.text)
+                    formatMessageText(message.text)
                         .padding(12)
                         .background(Color.botMessageBackground)
                         .foregroundColor(Color.botMessageText)
@@ -319,6 +319,37 @@ struct MessageBubble: View {
                 }
             }
         }
+    }
+
+    // Function to process the message text and apply bold and bullet formatting
+    func formatMessageText(_ text: String) -> Text {
+        var finalText = Text("")
+        let lines = text.components(separatedBy: "\n") // Split by new lines
+
+        for line in lines {
+            if line.contains("**") {
+                // Bold text parsing
+                let boldParts = line.components(separatedBy: "**")
+                for (index, part) in boldParts.enumerated() {
+                    if index % 2 == 1 { // Bold part
+                        finalText = finalText + Text(part).bold()
+                    } else { // Normal part
+                        finalText = finalText + Text(part)
+                    }
+                }
+            } else if line.starts(with: "- ") {
+                // Bullet point parsing
+                let bulletText = line.replacingOccurrences(of: "- ", with: "• ")
+                finalText = finalText + Text(bulletText)
+            } else {
+                // Normal text
+                finalText = finalText + Text(line)
+            }
+
+            finalText = finalText + Text("\n") // Add new line
+        }
+
+        return finalText
     }
 }
 
