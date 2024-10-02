@@ -6,13 +6,18 @@
 //
 
 import SwiftUI
+import FirebaseAuth
+import GoogleSignIn
+import Firebase
+
 
 struct AddPostView: View {
+    @EnvironmentObject var authState: AuthState
     @Environment(\.presentationMode) var presentationMode
     @State private var titulo: String = ""
     @State private var contenido: String = ""
-    @State private var autorID: String = ""
-
+    @State private var autorID: String = "" // Declare autorID without initialization
+    
     var body: some View {
         NavigationView {
             Form {
@@ -21,9 +26,6 @@ struct AddPostView: View {
                 }
                 Section(header: Text("Contenido")) {
                     TextField("Contenido", text: $contenido)
-                }
-                Section(header: Text("Autor ID")) {
-                    TextField("Autor ID", text: $autorID)
                 }
             }
             .navigationTitle("Nuevo Post")
@@ -35,10 +37,25 @@ struct AddPostView: View {
                     savePost()
                 }
             )
+            .onAppear {
+                // Automatically get the current user's ID (autorID)
+                if let user = Auth.auth().currentUser {
+                    self.autorID = user.uid
+                } else {
+                    print("No user is signed in")
+                }
+            }
         }
     }
 
     private func savePost() {
+        // Make sure autorID is set before attempting to save the post
+        guard !autorID.isEmpty else {
+            print("Author ID is missing")
+            return
+        }
+        
+        // Send the post data with autorID automatically included
         NetworkManager.shared.createNewPost(titulo: titulo, contenido: contenido, autorID: autorID) { result in
             switch result {
             case .success(let message):
@@ -50,6 +67,7 @@ struct AddPostView: View {
         }
     }
 }
+
 #Preview {
     AddPostView()
 }

@@ -3,28 +3,24 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 70;
+	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4941B3102CAB1B7F000CA717 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 4941B30F2CAB1B7F000CA717 /* GoogleSignIn */; };
+		4941B3152CAB1C24000CA717 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 4941B3142CAB1C24000CA717 /* FirebaseMessaging */; };
+		4941B3172CAB1C27000CA717 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 4941B3162CAB1C27000CA717 /* FirebaseAuth */; };
 		A900EBE62C954AED001E5311 /* BufeTecApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A900EBE52C954AED001E5311 /* BufeTecApp.swift */; };
 		A900EBE82C954AED001E5311 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A900EBE72C954AED001E5311 /* ContentView.swift */; };
 		A900EBEA2C954AEF001E5311 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A900EBE92C954AEF001E5311 /* Assets.xcassets */; };
 		A900EBED2C954AEF001E5311 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A900EBEC2C954AEF001E5311 /* Preview Assets.xcassets */; };
-		A90B08D52CACBDE800D16F8F /* CaseDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90B08D42CACBDE800D16F8F /* CaseDetailView.swift */; };
-		A915355F2CA0F29400DA3289 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = A915355E2CA0F29400DA3289 /* FirebaseAuth */; };
-		A91535622CA0F2A300DA3289 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = A91535612CA0F2A300DA3289 /* GoogleSignIn */; };
 		A91535662CA0F2CE00DA3289 /* GoogleSignInBtn.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91535652CA0F2CE00DA3289 /* GoogleSignInBtn.swift */; };
 		A91535692CA0F3ED00DA3289 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91535682CA0F3ED00DA3289 /* AppDelegate.swift */; };
 		A915356B2CA0F40900DA3289 /* ViewExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = A915356A2CA0F40900DA3289 /* ViewExt.swift */; };
-		A91E73ED2CACCAC2009C331C /* LawyerDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91E73EC2CACCAC2009C331C /* LawyerDetailView.swift */; };
-		A91E73EF2CACCADE009C331C /* BecarioDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91E73EE2CACCADE009C331C /* BecarioDetailView.swift */; };
-		A91E73F12CACCE35009C331C /* NewCaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91E73F02CACCE35009C331C /* NewCaseView.swift */; };
 		A9571A252CA507E6000EFFC1 /* ClientRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9571A242CA507E6000EFFC1 /* ClientRegisterView.swift */; };
 		A9571A272CA511E5000EFFC1 /* CasesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9571A262CA511E5000EFFC1 /* CasesView.swift */; };
 		A9571A292CA533A9000EFFC1 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9571A282CA533A9000EFFC1 /* Data.swift */; };
 		A9571A2D2CA533CE000EFFC1 /* APIdata.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9571A2C2CA533CE000EFFC1 /* APIdata.swift */; };
-		A9571A2F2CA53458000EFFC1 /* AddPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9571A2E2CA53458000EFFC1 /* AddPostView.swift */; };
 		A9571A332CA53956000EFFC1 /* UserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9571A322CA53956000EFFC1 /* UserData.swift */; };
 		A96E5C4D2C954CDB0056B657 /* ForumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96E5C4C2C954CDB0056B657 /* ForumView.swift */; };
 		A96E5C512C954D380056B657 /* NewClientCbView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96E5C502C954D380056B657 /* NewClientCbView.swift */; };
@@ -36,8 +32,6 @@
 		A96E5C672C954EBA0056B657 /* ExploreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96E5C662C954EBA0056B657 /* ExploreView.swift */; };
 		A96E5C692C954EE60056B657 /* GeneralLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96E5C682C954EE60056B657 /* GeneralLoginView.swift */; };
 		A96E5C6B2C9550340056B657 /* GenCbView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96E5C6A2C9550340056B657 /* GenCbView.swift */; };
-		A97036E32CACA20500A4ACCC /* Case.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97036E22CACA20500A4ACCC /* Case.swift */; };
-		A97036E62CACA22300A4ACCC /* CasesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97036E52CACA22300A4ACCC /* CasesViewModel.swift */; };
 		A981ED392CA5CDCF000ACCB7 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = A981ED382CA5CDCF000ACCB7 /* Message.swift */; };
 		A981ED3B2CA5CDE9000ACCB7 /* MessageDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A981ED3A2CA5CDE9000ACCB7 /* MessageDetailView.swift */; };
 		A981ED3D2CA5CE0A000ACCB7 /* AskQuestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A981ED3C2CA5CE0A000ACCB7 /* AskQuestionView.swift */; };
@@ -45,8 +39,6 @@
 		A9947D8C2CA22018001F8D24 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9947D8B2CA22018001F8D24 /* HomeView.swift */; };
 		A9947D8E2CA24165001F8D24 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A9947D8D2CA24165001F8D24 /* LaunchScreen.storyboard */; };
 		A9AEED642C9A147D00DE3FA4 /* CbMessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9AEED632C9A147D00DE3FA4 /* CbMessageModel.swift */; };
-		A9DC153D2CA248CA00858D21 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = A9DC153C2CA248CA00858D21 /* FirebaseMessaging */; };
-		A9DC153F2CA248F100858D21 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = A9DC153E2CA248F100858D21 /* FirebaseMessaging */; };
 		A9DC15482CA24B3B00858D21 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A9DC15472CA24B3B00858D21 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
@@ -56,19 +48,14 @@
 		A900EBE72C954AED001E5311 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		A900EBE92C954AEF001E5311 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A900EBEC2C954AEF001E5311 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		A90B08D42CACBDE800D16F8F /* CaseDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaseDetailView.swift; sourceTree = "<group>"; };
 		A91535652CA0F2CE00DA3289 /* GoogleSignInBtn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleSignInBtn.swift; sourceTree = "<group>"; };
 		A91535682CA0F3ED00DA3289 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A915356A2CA0F40900DA3289 /* ViewExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExt.swift; sourceTree = "<group>"; };
 		A91535702CA0F45A00DA3289 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		A91E73EC2CACCAC2009C331C /* LawyerDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LawyerDetailView.swift; sourceTree = "<group>"; };
-		A91E73EE2CACCADE009C331C /* BecarioDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BecarioDetailView.swift; sourceTree = "<group>"; };
-		A91E73F02CACCE35009C331C /* NewCaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewCaseView.swift; sourceTree = "<group>"; };
 		A9571A242CA507E6000EFFC1 /* ClientRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientRegisterView.swift; sourceTree = "<group>"; };
 		A9571A262CA511E5000EFFC1 /* CasesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CasesView.swift; sourceTree = "<group>"; };
 		A9571A282CA533A9000EFFC1 /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
 		A9571A2C2CA533CE000EFFC1 /* APIdata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIdata.swift; sourceTree = "<group>"; };
-		A9571A2E2CA53458000EFFC1 /* AddPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPostView.swift; sourceTree = "<group>"; };
 		A9571A322CA53956000EFFC1 /* UserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserData.swift; sourceTree = "<group>"; };
 		A96E5C4C2C954CDB0056B657 /* ForumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForumView.swift; sourceTree = "<group>"; };
 		A96E5C502C954D380056B657 /* NewClientCbView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NewClientCbView.swift; path = BufeTec/View/Chatbot/NewClientCbView.swift; sourceTree = SOURCE_ROOT; };
@@ -80,8 +67,6 @@
 		A96E5C662C954EBA0056B657 /* ExploreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreView.swift; sourceTree = "<group>"; };
 		A96E5C682C954EE60056B657 /* GeneralLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralLoginView.swift; sourceTree = "<group>"; };
 		A96E5C6A2C9550340056B657 /* GenCbView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenCbView.swift; sourceTree = "<group>"; };
-		A97036E22CACA20500A4ACCC /* Case.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Case.swift; sourceTree = "<group>"; };
-		A97036E52CACA22300A4ACCC /* CasesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CasesViewModel.swift; sourceTree = "<group>"; };
 		A981ED382CA5CDCF000ACCB7 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		A981ED3A2CA5CDE9000ACCB7 /* MessageDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageDetailView.swift; sourceTree = "<group>"; };
 		A981ED3C2CA5CE0A000ACCB7 /* AskQuestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AskQuestionView.swift; sourceTree = "<group>"; };
@@ -93,30 +78,33 @@
 		A9DC15472CA24B3B00858D21 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		C11C28D12CAB382E00C0AA01 /* News */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = News; sourceTree = "<group>"; };
-/* End PBXFileSystemSynchronizedRootGroup section */
-
 /* Begin PBXFrameworksBuildPhase section */
 		A900EBDF2C954AED001E5311 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A9DC153F2CA248F100858D21 /* FirebaseMessaging in Frameworks */,
-				A9DC153D2CA248CA00858D21 /* FirebaseMessaging in Frameworks */,
-				A915355F2CA0F29400DA3289 /* FirebaseAuth in Frameworks */,
-				A91535622CA0F2A300DA3289 /* GoogleSignIn in Frameworks */,
+				4941B3152CAB1C24000CA717 /* FirebaseMessaging in Frameworks */,
+				4941B3172CAB1C27000CA717 /* FirebaseAuth in Frameworks */,
+				4941B3102CAB1B7F000CA717 /* GoogleSignIn in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4941B3132CAB1C24000CA717 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		A900EBD92C954AED001E5311 = {
 			isa = PBXGroup;
 			children = (
 				A900EBE42C954AED001E5311 /* BufeTec */,
 				A900EBE32C954AED001E5311 /* Products */,
+				4941B3132CAB1C24000CA717 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -131,7 +119,6 @@
 		A900EBE42C954AED001E5311 /* BufeTec */ = {
 			isa = PBXGroup;
 			children = (
-				A97036E42CACA21200A4ACCC /* ViewModel */,
 				A9DC15402CA24A9600858D21 /* BufeTec.entitlements */,
 				A9DC15472CA24B3B00858D21 /* GoogleService-Info.plist */,
 				A91535702CA0F45A00DA3289 /* Info.plist */,
@@ -179,8 +166,6 @@
 			children = (
 				A9571A242CA507E6000EFFC1 /* ClientRegisterView.swift */,
 				A9571A262CA511E5000EFFC1 /* CasesView.swift */,
-				A90B08D42CACBDE800D16F8F /* CaseDetailView.swift */,
-				A91E73F02CACCE35009C331C /* NewCaseView.swift */,
 			);
 			path = Customers;
 			sourceTree = "<group>";
@@ -193,7 +178,6 @@
 				A9571A2C2CA533CE000EFFC1 /* APIdata.swift */,
 				A9571A322CA53956000EFFC1 /* UserData.swift */,
 				A981ED382CA5CDCF000ACCB7 /* Message.swift */,
-				A97036E22CACA20500A4ACCC /* Case.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -201,7 +185,6 @@
 		A96E5C4A2C954CA40056B657 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				C11C28D12CAB382E00C0AA01 /* News */,
 				A9571A232CA507D3000EFFC1 /* Customers */,
 				A96E5C642C954E550056B657 /* General */,
 				A96E5C612C954E260056B657 /* Bufetec */,
@@ -216,7 +199,6 @@
 			isa = PBXGroup;
 			children = (
 				A96E5C4C2C954CDB0056B657 /* ForumView.swift */,
-				A9571A2E2CA53458000EFFC1 /* AddPostView.swift */,
 				A981ED3A2CA5CDE9000ACCB7 /* MessageDetailView.swift */,
 				A981ED3C2CA5CE0A000ACCB7 /* AskQuestionView.swift */,
 			);
@@ -247,8 +229,6 @@
 			isa = PBXGroup;
 			children = (
 				A96E5C5A2C954DD20056B657 /* ClientsView.swift */,
-				A91E73EC2CACCAC2009C331C /* LawyerDetailView.swift */,
-				A91E73EE2CACCADE009C331C /* BecarioDetailView.swift */,
 			);
 			path = Bufetec;
 			sourceTree = "<group>";
@@ -261,14 +241,6 @@
 				A96E5C662C954EBA0056B657 /* ExploreView.swift */,
 			);
 			path = General;
-			sourceTree = "<group>";
-		};
-		A97036E42CACA21200A4ACCC /* ViewModel */ = {
-			isa = PBXGroup;
-			children = (
-				A97036E52CACA22300A4ACCC /* CasesViewModel.swift */,
-			);
-			path = ViewModel;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -286,10 +258,12 @@
 			);
 			dependencies = (
 			);
-			fileSystemSynchronizedGroups = (
-				C11C28D12CAB382E00C0AA01 /* News */,
-			);
 			name = BufeTec;
+			packageProductDependencies = (
+				4941B30F2CAB1B7F000CA717 /* GoogleSignIn */,
+				4941B3142CAB1C24000CA717 /* FirebaseMessaging */,
+				4941B3162CAB1C27000CA717 /* FirebaseAuth */,
+			);
 			productName = BufeTec;
 			productReference = A900EBE22C954AED001E5311 /* BufeTec.app */;
 			productType = "com.apple.product-type.application";
@@ -319,8 +293,8 @@
 			);
 			mainGroup = A900EBD92C954AED001E5311;
 			packageReferences = (
-				A915355D2CA0F29400DA3289 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
-				A91535602CA0F2A300DA3289 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+				4941B3092CAB1B6F000CA717 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				4941B30E2CAB1B7F000CA717 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 			);
 			productRefGroup = A900EBE32C954AED001E5311 /* Products */;
 			projectDirPath = "";
@@ -350,7 +324,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A97036E62CACA22300A4ACCC /* CasesViewModel.swift in Sources */,
 				A96E5C552C954DA70056B657 /* ClientLoginView.swift in Sources */,
 				A9AEED642C9A147D00DE3FA4 /* CbMessageModel.swift in Sources */,
 				A9571A272CA511E5000EFFC1 /* CasesView.swift in Sources */,
@@ -359,26 +332,20 @@
 				A9947D882CA21D76001F8D24 /* Authentication.swift in Sources */,
 				A96E5C592C954DC60056B657 /* ProfileView.swift in Sources */,
 				A900EBE82C954AED001E5311 /* ContentView.swift in Sources */,
-				A91E73EF2CACCADE009C331C /* BecarioDetailView.swift in Sources */,
 				A9571A252CA507E6000EFFC1 /* ClientRegisterView.swift in Sources */,
 				A981ED392CA5CDCF000ACCB7 /* Message.swift in Sources */,
 				A981ED3B2CA5CDE9000ACCB7 /* MessageDetailView.swift in Sources */,
-				A97036E32CACA20500A4ACCC /* Case.swift in Sources */,
 				A96E5C512C954D380056B657 /* NewClientCbView.swift in Sources */,
 				A96E5C572C954DB30056B657 /* InternalLoginView.swift in Sources */,
 				A96E5C532C954D4A0056B657 /* InternalCbView.swift in Sources */,
 				A9571A2D2CA533CE000EFFC1 /* APIdata.swift in Sources */,
 				A91535662CA0F2CE00DA3289 /* GoogleSignInBtn.swift in Sources */,
-				A91E73F12CACCE35009C331C /* NewCaseView.swift in Sources */,
-				A90B08D52CACBDE800D16F8F /* CaseDetailView.swift in Sources */,
-				A91E73ED2CACCAC2009C331C /* LawyerDetailView.swift in Sources */,
 				A9571A292CA533A9000EFFC1 /* Data.swift in Sources */,
 				A96E5C4D2C954CDB0056B657 /* ForumView.swift in Sources */,
 				A981ED3D2CA5CE0A000ACCB7 /* AskQuestionView.swift in Sources */,
 				A900EBE62C954AED001E5311 /* BufeTecApp.swift in Sources */,
 				A96E5C6B2C9550340056B657 /* GenCbView.swift in Sources */,
 				A9947D8C2CA22018001F8D24 /* HomeView.swift in Sources */,
-				A9571A2F2CA53458000EFFC1 /* AddPostView.swift in Sources */,
 				A96E5C672C954EBA0056B657 /* ExploreView.swift in Sources */,
 				A96E5C692C954EE60056B657 /* GeneralLoginView.swift in Sources */,
 				A91535692CA0F3ED00DA3289 /* AppDelegate.swift in Sources */,
@@ -594,17 +561,17 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		A915355D2CA0F29400DA3289 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+		4941B3092CAB1B6F000CA717 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 11.2.0;
+				minimumVersion = 11.3.0;
 			};
 		};
-		A91535602CA0F2A300DA3289 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+		4941B30E2CAB1B7F000CA717 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS.git";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 8.0.0;
@@ -613,25 +580,20 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		A915355E2CA0F29400DA3289 /* FirebaseAuth */ = {
+		4941B30F2CAB1B7F000CA717 /* GoogleSignIn */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = A915355D2CA0F29400DA3289 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAuth;
-		};
-		A91535612CA0F2A300DA3289 /* GoogleSignIn */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = A91535602CA0F2A300DA3289 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			package = 4941B30E2CAB1B7F000CA717 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
 			productName = GoogleSignIn;
 		};
-		A9DC153C2CA248CA00858D21 /* FirebaseMessaging */ = {
+		4941B3142CAB1C24000CA717 /* FirebaseMessaging */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = A915355D2CA0F29400DA3289 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			package = 4941B3092CAB1B6F000CA717 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseMessaging;
 		};
-		A9DC153E2CA248F100858D21 /* FirebaseMessaging */ = {
+		4941B3162CAB1C27000CA717 /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = A915355D2CA0F29400DA3289 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseMessaging;
+			package = 4941B3092CAB1B6F000CA717 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

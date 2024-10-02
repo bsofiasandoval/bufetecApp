@@ -15,7 +15,6 @@ struct NewClientCbView: View {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var authState: AuthState
     @State private var shouldNavigateToRegister = false
-    @State private var isLoggedOut: Bool = true  // Add this line
     
     var body: some View {
         VStack(spacing: 0) {
@@ -63,7 +62,7 @@ struct NewClientCbView: View {
         .navigationTitle("BufeBot")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                NavigationLink(destination: ClientRegisterView(isLoggedOut: $isLoggedOut).environmentObject(authState)) {
+                NavigationLink(destination: ClientRegisterView()) {
                     Text("Continuar")
                         .foregroundColor(.blue)
                 }
@@ -75,13 +74,13 @@ struct NewClientCbView: View {
     private func sendMessage() {
         guard !chat.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
         
-        let newMessage = CbMessageModel(text: chat, isFromCurrentUser: true, citations: nil)
+        let newMessage = CbMessageModel(text: chat, isFromCurrentUser: true)
         messages.append(newMessage)
         chat = ""
         
         // Simulate a response from BufeBot
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            let botResponse = CbMessageModel(text: "Thanks for your message! This is a simulated response.", isFromCurrentUser: false, citations: nil)
+            let botResponse = CbMessageModel(text: "Thanks for your message! This is a simulated response.", isFromCurrentUser: false)
             messages.append(botResponse)
         }
     }

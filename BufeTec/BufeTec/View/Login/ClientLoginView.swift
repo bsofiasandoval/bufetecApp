@@ -34,7 +34,7 @@ struct ClientLoginView: View {
     @State private var errorMessage: LoginErrorMessage? = nil
     @State private var isCodeSent: Bool = false
     @State private var isLoading: Bool = false
-    @Binding var isLoggedOut: Bool
+    @State private var shouldNavigateToCases: Bool = false
     @EnvironmentObject var authState: AuthState
     @Environment(\.presentationMode) var presentationMode
     
@@ -46,7 +46,6 @@ struct ClientLoginView: View {
     private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "kovomie.BufeTecApp", category: "ClientLoginView")
     
     init(isLoggedOut: Binding<Bool>) {
-        self._isLoggedOut = isLoggedOut
         self._selectedCountry = State(initialValue: Country(name: "Mexico", code: "+52", flag: "🇲🇽"))
     }
     
@@ -94,6 +93,11 @@ struct ClientLoginView: View {
                     Image(systemName: "chevron.left")
                         .foregroundColor(.white)
                 }
+            }
+        }
+        .fullScreenCover(isPresented: $shouldNavigateToCases) {
+            NavigationView {
+                CasesView()
             }
         }
     }
@@ -187,21 +191,17 @@ struct ClientLoginView: View {
         
         // After successful login:
         Auth.auth().signIn(with: credential) { authResult, error in
-            DispatchQueue.main.async {
-                self.isLoading = false
-                
-                if let error = error {
-                    print("Error during login: \(error.localizedDescription)")
-                    self.errorMessage = LoginErrorMessage(message: error.localizedDescription)
-                    return
-                }
-                
-                if let user = authResult?.user {
-                    self.authState.isLoggedIn = true
-                    self.authState.user = user
-                    self.authState.setUserRole(.client)
-                    self.isLoggedOut = false
-                    self.presentationMode.wrappedValue.dismiss()
+            if let error = error {
+                print("Error during login: \(error.localizedDescription)")
+                return
+            }
+            
+            if let user = authResult?.user {
+                // Update the authState when login succeeds
+                DispatchQueue.main.async {
+                    authState.isLoggedIn = true     // This updates the global auth state
+                    authState.user = user
+                    self.shouldNavigateToCases = true
                 }
             }
         }
@@ -285,5 +285,4 @@ struct CustomCountryPicker: View {
 
 #Preview {
     ClientLoginView(isLoggedOut: .constant(true))
-        .environmentObject(AuthState())
 }

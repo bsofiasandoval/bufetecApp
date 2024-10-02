@@ -7,15 +7,8 @@
 
 import Foundation
 
-struct CbMessageModel: Identifiable, Equatable {
+struct CbMessageModel: Hashable, Identifiable{
     let id = UUID()
     let text: String
     let isFromCurrentUser: Bool
-    let citations: [Citation]?
-}
-
-struct Citation: Identifiable, Equatable {
-    let id = UUID()
-    let fileName: String
-    let url: String
 }

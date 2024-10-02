@@ -28,57 +28,19 @@ struct BufeTecApp: App {
 
 
 
-enum UserRole {
-    case client
-    case internalUser
-}
-
 class AuthState: ObservableObject {
     @Published var isLoggedIn: Bool
     @Published var user: User?
-    @Published var userRole: UserRole?
     
     init() {
         self.isLoggedIn = Auth.auth().currentUser != nil
         self.user = Auth.auth().currentUser
-        self.userRole = nil
         
         Auth.auth().addStateDidChangeListener { [weak self] (auth, user) in
             DispatchQueue.main.async {
                 self?.isLoggedIn = user != nil
                 self?.user = user
-                self?.userRole = self?.getUserRole(user)
             }
         }
     }
-    
-    private func getUserRole(_ user: User?) -> UserRole? {
-        if(user == nil) {
-            return nil
-        }
-        else if(user?.email?.contains("itesm.mx") == true) {
-            return .internalUser
-        }
-        else{
-            return .client
-        }
-    }
-
-    func setUserRole(_ type: UserRole) {
-        DispatchQueue.main.async {
-            self.userRole = type
-        }
-    }
-    
-    func logout() {
-        do {
-            try Auth.auth().signOut()
-            self.isLoggedIn = false
-            self.user = nil
-            self.userRole = nil
-        } catch {
-            print("Error signing out: \(error.localizedDescription)")
-        }
-    }
 }
-

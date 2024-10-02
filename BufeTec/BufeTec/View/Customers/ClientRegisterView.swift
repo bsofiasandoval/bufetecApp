@@ -15,10 +15,9 @@ struct ClientRegisterView: View {
     @State private var correo: String = ""
     @State private var tramite: String = "Caso Legal"
     @State private var folio: String = ""
+    @State private var shouldNavigateToCases = false
     @Environment(\.presentationMode) var presentationMode
     @State private var isLoading = false
-    @Binding var isLoggedOut: Bool
-    @State private var shouldNavigateToCases = false
     @State private var showError = false
     @State private var errorMessage = ""
     @State private var showVerificationSheet = false
@@ -27,130 +26,84 @@ struct ClientRegisterView: View {
     private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "kovomie.BufeTec", category: "ClientRegisterView")
     
     var body: some View {
-        ZStack {
-            LinearGradient(gradient: Gradient(colors: [Color.gradientStart, Color.gradientEnd]),
-                        startPoint: .top,
-                        endPoint: .bottom)
-                        .edgesIgnoringSafeArea(.all)
-            ScrollView {
-                VStack(spacing:20){
-                    Text("Crear Cuenta")
-                        .font(.largeTitle)
-                        .foregroundColor(.white)
-                        .fontWeight(.bold)
-                        .padding(.top,30)
-
-                    VStack(spacing: 15) {
-                        HStack {
-                            Image(systemName: "person.fill")
-                                .foregroundColor(.textFieldText)
-                            TextField("Nombre", text: $nombre)
-                                .foregroundColor(.textFieldText)
-                        }
-                        .padding()
-                        .background(Color.textFieldBackground)
-                        .cornerRadius(8)
-                        
-                        HStack {
-                            Image(systemName: "phone.fill")
-                                .foregroundColor(.textFieldText)
-                            TextField("+52XXXXXXXX", text: $telefono)
-                                .keyboardType(.phonePad)
-                                .foregroundColor(.textFieldText)
-                        }
-                        .padding()
-                        .background(Color.textFieldBackground)
-                        .cornerRadius(8)
-                        
-                        HStack {
-                            Image(systemName: "envelope.fill")
-                                .foregroundColor(.textFieldText)
-                            TextField("Correo Electrónico", text: $correo)
-                                .keyboardType(.emailAddress)
-                                .autocapitalization(.none)
-                                .disableAutocorrection(true)
-                                .foregroundColor(.textFieldText)
-                        }
-                        .padding()
-                        .background(Color.textFieldBackground)
-                        .cornerRadius(8)
-                    }
-                    .padding()
-                    .background(Color.background)
-                    .cornerRadius(10)
-                    .shadow(radius: 5)
-                
-                    
-                    VStack(alignment: .leading, spacing:10) {
-                        Text("Detalles del Caso")
-                            .font(.headline)
-                            .foregroundColor(Color.text)
-
-                        HStack {
-                            Text("Tramite")
-                                .foregroundColor(Color.textFieldText)
-                            
-                            Spacer()
-                            TextField("Trámite", text: $tramite)
-                                .disabled(true)
-                        }
-                        
-                        HStack {
-                            Text("ID del Caso")
-                            Spacer()
-                            Text(folio.isEmpty ? "No asignado" : folio)
-                                .foregroundColor(.textFieldText)
-                        }
-                    }
-                    .padding()
-                    .background(Color.background)
-                    .cornerRadius(10)
-                    .shadow(radius: 5)
-
-                    Button("Guardar y Continuar"){
-                        startPhoneVerification()
-                    }
-                    .disabled(isLoading)
-                    .fontWeight(.bold)
-                    .foregroundColor(.buttonText)
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.buttonBackground)
-                    .cornerRadius(10)
+        Form {
+            Section(header: Text("Información del Cliente")) {
+                HStack {
+                    Text("Nombre")
+                    TextField("Nombre", text: $nombre)
                 }
-                .padding()
+                
+                HStack {
+                    Text("# Teléfono")
+                    TextField("+52XXXXXXXX", text: $telefono)
+                        .keyboardType(.phonePad)
+                }
+                
+                HStack {
+                    Text("Correo Electrónico")
+                    TextField("Correo Electrónico", text: $correo)
+                        .keyboardType(.emailAddress)
+                        .autocapitalization(.none)
+                        .disableAutocorrection(true)
+                }
             }
-            .navigationTitle("Crear Cuenta")
-            .sheet(isPresented: $showVerificationSheet) {
-                PhoneVerificationView(
-                    phoneNumber: telefono,
-                    shouldNavigateToCases: $shouldNavigateToCases,
-                    onVerificationComplete: { uid in
-                        registerClient(uid: uid)
-                        showVerificationSheet = false
-                    },
-                    isLoggedOut: $isLoggedOut
-                )
+            
+            Section(header: Text("Detalles del Caso")) {
+                HStack {
+                    Text("Tramite")
+                    TextField("Trámite", text: $tramite)
+                        .disabled(true)
+                }
+                
+                HStack {
+                    Text("ID del Caso")
+                    TextField("Folio", text: $folio)
+                        .disabled(true)
+                }
             }
-            .onChange(of: showVerificationSheet) { newValue in
-                logger.info("showVerificationSheet changed to: \(newValue)")
-            }
-            .navigate(to: CasesView(clientId: Auth.auth().currentUser!.uid).environmentObject(authState), when: $shouldNavigateToCases)
         }
-        
+        .navigationTitle("Crear Cuenta")
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button("Guardar") {
+                    // Initiate phone verification and registration process
+                    startPhoneVerification()
+                }
+                .disabled(isLoading)
+            }
+        }
+        .sheet(isPresented: $showVerificationSheet) {
+            PhoneVerificationView(phoneNumber: telefono, shouldNavigateToCases: $shouldNavigateToCases, onVerificationComplete: registerClient)
+                
+        }
+        .onChange(of: showVerificationSheet) { newValue in
+            logger.info("showVerificationSheet changed to: \(newValue)")
+        }
+        .fullScreenCover(isPresented: $shouldNavigateToCases) {
+            NavigationView {
+                CasesView()
+                    .environmentObject(authState)
+            }
+        }
+    }
+    
+    // Function to start phone verification
+    private func startPhoneVerification() {
+        // Initiate phone verification process
+        showVerificationSheet = true
     }
     
     // Function to register client with Firebase UID
     private func registerClient(uid: String) {
         isLoading = true
-     
+        logger.info("Starting client registration with Firebase UID: \(uid)")
         
         // Prepare the client data
-        var clientData: [String: Any] = [
+        let clientData: [String: Any] = [
             "_id": uid,  // Firebase UID as MongoDB _id
             "nombre": nombre,
             "numero_telefonico": telefono,
-            "correo": "",
+            "correo": correo,
             "tramite": tramite,
             "expediente": "",
             "juzgado": "",
@@ -160,12 +113,6 @@ struct ClientRegisterView: View {
             "ultimaVezInf": Date().ISO8601Format(),
             "rol": "cliente"
         ]
-        
-    // Only add email if not empty
-        if !correo.isEmpty {
-            clientData["correo"] = correo
-        }
-
         
         guard let url = URL(string: "http://10.14.255.51:4000/clientes") else {
             logger.error("Invalid URL")
@@ -210,6 +157,7 @@ struct ClientRegisterView: View {
                     }
                     
                     logger.info("API call successful, showing verification sheet")
+                    self.showVerificationSheet = true
                 } else {
                     if let data = data, let responseString = String(data: data, encoding: .utf8) {
                         logger.error("Server error. Status: \(httpResponse.statusCode), Body: \(responseString)")
@@ -229,40 +177,6 @@ struct ClientRegisterView: View {
         showError = true
         isLoading = false
     }
-    
-    // Phone Number Validation
-    func isValidPhoneNumber(_ phone: String) -> Bool {
-        let phoneRegex = "^[+]?[0-9]{10,14}$"
-        return NSPredicate(format: "SELF MATCHES %@", phoneRegex).evaluate(with: phone)
-    }
-    func isValidEmailAddress(_ email: String) -> Bool {
-        let emailRegex = "^$|^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
-        return NSPredicate(format: "SELF MATCHES %@", emailRegex).evaluate(with: email)
-    }
-    
-    private func startPhoneVerification() {
-        guard canProceedWithRegistration() else { return }
-        showVerificationSheet = true
-    }
-    
-    func canProceedWithRegistration() -> Bool {
-        if nombre.isEmpty || telefono.isEmpty {
-            showError(message: "Please fill all required fields.")
-            return false
-        }
-        
-        if !isValidPhoneNumber(telefono) {
-            showError(message: "Please provide a valid phone number.")
-            return false
-        }
-        if !correo.isEmpty && !isValidEmailAddress(correo) {
-                   showError(message: "Please provide a valid email address or leave it empty.")
-                   return false
-               }
-        
-        return true
-    }
-
 }
 
 
@@ -274,61 +188,32 @@ struct PhoneVerificationView: View {
     @State private var isLoading = false
     @State private var showError = false
     @State private var errorMessage = ""
-    @Binding var isLoggedOut: Bool
     @Environment(\.presentationMode) var presentationMode
-    @EnvironmentObject var authState : AuthState
     
     
     private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "kovomie.BufeTecApp", category: "PhoneVerificationView")
     
     var body: some View {
-        ZStack {
-            LinearGradient(gradient: Gradient(colors: [Color.gradientStart, Color.gradientEnd]),
-                           startPoint: .top, endPoint: .bottom)
-                            .edgesIgnoringSafeArea(.all)
-            VStack(spacing: 30) {
-                Image(systemName: "lock.shield")
-                    .font(.system(size: 60))
-                    .foregroundColor(.text)
-                
-                Text("Verifica tu número telefónico")
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .foregroundColor(.text)
-                
-                Text("Ingresa el código de verificación que se envió a \(phoneNumber)")
-                    .multilineTextAlignment(.center)
-                    .foregroundColor(.textFieldText)
-                    .padding(.horizontal)
-                
-                TextField("Código de verificación", text: $verificationCode)
-                    .keyboardType(.numberPad)
-                    .font(.title2)
-                    .multilineTextAlignment(.center)
-                    .padding()
-                    .background(Color.textFieldBackground)
-                    .cornerRadius(10)
-                    .foregroundColor(.textFieldText)
-
-                Button("Verify") {
-                    verifyPhoneNumber()
-                }
-                .disabled(isLoading || verificationCode.count != 6)
-                .opacity((isLoading || verificationCode.count != 6) ? 0.5 : 1)
-                .shadow(radius: 5)
-                
-                if isLoading {
-                    ProgressView()
-                    .progressViewStyle(CircularProgressViewStyle(tint: .text))
-                    .scaleEffect(1.5)
-                }
+        VStack(spacing: 20) {
+            Text("Verifica tu número telefonico")
+                .font(.title)
+            
+            Text("Ingresa el código de verificación que se envío a \(phoneNumber)")
+            
+            TextField("Verification Code", text: $verificationCode)
+                .keyboardType(.numberPad)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+            
+            Button("Verify") {
+                verifyPhoneNumber()
             }
-            .padding()
-            .background(Color.background)
-            .cornerRadius(20)
-            .shadow(radius: 10)
-            .padding()
+            .disabled(isLoading)
+            
+            if isLoading {
+                ProgressView()
+            }
         }
+        .padding()
         .alert(isPresented: $showError) {
             Alert(title: Text("Error"), message: Text(errorMessage), dismissButton: .default(Text("OK")))
         }
@@ -368,13 +253,10 @@ struct PhoneVerificationView: View {
                     }
                     
                     logger.info("Authentication successful")
-                    if let user = authResult?.user {
-                        self.authState.isLoggedIn = true
-                        self.authState.user = user
-                        self.authState.setUserRole(.client)
-                        self.isLoggedOut = false
-                        self.presentationMode.wrappedValue.dismiss()
+                    if let uid = authResult?.user.uid {
+                        onVerificationComplete(uid)
                     }
+                    presentationMode.wrappedValue.dismiss()
                 }
             }
         }
@@ -388,23 +270,7 @@ struct PhoneVerificationView: View {
 
 
 #Preview {
-    ClientRegisterView(isLoggedOut: .constant(false))
+    ClientRegisterView()
         .environmentObject(AuthState())
 }
 
-
-extension View {
-    func navigate<NewView: View>(to view: NewView, when binding: Binding<Bool>) -> some View {
-        ZStack {
-            self
-            NavigationLink(
-                destination: view
-                    .navigationBarTitle("")
-                    .navigationBarHidden(true),
-                isActive: binding
-            ) {
-                EmptyView()
-            }
-        }
-    }
-}

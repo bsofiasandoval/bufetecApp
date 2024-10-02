@@ -9,7 +9,6 @@ import SwiftUI
 
 struct GeneralLoginView: View {
     @EnvironmentObject var authState: AuthState  // Use global authState
-    @State private var isLoggedOut: Bool = true  // Add this line
     
     var body: some View {
         ZStack {
@@ -45,7 +44,7 @@ struct GeneralLoginView: View {
                             .cornerRadius(10)
                     }
                     
-                    NavigationLink(destination: ClientLoginView(isLoggedOut: $isLoggedOut).environmentObject(authState)) {
+                    NavigationLink(destination: ClientLoginView(isLoggedOut: .constant(!authState.isLoggedIn)).environmentObject(authState)) {
                         Text("Consultar Caso Existente")
                             .frame(minWidth: 200)
                             .fontWeight(.medium)
