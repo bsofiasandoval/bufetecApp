@@ -24,7 +24,6 @@
 		A9571A272CA511E5000EFFC1 /* CasesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9571A262CA511E5000EFFC1 /* CasesView.swift */; };
 		A9571A292CA533A9000EFFC1 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9571A282CA533A9000EFFC1 /* Data.swift */; };
 		A9571A2D2CA533CE000EFFC1 /* APIdata.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9571A2C2CA533CE000EFFC1 /* APIdata.swift */; };
-		A9571A2F2CA53458000EFFC1 /* AddPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9571A2E2CA53458000EFFC1 /* AddPostView.swift */; };
 		A9571A332CA53956000EFFC1 /* UserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9571A322CA53956000EFFC1 /* UserData.swift */; };
 		A96E5C4D2C954CDB0056B657 /* ForumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96E5C4C2C954CDB0056B657 /* ForumView.swift */; };
 		A96E5C512C954D380056B657 /* NewClientCbView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96E5C502C954D380056B657 /* NewClientCbView.swift */; };
@@ -68,7 +67,6 @@
 		A9571A262CA511E5000EFFC1 /* CasesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CasesView.swift; sourceTree = "<group>"; };
 		A9571A282CA533A9000EFFC1 /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
 		A9571A2C2CA533CE000EFFC1 /* APIdata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIdata.swift; sourceTree = "<group>"; };
-		A9571A2E2CA53458000EFFC1 /* AddPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPostView.swift; sourceTree = "<group>"; };
 		A9571A322CA53956000EFFC1 /* UserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserData.swift; sourceTree = "<group>"; };
 		A96E5C4C2C954CDB0056B657 /* ForumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForumView.swift; sourceTree = "<group>"; };
 		A96E5C502C954D380056B657 /* NewClientCbView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NewClientCbView.swift; path = BufeTec/View/Chatbot/NewClientCbView.swift; sourceTree = SOURCE_ROOT; };
@@ -216,7 +214,6 @@
 			isa = PBXGroup;
 			children = (
 				A96E5C4C2C954CDB0056B657 /* ForumView.swift */,
-				A9571A2E2CA53458000EFFC1 /* AddPostView.swift */,
 				A981ED3A2CA5CDE9000ACCB7 /* MessageDetailView.swift */,
 				A981ED3C2CA5CE0A000ACCB7 /* AskQuestionView.swift */,
 			);
@@ -378,7 +375,6 @@
 				A900EBE62C954AED001E5311 /* BufeTecApp.swift in Sources */,
 				A96E5C6B2C9550340056B657 /* GenCbView.swift in Sources */,
 				A9947D8C2CA22018001F8D24 /* HomeView.swift in Sources */,
-				A9571A2F2CA53458000EFFC1 /* AddPostView.swift in Sources */,
 				A96E5C672C954EBA0056B657 /* ExploreView.swift in Sources */,
 				A96E5C692C954EE60056B657 /* GeneralLoginView.swift in Sources */,
 				A91535692CA0F3ED00DA3289 /* AppDelegate.swift in Sources */,
