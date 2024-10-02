@@ -1,44 +1,73 @@
-import SwiftUI
+//
+//  AddPostView.swift
+//  ForumTest
+//
+//  Created by Ximena Tobias on 23/09/24.
+//
 
-struct AskQuestionView: View {
-    @State private var title: String = ""
-    @State private var question: String = ""
-    
-    @Environment(\.colorScheme) var colorScheme
+import SwiftUI
+import FirebaseAuth
+import GoogleSignIn
+import Firebase
+
+
+struct AddPostView: View {
+    @EnvironmentObject var authState: AuthState
+    @Environment(\.presentationMode) var presentationMode
+    @State private var titulo: String = ""
+    @State private var contenido: String = ""
+    @State private var autorID: String = "" // Declare autorID without initialization
     
     var body: some View {
-        VStack {
-            Spacer()
+        NavigationView {
             Form {
-                HStack {
-                    Text("Título")
-                    Spacer()
-                    TextField("Título de tu pregunta", text: $title)
-                        .multilineTextAlignment(.leading)
-                        .padding(.leading, 30)
+                Section(header: Text("Título")) {
+                    TextField("Título", text: $titulo)
                 }
-                
-                HStack(alignment: .top) {
-                    Text("Pregunta")
-                    Spacer()
-                    
-                    TextEditor(text: $question)
-                        .frame(minHeight: 200)
-                        .multilineTextAlignment(.leading)
+                Section(header: Text("Contenido")) {
+                    TextField("Contenido", text: $contenido)
+                }
+            }
+            .navigationTitle("Nuevo Post")
+            .navigationBarItems(
+                leading: Button("Cancelar") {
+                    presentationMode.wrappedValue.dismiss()
+                },
+                trailing: Button("Guardar") {
+                    savePost()
+                }
+            )
+            .onAppear {
+                // Automatically get the current user's ID (autorID)
+                if let user = Auth.auth().currentUser {
+                    self.autorID = user.uid
+                } else {
+                    print("No user is signed in")
                 }
             }
         }
-        .background(colorScheme == .dark ? Color(.systemBackground) : Color(.systemGray6))
-        .navigationTitle("Nuevo Hilo")
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button("Publicar") {
-                    // Add your action here when the "Publicar" button is pressed
-                    print("Pregunta publicada: \(title) - \(question)")
-                }
-            }
-        }
-        .toolbarBackground(colorScheme == .dark ? .clear : .white, for: .navigationBar)
-        .toolbarBackground(.visible, for: .navigationBar)
     }
+
+    private func savePost() {
+        // Make sure autorID is set before attempting to save the post
+        guard !autorID.isEmpty else {
+            print("Author ID is missing")
+            return
+        }
+        
+        // Send the post data with autorID automatically included
+        NetworkManager.shared.createNewPost(titulo: titulo, contenido: contenido, autorID: autorID) { result in
+            switch result {
+            case .success(let message):
+                print(message)
+                presentationMode.wrappedValue.dismiss()
+            case .failure(let error):
+                print("Error creating post: \(error.localizedDescription)")
+            }
+        }
+    }
+}
+
+#Preview {
+    AddPostView()
 }
