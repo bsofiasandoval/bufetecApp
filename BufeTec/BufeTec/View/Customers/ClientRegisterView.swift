@@ -13,7 +13,7 @@ struct ClientRegisterView: View {
     @State private var nombre: String = ""
     @State private var telefono: String = ""
     @State private var correo: String = ""
-    @State private var tramite: String = "Caso Legal"
+    @Binding var tramite: String
     @State private var folio: String = ""
     @Environment(\.presentationMode) var presentationMode
     @State private var isLoading = false
@@ -388,7 +388,7 @@ struct PhoneVerificationView: View {
 
 
 #Preview {
-    ClientRegisterView(isLoggedOut: .constant(false))
+    ClientRegisterView(tramite: .constant("Caso Civil"), isLoggedOut: .constant(false))
         .environmentObject(AuthState())
 }
 

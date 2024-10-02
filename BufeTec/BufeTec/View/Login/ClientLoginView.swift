@@ -284,6 +284,5 @@ struct CustomCountryPicker: View {
 
 
 #Preview {
-    ClientLoginView(isLoggedOut: .constant(true))
-        .environmentObject(AuthState())
+    ClientLoginView(isLoggedOut: .constant(true)).environmentObject(AuthState())
 }
