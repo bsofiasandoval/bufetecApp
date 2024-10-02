@@ -18,10 +18,10 @@ struct Case: Identifiable, Codable {
     let documentos: [Documento]
     let actualizaciones: [Actualizacion]
     let descripcion: String
-    let notas: String?
+    let notas: String
 
     enum CodingKeys: String, CodingKey {
-        case id 
+        case id
         case tipo_de_caso
         case cliente_id
         case abogados_becarios_id

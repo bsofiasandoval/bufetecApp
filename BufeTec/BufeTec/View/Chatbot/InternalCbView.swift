@@ -333,20 +333,16 @@ struct CitationBox: View {
         }) {
             HStack {
                 Image(systemName: "link")
-                    .foregroundColor(.blue)
+                    .foregroundColor(.white)
                 Text(citation.fileName)
-                    .foregroundColor(.blue)
+                    .foregroundColor(.white)
                 Spacer()
                 Image(systemName: "arrow.up.right.square")
-                    .foregroundColor(.blue)
+                    .foregroundColor(.white)
             }
             .padding()
-            .background(Color.red)
+            .background(Color.blue)
             .cornerRadius(10)
-            .overlay(
-                RoundedRectangle(cornerRadius: 10)
-                    .stroke(Color.red, lineWidth: 1)
-            )
         }
         .buttonStyle(PlainButtonStyle())
     }

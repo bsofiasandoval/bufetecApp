@@ -11,11 +11,15 @@
 		A900EBE82C954AED001E5311 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A900EBE72C954AED001E5311 /* ContentView.swift */; };
 		A900EBEA2C954AEF001E5311 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A900EBE92C954AEF001E5311 /* Assets.xcassets */; };
 		A900EBED2C954AEF001E5311 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A900EBEC2C954AEF001E5311 /* Preview Assets.xcassets */; };
+		A90B08D52CACBDE800D16F8F /* CaseDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90B08D42CACBDE800D16F8F /* CaseDetailView.swift */; };
 		A915355F2CA0F29400DA3289 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = A915355E2CA0F29400DA3289 /* FirebaseAuth */; };
 		A91535622CA0F2A300DA3289 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = A91535612CA0F2A300DA3289 /* GoogleSignIn */; };
 		A91535662CA0F2CE00DA3289 /* GoogleSignInBtn.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91535652CA0F2CE00DA3289 /* GoogleSignInBtn.swift */; };
 		A91535692CA0F3ED00DA3289 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91535682CA0F3ED00DA3289 /* AppDelegate.swift */; };
 		A915356B2CA0F40900DA3289 /* ViewExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = A915356A2CA0F40900DA3289 /* ViewExt.swift */; };
+		A91E73ED2CACCAC2009C331C /* LawyerDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91E73EC2CACCAC2009C331C /* LawyerDetailView.swift */; };
+		A91E73EF2CACCADE009C331C /* BecarioDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91E73EE2CACCADE009C331C /* BecarioDetailView.swift */; };
+		A91E73F12CACCE35009C331C /* NewCaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91E73F02CACCE35009C331C /* NewCaseView.swift */; };
 		A9571A252CA507E6000EFFC1 /* ClientRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9571A242CA507E6000EFFC1 /* ClientRegisterView.swift */; };
 		A9571A272CA511E5000EFFC1 /* CasesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9571A262CA511E5000EFFC1 /* CasesView.swift */; };
 		A9571A292CA533A9000EFFC1 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9571A282CA533A9000EFFC1 /* Data.swift */; };
@@ -52,10 +56,14 @@
 		A900EBE72C954AED001E5311 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		A900EBE92C954AEF001E5311 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A900EBEC2C954AEF001E5311 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		A90B08D42CACBDE800D16F8F /* CaseDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaseDetailView.swift; sourceTree = "<group>"; };
 		A91535652CA0F2CE00DA3289 /* GoogleSignInBtn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleSignInBtn.swift; sourceTree = "<group>"; };
 		A91535682CA0F3ED00DA3289 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A915356A2CA0F40900DA3289 /* ViewExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExt.swift; sourceTree = "<group>"; };
 		A91535702CA0F45A00DA3289 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		A91E73EC2CACCAC2009C331C /* LawyerDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LawyerDetailView.swift; sourceTree = "<group>"; };
+		A91E73EE2CACCADE009C331C /* BecarioDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BecarioDetailView.swift; sourceTree = "<group>"; };
+		A91E73F02CACCE35009C331C /* NewCaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewCaseView.swift; sourceTree = "<group>"; };
 		A9571A242CA507E6000EFFC1 /* ClientRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientRegisterView.swift; sourceTree = "<group>"; };
 		A9571A262CA511E5000EFFC1 /* CasesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CasesView.swift; sourceTree = "<group>"; };
 		A9571A282CA533A9000EFFC1 /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
@@ -171,6 +179,8 @@
 			children = (
 				A9571A242CA507E6000EFFC1 /* ClientRegisterView.swift */,
 				A9571A262CA511E5000EFFC1 /* CasesView.swift */,
+				A90B08D42CACBDE800D16F8F /* CaseDetailView.swift */,
+				A91E73F02CACCE35009C331C /* NewCaseView.swift */,
 			);
 			path = Customers;
 			sourceTree = "<group>";
@@ -237,6 +247,8 @@
 			isa = PBXGroup;
 			children = (
 				A96E5C5A2C954DD20056B657 /* ClientsView.swift */,
+				A91E73EC2CACCAC2009C331C /* LawyerDetailView.swift */,
+				A91E73EE2CACCADE009C331C /* BecarioDetailView.swift */,
 			);
 			path = Bufetec;
 			sourceTree = "<group>";
@@ -347,6 +359,7 @@
 				A9947D882CA21D76001F8D24 /* Authentication.swift in Sources */,
 				A96E5C592C954DC60056B657 /* ProfileView.swift in Sources */,
 				A900EBE82C954AED001E5311 /* ContentView.swift in Sources */,
+				A91E73EF2CACCADE009C331C /* BecarioDetailView.swift in Sources */,
 				A9571A252CA507E6000EFFC1 /* ClientRegisterView.swift in Sources */,
 				A981ED392CA5CDCF000ACCB7 /* Message.swift in Sources */,
 				A981ED3B2CA5CDE9000ACCB7 /* MessageDetailView.swift in Sources */,
@@ -356,6 +369,9 @@
 				A96E5C532C954D4A0056B657 /* InternalCbView.swift in Sources */,
 				A9571A2D2CA533CE000EFFC1 /* APIdata.swift in Sources */,
 				A91535662CA0F2CE00DA3289 /* GoogleSignInBtn.swift in Sources */,
+				A91E73F12CACCE35009C331C /* NewCaseView.swift in Sources */,
+				A90B08D52CACBDE800D16F8F /* CaseDetailView.swift in Sources */,
+				A91E73ED2CACCAC2009C331C /* LawyerDetailView.swift in Sources */,
 				A9571A292CA533A9000EFFC1 /* Data.swift in Sources */,
 				A96E5C4D2C954CDB0056B657 /* ForumView.swift in Sources */,
 				A981ED3D2CA5CE0A000ACCB7 /* AskQuestionView.swift in Sources */,

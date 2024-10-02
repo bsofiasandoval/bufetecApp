@@ -9,53 +9,69 @@ import SwiftUI
 
 class CasesViewModel: ObservableObject {
     @Published var cases: [Case] = []
+    @Published var isLoading = false
     @Published var errorMessage: String?
-
+    
     func fetchCases(for clientId: String) {
+        isLoading = true
+        errorMessage = nil
+        
         guard let url = URL(string: "http://10.14.255.51:4000/casos_legales/cliente/\(clientId)") else {
-            self.errorMessage = "Invalid URL"
+            DispatchQueue.main.async {
+                self.isLoading = false
+                self.errorMessage = "Invalid URL"
+            }
             return
         }
         
         print("Fetching cases for client ID: \(clientId)")
+        let startTime = Date()
         
-        URLSession.shared.dataTask(with: url) { data, response, error in
+        URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
             DispatchQueue.main.async {
+                self?.isLoading = false
+                let endTime = Date()
+                let timeElapsed = endTime.timeIntervalSince(startTime)
+                print("Network request took \(timeElapsed) seconds")
+                
                 if let error = error {
-                    self.errorMessage = "Error fetching cases: \(error.localizedDescription)"
+                    self?.errorMessage = "Network error: \(error.localizedDescription)"
                     return
                 }
                 
                 guard let data = data else {
-                    self.errorMessage = "No data received"
+                    self?.errorMessage = "No data received"
                     return
                 }
                 
-                print("Received data: \(String(data: data, encoding: .utf8) ?? "")")
-                
                 do {
                     let decodedCases = try JSONDecoder().decode([Case].self, from: data)
-                    print("Decoded \(decodedCases.count) cases")
-                    self.cases = decodedCases
-                    print("Updated cases: \(self.cases)")
+                    self?.cases = decodedCases
+                    print("Fetched and decoded \(decodedCases.count) cases")
                 } catch {
+                    self?.errorMessage = "Decoding error: \(error.localizedDescription)"
+                    print("JSON decoding error: \(error)")
                     if let decodingError = error as? DecodingError {
                         switch decodingError {
-                        case .dataCorrupted(let context):
-                            self.errorMessage = "Data corrupted: \(context.debugDescription)"
                         case .keyNotFound(let key, let context):
-                            self.errorMessage = "Key '\(key.stringValue)' not found: \(context.debugDescription)"
+                            print("Key '\(key.stringValue)' not found:", context.debugDescription)
+                            print("codingPath:", context.codingPath)
+                        case .valueNotFound(let value, let context):
+                            print("Value '\(value)' not found:", context.debugDescription)
+                            print("codingPath:", context.codingPath)
                         case .typeMismatch(let type, let context):
-                            self.errorMessage = "Type '\(type)' mismatch: \(context.debugDescription)"
-                        case .valueNotFound(let type, let context):
-                            self.errorMessage = "Value of type '\(type)' not found: \(context.debugDescription)"
+                            print("Type '\(type)' mismatch:", context.debugDescription)
+                            print("codingPath:", context.codingPath)
+                        case .dataCorrupted(let context):
+                            print("Data corrupted:", context.debugDescription)
+                            print("codingPath:", context.codingPath)
                         @unknown default:
-                            self.errorMessage = "Unknown decoding error"
+                            print("Unknown decoding error")
                         }
-                    } else {
-                        self.errorMessage = "Error decoding cases: \(error.localizedDescription)"
                     }
-                    print("Error decoding cases: \(error)")
+                    if let dataString = String(data: data, encoding: .utf8) {
+                        print("Received data: \(dataString)")
+                    }
                 }
             }
         }.resume()
