@@ -312,41 +312,51 @@ struct MessageBubble: View {
                 }
             }
 
-            // Display citations if available
-            if let citations = message.citations, !citations.isEmpty {
-                ForEach(citations) { citation in
+            // Display unique citations
+            if let citations = message.citations {
+                let uniqueCitations = removeDuplicateCitations(citations)
+                ForEach(uniqueCitations) { citation in
                     CitationBox(citation: citation)
                 }
             }
         }
     }
 
+    // Function to remove duplicate citations based on fileName
+    private func removeDuplicateCitations(_ citations: [Citation]) -> [Citation] {
+        var seen = Set<String>()
+        return citations.filter { citation in
+            guard !seen.contains(citation.fileName) else {
+                return false
+            }
+            seen.insert(citation.fileName)
+            return true
+        }
+    }
+
     // Function to process the message text and apply bold and bullet formatting
     func formatMessageText(_ text: String) -> Text {
         var finalText = Text("")
-        let lines = text.components(separatedBy: "\n") // Split by new lines
+        let lines = text.components(separatedBy: "\n")
 
         for line in lines {
             if line.contains("**") {
-                // Bold text parsing
                 let boldParts = line.components(separatedBy: "**")
                 for (index, part) in boldParts.enumerated() {
-                    if index % 2 == 1 { // Bold part
+                    if index % 2 == 1 {
                         finalText = finalText + Text(part).bold()
-                    } else { // Normal part
+                    } else {
                         finalText = finalText + Text(part)
                     }
                 }
             } else if line.starts(with: "- ") {
-                // Bullet point parsing
                 let bulletText = line.replacingOccurrences(of: "- ", with: "• ")
                 finalText = finalText + Text(bulletText)
             } else {
-                // Normal text
                 finalText = finalText + Text(line)
             }
 
-            finalText = finalText + Text("\n") // Add new line
+            finalText = finalText + Text("\n")
         }
 
         return finalText
@@ -372,7 +382,7 @@ struct CitationBox: View {
                     .foregroundColor(.white)
             }
             .padding()
-            .background(Color.blue)
+            .background(Color.green)
             .cornerRadius(10)
         }
         .buttonStyle(PlainButtonStyle())
