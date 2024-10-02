@@ -78,7 +78,7 @@ struct ProfileView: View {
                 title: Text("Logout"),
                 message: Text("Are you sure you want to logout?"),
                 primaryButton: .destructive(Text("Logout")) {
-                    logout()
+                    authState.logout()
                 },
                 secondaryButton: .cancel()
             )
@@ -98,18 +98,5 @@ struct ProfileView: View {
         .padding()
         .background(Color(UIColor.secondarySystemBackground))
         .cornerRadius(10)
-    }
-    
-    private func logout() {
-        do {
-            try Auth.auth().signOut()
-            DispatchQueue.main.async {
-                authState.isLoggedIn = false  // Ensure this is called
-                authState.user = nil  // Clear user data
-                presentationMode.wrappedValue.dismiss()  // Dismiss ProfileView
-            }
-        } catch {
-            print("Error signing out: \(error.localizedDescription)")
-        }
     }
 }

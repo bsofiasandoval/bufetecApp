@@ -98,7 +98,7 @@ struct InternalCbView: View {
         guard !trimmedChat.isEmpty else { return }
         
         // Append user's message locally
-        let userMessage = CbMessageModel( text: trimmedChat, isFromCurrentUser: true)
+        let userMessage = CbMessageModel(text: trimmedChat, isFromCurrentUser: true, citations: nil)
         DispatchQueue.main.async {
             self.messages.append(userMessage)
         }
@@ -106,7 +106,6 @@ struct InternalCbView: View {
         // Clear the input field
         DispatchQueue.main.async {
             self.chat = ""
-           
         }
         
         // Create message via API
@@ -191,7 +190,6 @@ struct InternalCbView: View {
         
         // Polling to check run status
         var runCompleted = (runStatus == "completed")
-        var lastMessage: String?
         var pollCount = 0
         let maxPollAttempts = 30 // Adjust as needed (e.g., max 60 seconds if polling every 2 seconds)
         
@@ -242,39 +240,44 @@ struct InternalCbView: View {
         }
         
         // Retrieve the last message from the API
-        let getLastMessageURL = "\(baseURL)/get-last-message?thread_id=\(threadId)"
+        let getLastMessageURL = "\(baseURL)/retrieve-message?thread_id=\(threadId)"
         
         guard let lastMessageURL = URL(string: getLastMessageURL) else {
-            print("Invalid URL for getting last message")
-            return
-        }
+              print("Invalid URL for getting last message")
+              return
+          }
         
         do {
             let (data, response) = try await URLSession.shared.data(from: lastMessageURL)
             
             guard let httpResponse = response as? HTTPURLResponse else {
-                print("Invalid response when getting last message")
-                return
-            }
+                        print("Invalid response when getting last message")
+                        return
+                    }
             
             if httpResponse.statusCode != 200 {
-                if let errorResponse = try? JSONDecoder().decode([String: String].self, from: data),
-                   let errorMessage = errorResponse["error"] {
-                    print("Error getting last message: \(errorMessage)")
-                } else {
-                    print("Unknown error getting last message.")
-                }
-                return
-            }
-            
-            let lastMessageResponse = try JSONDecoder().decode([String: String].self, from: data)
-            guard let assistantMessage = lastMessageResponse["last_message"] else {
+                        if let errorResponse = try? JSONDecoder().decode([String: String].self, from: data),
+                           let errorMessage = errorResponse["error"] {
+                            print("Error getting last message: \(errorMessage)")
+                        } else {
+                            print("Unknown error getting last message.")
+                        }
+                        return
+                    }
+
+            let lastMessageResponse = try JSONDecoder().decode(LastMessageResponse.self, from: data)
+                    
+            guard let assistantMessage = lastMessageResponse.message else {
                 print("Assistant message not found.")
                 return
             }
             
+            // Map citations to Citation structs
+            let citations = lastMessageResponse.citations?.map { Citation(fileName: $0.value.file_name, url: $0.value.url) }
+            
             // Append assistant's message to the UI
-            let botMessage = CbMessageModel( text: assistantMessage, isFromCurrentUser: false)
+            let botMessage = CbMessageModel(text: assistantMessage, isFromCurrentUser: false, citations: citations)
+            
             DispatchQueue.main.async {
                 self.messages.append(botMessage)
             }
@@ -288,25 +291,101 @@ struct InternalCbView: View {
 struct MessageBubble: View {
     let message: CbMessageModel
     @Environment(\.colorScheme) var colorScheme
-    
+
     var body: some View {
-        HStack {
-            if message.isFromCurrentUser {
-                Spacer()
-                Text(message.text)
-                    .padding(12)
-                    .background(Color.userMessageBackground)
-                    .foregroundColor(Color.userMessageText)
-                    .clipShape(BubbleShape(isFromCurrentUser: true))
-            } else {
-                Text(message.text)
-                    .padding(12)
-                    .background(Color.botMessageBackground)
-                    .foregroundColor(Color.botMessageText)
-                    .clipShape(BubbleShape(isFromCurrentUser: false))
-                Spacer()
+        VStack(alignment: message.isFromCurrentUser ? .trailing : .leading, spacing: 8) {
+            HStack {
+                if message.isFromCurrentUser {
+                    Spacer()
+                    formatMessageText(message.text)
+                        .padding(12)
+                        .background(Color.userMessageBackground)
+                        .foregroundColor(Color.userMessageText)
+                        .clipShape(BubbleShape(isFromCurrentUser: true))
+                } else {
+                    formatMessageText(message.text)
+                        .padding(12)
+                        .background(Color.botMessageBackground)
+                        .foregroundColor(Color.botMessageText)
+                        .clipShape(BubbleShape(isFromCurrentUser: false))
+                    Spacer()
+                }
+            }
+
+            // Display unique citations
+            if let citations = message.citations {
+                let uniqueCitations = removeDuplicateCitations(citations)
+                ForEach(uniqueCitations) { citation in
+                    CitationBox(citation: citation)
+                }
             }
         }
+    }
+
+    // Function to remove duplicate citations based on fileName
+    private func removeDuplicateCitations(_ citations: [Citation]) -> [Citation] {
+        var seen = Set<String>()
+        return citations.filter { citation in
+            guard !seen.contains(citation.fileName) else {
+                return false
+            }
+            seen.insert(citation.fileName)
+            return true
+        }
+    }
+
+    // Function to process the message text and apply bold and bullet formatting
+    func formatMessageText(_ text: String) -> Text {
+        var finalText = Text("")
+        let lines = text.components(separatedBy: "\n")
+
+        for line in lines {
+            if line.contains("**") {
+                let boldParts = line.components(separatedBy: "**")
+                for (index, part) in boldParts.enumerated() {
+                    if index % 2 == 1 {
+                        finalText = finalText + Text(part).bold()
+                    } else {
+                        finalText = finalText + Text(part)
+                    }
+                }
+            } else if line.starts(with: "- ") {
+                let bulletText = line.replacingOccurrences(of: "- ", with: "• ")
+                finalText = finalText + Text(bulletText)
+            } else {
+                finalText = finalText + Text(line)
+            }
+
+            finalText = finalText + Text("\n")
+        }
+
+        return finalText
+    }
+}
+
+struct CitationBox: View {
+    let citation: Citation
+
+    var body: some View {
+        Button(action: {
+            if let url = URL(string: citation.url) {
+                UIApplication.shared.open(url)
+            }
+        }) {
+            HStack {
+                Image(systemName: "link")
+                    .foregroundColor(.white)
+                Text(citation.fileName)
+                    .foregroundColor(.white)
+                Spacer()
+                Image(systemName: "arrow.up.right.square")
+                    .foregroundColor(.white)
+            }
+            .padding()
+            .background(Color.green)
+            .cornerRadius(10)
+        }
+        .buttonStyle(PlainButtonStyle())
     }
 }
 
@@ -320,6 +399,8 @@ struct BubbleShape: Shape {
         return Path(path.cgPath)
     }
 }
+
+
 
 struct ThreadResponse: Codable {
     let thread: String
@@ -335,7 +416,18 @@ struct RunResponse: Codable {
     let run: RunData
 }
 
+struct LastMessageResponse: Codable {
+    let message: String?
+    let citations: [String: CitationResponse]?
+
+    struct CitationResponse: Codable {
+        let file_name: String
+        let url: String
+    }
+}
+
+
+
 #Preview {
     InternalCbView()
 }
-

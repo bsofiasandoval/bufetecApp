@@ -10,7 +10,6 @@ import Foundation
 class NetworkManager {
     static let shared = NetworkManager()
     private let baseURL = "http://127.0.0.1:5000"
-    
 
     private init() {}
 
@@ -98,67 +97,7 @@ class NetworkManager {
             completion(.success("Post eliminado"))
         }.resume()
     }
-    
-    //Method to get the data of the author of a post
-    func fetchUserBecarioById(_ id: String, completion: @escaping (Result<UserInformationElement, Error>) -> Void) {
-        let urlString = "http://10.14.255.51:4000/becarios/\(id)"
-        //let urlString = "http://127.0.0.1:5000/becarios/\(id)"
-        guard let url = URL(string: urlString) else {
-            print("Invalid URL")
-            return
-        }
 
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-
-            guard let data = data else {
-                print("No data received")
-                return
-            }
-
-            do {
-                let decoder = JSONDecoder()
-                let user = try decoder.decode(UserInformationElement.self, from: data)
-                completion(.success(user))
-            } catch {
-                completion(.failure(error))
-            }
-        }.resume()
-    }
-    
-    //Method to fetch abogados by id
-    func fetchUserAbogadoById(_ id: String, completion: @escaping (Result<UserInformationElement, Error>) -> Void) {
-        let urlString = "http://10.14.255.51:4000/abogados/\(id)"
-        //let urlString = "http://127.0.0.1:5000/abogados/\(id)"
-        guard let url = URL(string: urlString) else {
-            print("Invalid URL")
-            return
-        }
-
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-
-            guard let data = data else {
-                print("No data received")
-                return
-            }
-
-            do {
-                let decoder = JSONDecoder()
-                let user = try decoder.decode(UserInformationElement.self, from: data)
-                completion(.success(user))
-            } catch {
-                completion(.failure(error))
-            }
-        }.resume()
-    }
-        
     // Method to add a response to a post
     func addResponse(postID: String, contenido: String, autorID: String, completion: @escaping (Result<String, Error>) -> Void) {
         guard let url = URL(string: "\(baseURL)/posts/\(postID)/responses") else { return }
@@ -196,6 +135,5 @@ class NetworkManager {
         } catch {
             completion(.failure(error))
         }
-        
     }
 }

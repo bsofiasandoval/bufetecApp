@@ -14,6 +14,7 @@ struct InternalLoginView: View {
     @State private var err: String = ""
     @Environment(\.dismiss) var dismiss
     @Environment(\.presentationMode) var presentationMode
+    @EnvironmentObject var authState: AuthState
     
     var body: some View {
         VStack {
@@ -58,12 +59,18 @@ struct InternalLoginView: View {
                                     let name = user.displayName ?? "No Name"
                                     
                                     // Determine role based on email
-                                    if isStudent(email: email) {
-                                        // Student logic
-                                        pushStudentToMongoDB(uid: uid, email: email, name: name)
-                                    } else if isLawyer(email: email) {
-                                        // Lawyer logic
-                                        pushLawyerToMongoDB(uid: uid, email: email, name: name)
+                                    if (isStudent(email: email) || isLawyer(email: email)) {
+                                        if isStudent(email: email) {
+                                            pushStudentToMongoDB(uid: uid, email: email, name: name)
+                                        } else if isLawyer(email: email) {
+                                            pushLawyerToMongoDB(uid: uid, email: email, name: name)
+                                        }
+                                        DispatchQueue.main.async {
+                                           self.authState.isLoggedIn = true
+                                           self.authState.user = user
+                                           self.authState.setUserRole(.internalUser)
+                                           self.dismiss()
+                                        }
                                     } else {
                                         print("Email format not recognized")
                                     }
