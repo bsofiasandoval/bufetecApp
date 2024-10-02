@@ -421,4 +421,3 @@ struct LastMessageResponse: Codable {
 #Preview {
     InternalCbView()
 }
-
