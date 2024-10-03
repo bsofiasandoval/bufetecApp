@@ -16,7 +16,6 @@ struct ForumView: View {
     @State private var selectedPost: WelcomeElement?
 
     var body: some View {
-        NavigationView {
             ZStack {
                 // Main content
                 VStack {
@@ -121,7 +120,7 @@ struct ForumView: View {
                     }
                 }
             }
-        }
+        
         .onAppear {
             apiData.fetchPosts() // Fetch posts when the view appears
         }
