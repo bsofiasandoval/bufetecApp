@@ -6,17 +6,21 @@
 //
 
 import SwiftUI
+import FirebaseAuth
 
 struct MessageDetailView: View {
+    @EnvironmentObject var authState: AuthState
     var post: WelcomeElement
     @State private var replyTitle: String = ""
     @State private var replyMessage: String = ""
-
+    @State private var isAbogado: Bool = false
+    @State private var isPresented = false
+    @State private var respuestas: [Respuesta] = []
     var body: some View {
         VStack {
             Spacer()
            
-            ScrollView {
+            //you can obtain the postid with post.id
                 VStack(alignment: .leading, spacing: 10) {
                     Text(post.titulo)
                         .font(.headline)
@@ -34,41 +38,97 @@ struct MessageDetailView: View {
                 .background(Color.white)
                 .cornerRadius(15)
                 .padding(.horizontal)
+            
+            HStack {
+                VStack(alignment: .leading, spacing: 40 ){
+                    Text("Respuestas")
+                        .font(.headline)
+                        .padding(.leading, 30)
+                        .foregroundColor(.secondary)
+                }
+                Spacer()
+            }
+            //Respuestas de la publicacion (hay que iterar sobre cada respuesta)
+            ScrollView {
+                ForEach(respuestas, id: \.respuestaID) { respuesta in
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text(respuesta.contenido)
+                            .font(.subheadline)
+                        
+                        // Aquí se llama a la función formatTime que ahora devuelve el día y el mes
+                        Text(formatTime(respuesta.fechaCreacion))
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Color.white)
+                    .cornerRadius(15)
+                    .padding(.horizontal)
+                }
             }
             
-            Spacer()
-            
-            /*Form {
-                HStack {
-                    Text("Título")
-                    Spacer()
-                    TextField("Título de tu respuesta", text: $replyTitle)
-                        .multilineTextAlignment(.leading)
-                        .padding(.leading, 40)
-                }
-                
-                HStack(alignment: .top) {
-                    Text("Respuesta")
-                    Spacer()
-                    
-                    TextEditor(text: $replyMessage)
-                        .frame(minHeight: 200)
-                        .multilineTextAlignment(.leading)
-                }
-            }*/
         }
         .background(Color(.systemGray6))
-        .navigationTitle("Responder a ")
+        .onAppear {
+                    fetchUserData(userId: Auth.auth().currentUser?.uid ?? "")
+                    fetchResponses()
+                }
+        .navigationTitle(
+            // Conditional navigation title based on the user role
+            post.autorID == Auth.auth().currentUser?.uid || isAbogado
+                ? "Responder mensaje"
+                : "Detalles del mensaje"
+        )
         .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button("Responder") {
-                    // Handle publish action here
-                    print("Respuesta publicada: \(replyMessage)")
+            // Conditionally show "Responder" button if user is the post's author or a lawyer
+            if post.autorID == Auth.auth().currentUser?.uid || isAbogado {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Responder") {
+                        isPresented = true
+                    }
                 }
             }
+        }
+        .sheet(isPresented: $isPresented) {
+                    RespondMessage(isPresented: $isPresented, post: post, onPostSave: {
+                        fetchResponses()
+                        print("Post saved")
+                    })
+                }
+        .onAppear{
+            fetchResponses()
         }
         .toolbarBackground(.white, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
+    }
+    
+    private func fetchResponses() {
+            NetworkManager.shared.fetchResponses(for: post.id) { result in
+                switch result {
+                case .success(let fetchedRespuestas):
+                    DispatchQueue.main.async {
+                        self.respuestas = fetchedRespuestas // Actualiza el array de respuestas
+                    }
+                case .failure(let error):
+                    print("Error al obtener respuestas: \(error.localizedDescription)")
+                }
+            }
+        }
+    
+    private func fetchUserData(userId: String) {
+        // Try to fetch as a lawyer first
+        NetworkManager.shared.fetchUserAbogadoById(userId) { result in
+            switch result {
+            case .success:
+                DispatchQueue.main.async {
+                    isAbogado = true // Set to true if the user is a lawyer
+                }
+            case .failure:
+                // If it fails as a lawyer, try as an intern
+                isAbogado = false
+            }
+        }
     }
 }
 
@@ -86,23 +146,27 @@ func formatTime(_ dateString: String) -> String {
         let day = dayFormatter.string(from: date)
         
         let monthFormatter = DateFormatter()
-        monthFormatter.dateFormat = "MMMM" // Nombre del mes completo
-        monthFormatter.locale = Locale(identifier: "es_ES") // Establece el locale a español
+        monthFormatter.dateFormat = "MMM" // Nombre del mes completo
+        monthFormatter.locale = Locale(identifier: "es_ES")
         let month = monthFormatter.string(from: date)
 
+        // Formateador para el año
+        let yearFormatter = DateFormatter()
+        yearFormatter.dateFormat = "yyyy" // Año
+        let year = yearFormatter.string(from: date)
+        
         let timeFormatter = DateFormatter()
         timeFormatter.dateFormat = "h:mm a" // Hora en formato 12 horas
         timeFormatter.timeZone = TimeZone(identifier: "America/Mexico_City") // CST (UTC-6)
         
         let formattedTime = timeFormatter.string(from: date)
-        return "Enviado el \(day) de \(month) a las \(formattedTime)"
+        return "Enviado \(month) \(day) , \(year) a las \(formattedTime)"
     } else {
         print("Error: No se pudo analizar la cadena de fecha: \(dateString)") // Mensaje de depuración
     }
     
     return dateString // Devuelve la cadena original si falla el análisis
 }
-
 
 
 struct MessageDetailView_Previews: PreviewProvider {
