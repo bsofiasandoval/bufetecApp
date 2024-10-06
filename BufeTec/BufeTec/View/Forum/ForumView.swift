@@ -8,6 +8,7 @@
 // Claudia
 
 import SwiftUI
+import FirebaseAuth
 
 struct ForumView: View {
     @EnvironmentObject var authState: AuthState
@@ -35,7 +36,7 @@ struct ForumView: View {
                                     Circle()
                                         .fill(Color.blue.opacity(0.5))
                                         .frame(width: 40, height: 40)
-
+                                    
                                     Image(systemName: "person.fill")
                                         .resizable()
                                         .scaledToFit()
@@ -43,7 +44,7 @@ struct ForumView: View {
                                         .foregroundColor(.blue)
                                 }
                                 .padding(.top, 8)
-
+                                
                                 VStack(alignment: .leading, spacing: 5) {
                                     HStack {
                                         Text(apiData.userNames[post.autorID] ?? "Cargando...") // Load the username
@@ -52,7 +53,7 @@ struct ForumView: View {
                                             .lineLimit(1)
                                             .foregroundColor(.black)
                                         Spacer()
-
+                                        
                                         HStack(spacing: 5) {
                                             Text(formatTime(post.fechaCreacion))
                                                 .font(.caption)
@@ -61,11 +62,11 @@ struct ForumView: View {
                                                 .font(.system(size: 12))
                                         }
                                     }
-
+                                    
                                     Text(post.titulo)
                                         .font(.subheadline)
                                         .foregroundColor(.black)
-
+                                    
                                     Text(post.contenido)
                                         .font(.subheadline)
                                         .lineLimit(2)
@@ -99,7 +100,7 @@ struct ForumView: View {
                 .toolbarBackground(.visible, for: .navigationBar)
             }
             .background(Color(.white))
-
+            
             // Floating button
             VStack {
                 Spacer()
@@ -112,7 +113,7 @@ struct ForumView: View {
                             Circle()
                                 .fill(Color.blue)
                                 .frame(width: 60, height: 60)
-
+                            
                             Image(systemName: "message")
                                 .font(.system(size: 24))
                                 .foregroundColor(.white)
@@ -126,10 +127,12 @@ struct ForumView: View {
             apiData.fetchPosts() // Fetch posts when the view appears
         }
         .sheet(isPresented: $showingAskQuestionView) {
-            AskQuestionView(isPresented: $showingAskQuestionView) // Pasa el binding
+            AskQuestionView(isPresented: $showingAskQuestionView, onPostSave: {
+                // Reload posts after a new post is saved
+                apiData.fetchPosts()
+            })
             .environmentObject(authState)}
     }
-
     class APIData: ObservableObject {
         @Published var posts: [WelcomeElement] = []
         @Published var userNames: [String: String] = [:] // Store user names

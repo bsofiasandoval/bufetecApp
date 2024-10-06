@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		497EB0CC2CB2469F0033376B /* RespondMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 497EB0CB2CB246860033376B /* RespondMessage.swift */; };
 		A900EBE62C954AED001E5311 /* BufeTecApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A900EBE52C954AED001E5311 /* BufeTecApp.swift */; };
 		A900EBE82C954AED001E5311 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A900EBE72C954AED001E5311 /* ContentView.swift */; };
 		A900EBEA2C954AEF001E5311 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A900EBE92C954AEF001E5311 /* Assets.xcassets */; };
@@ -50,6 +51,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		497EB0CB2CB246860033376B /* RespondMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RespondMessage.swift; sourceTree = "<group>"; };
 		A900EBE22C954AED001E5311 /* BufeTec.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BufeTec.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A900EBE52C954AED001E5311 /* BufeTecApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BufeTecApp.swift; sourceTree = "<group>"; };
 		A900EBE72C954AED001E5311 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -213,6 +215,7 @@
 		A96E5C5E2C954DF60056B657 /* Forum */ = {
 			isa = PBXGroup;
 			children = (
+				497EB0CB2CB246860033376B /* RespondMessage.swift */,
 				A96E5C4C2C954CDB0056B657 /* ForumView.swift */,
 				A981ED3A2CA5CDE9000ACCB7 /* MessageDetailView.swift */,
 				A981ED3C2CA5CE0A000ACCB7 /* AskQuestionView.swift */,
@@ -355,6 +358,7 @@
 				A96E5C5B2C954DD20056B657 /* ClientsView.swift in Sources */,
 				A9947D882CA21D76001F8D24 /* Authentication.swift in Sources */,
 				A96E5C592C954DC60056B657 /* ProfileView.swift in Sources */,
+				497EB0CC2CB2469F0033376B /* RespondMessage.swift in Sources */,
 				A900EBE82C954AED001E5311 /* ContentView.swift in Sources */,
 				A91E73EF2CACCADE009C331C /* BecarioDetailView.swift in Sources */,
 				A9571A252CA507E6000EFFC1 /* ClientRegisterView.swift in Sources */,

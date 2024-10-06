@@ -17,6 +17,9 @@ struct AskQuestionView: View {
     
     // Binding para cerrar la hoja
     @Binding var isPresented: Bool
+    // Add a completion handler to notify the parent view
+    var onPostSave: () -> Void
+
     
     var body: some View {
         NavigationView {
@@ -70,6 +73,7 @@ struct AskQuestionView: View {
             switch result {
             case .success(let message):
                 print(message)
+                onPostSave()
                 isPresented = false // Cierra la hoja después de publicar
             case .failure(let error):
                 print("Error creating post: \(error.localizedDescription)")

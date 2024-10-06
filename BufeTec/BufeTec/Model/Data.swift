@@ -55,12 +55,13 @@ struct WelcomeElement: Codable {
 struct Respuesta: Codable {
     let autorID: String
     let comentarios: [JSONAny]
-    let contenido, fechaCreacion: String
+    let contenido, fechaCreacion, respuestaID: String
 
     enum CodingKeys: String, CodingKey {
         case autorID = "autor_id"
         case comentarios, contenido
         case fechaCreacion = "fecha_creacion"
+        case respuestaID = "respuesta_id"
     }
 }
 

@@ -10,7 +10,7 @@ import Foundation
 class NetworkManager {
     static let shared = NetworkManager()
     private let baseURL = "http://10.14.255.51:4000"
-    
+    //private let baseURL = "http://127.0.0.1:5000"
 
     private init() {}
 
@@ -168,7 +168,6 @@ class NetworkManager {
 
         
         
-        
         let response = [
             "contenido": contenido,
             "autor_id": autorID
@@ -198,4 +197,29 @@ class NetworkManager {
         }
         
     }
+    
+    func fetchResponses(for postID: String, completion: @escaping (Result<[Respuesta], Error>) -> Void) {
+            // Aquí va tu lógica para obtener las respuestas de la base de datos usando el postID
+            guard let url = URL(string: "\(baseURL)/posts/\(postID)/responses") else { return }
+            
+            URLSession.shared.dataTask(with: url) { data, response, error in
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+                
+                guard let data = data else {
+                    let error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "No data received"])
+                    completion(.failure(error))
+                    return
+                }
+                
+                do {
+                    let respuestas = try JSONDecoder().decode([Respuesta].self, from: data)
+                    completion(.success(respuestas))
+                } catch {
+                    completion(.failure(error))
+                }
+            }.resume()
+        }
 }
