@@ -78,8 +78,3 @@ struct AskQuestionView: View {
     }
 }
 
-struct AskQuestionView_Previews: PreviewProvider {
-    static var previews: some View {
-        AskQuestionView(isPresented: .constant(true))
-    }
-}
