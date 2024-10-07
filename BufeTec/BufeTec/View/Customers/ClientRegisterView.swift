@@ -27,100 +27,67 @@ struct ClientRegisterView: View {
     private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "kovomie.BufeTec", category: "ClientRegisterView")
     
     var body: some View {
-        ZStack {
-            LinearGradient(gradient: Gradient(colors: [Color.gradientStart, Color.gradientEnd]),
-                        startPoint: .top,
-                        endPoint: .bottom)
-                        .edgesIgnoringSafeArea(.all)
-            ScrollView {
-                VStack(spacing:20){
-                    Text("Crear Cuenta")
-                        .font(.largeTitle)
-                        .foregroundColor(.white)
-                        .fontWeight(.bold)
-                        .padding(.top,30)
-
-                    VStack(spacing: 15) {
-                        HStack {
-                            Image(systemName: "person.fill")
-                                .foregroundColor(.textFieldText)
-                            TextField("Nombre", text: $nombre)
-                                .foregroundColor(.textFieldText)
-                        }
-                        .padding()
-                        .background(Color.textFieldBackground)
-                        .cornerRadius(8)
-                        
-                        HStack {
-                            Image(systemName: "phone.fill")
-                                .foregroundColor(.textFieldText)
-                            TextField("+52XXXXXXXX", text: $telefono)
-                                .keyboardType(.phonePad)
-                                .foregroundColor(.textFieldText)
-                        }
-                        .padding()
-                        .background(Color.textFieldBackground)
-                        .cornerRadius(8)
-                        
-                        HStack {
-                            Image(systemName: "envelope.fill")
-                                .foregroundColor(.textFieldText)
-                            TextField("Correo Electrónico", text: $correo)
-                                .keyboardType(.emailAddress)
-                                .autocapitalization(.none)
-                                .disableAutocorrection(true)
-                                .foregroundColor(.textFieldText)
-                        }
-                        .padding()
-                        .background(Color.textFieldBackground)
-                        .cornerRadius(8)
+  
+            Form {
+                Section("Información Personal"){
+                    HStack {
+                        Image(systemName: "person.fill")
+                            .foregroundColor(.textFieldText)
+                        TextField("Nombre", text: $nombre)
+                            .foregroundColor(.textFieldText)
                     }
-                    .padding()
-                    .background(Color.background)
-                    .cornerRadius(10)
-                    .shadow(radius: 5)
-                
+                   
                     
-                    VStack(alignment: .leading, spacing:10) {
-                        Text("Detalles del Caso")
-                            .font(.headline)
-                            .foregroundColor(Color.text)
-
-                        HStack {
-                            Text("Tramite")
-                                .foregroundColor(Color.textFieldText)
-                            
-                            Spacer()
-                            TextField("Trámite", text: $tramite)
-                                .disabled(true)
-                        }
-                        
-                        HStack {
-                            Text("ID del Caso")
-                            Spacer()
-                            Text(folio.isEmpty ? "No asignado" : folio)
-                                .foregroundColor(.textFieldText)
-                        }
+                    HStack {
+                        Image(systemName: "phone.fill")
+                            .foregroundColor(.textFieldText)
+                        TextField("+52XXXXXXXX", text: $telefono)
+                            .keyboardType(.phonePad)
+                            .foregroundColor(.textFieldText)
                     }
-                    .padding()
-                    .background(Color.background)
-                    .cornerRadius(10)
-                    .shadow(radius: 5)
-
-                    Button("Guardar y Continuar"){
-                        startPhoneVerification()
+                    
+                    
+                    HStack {
+                        Image(systemName: "envelope.fill")
+                            .foregroundColor(.textFieldText)
+                        TextField("Correo Electrónico", text: $correo)
+                            .keyboardType(.emailAddress)
+                            .autocapitalization(.none)
+                            .disableAutocorrection(true)
+                            .foregroundColor(.textFieldText)
                     }
-                    .disabled(isLoading)
-                    .fontWeight(.bold)
-                    .foregroundColor(.buttonText)
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.buttonBackground)
-                    .cornerRadius(10)
+        
                 }
-                .padding()
+
+            
+                
+                Section("Detalles del caso") {
+                    HStack {
+                        Text("Tramite")
+                        Spacer()
+                        Text(tramite)
+                    }
+                    
+                    HStack {
+                        Text("ID del Caso")
+                        Spacer()
+                        Text(folio.isEmpty ? "No asignado" : folio)
+
+                    }
+                }
+
+
+
+                
             }
             .navigationTitle("Crear Cuenta")
+            .toolbar{
+                ToolbarItem{
+                    Button("Continuar"){
+                        startPhoneVerification()
+                    }
+                }
+            }
             .sheet(isPresented: $showVerificationSheet) {
                 PhoneVerificationView(
                     phoneNumber: telefono,
@@ -132,11 +99,19 @@ struct ClientRegisterView: View {
                     isLoggedOut: $isLoggedOut
                 )
             }
-            .onChange(of: showVerificationSheet) { newValue in
-                logger.info("showVerificationSheet changed to: \(newValue)")
+            .onChange(of: shouldNavigateToCases) { newValue in
+                logger.info("shouldNavigateToCases changed to: \(newValue)")
+                
+                guard let currentUser = Auth.auth().currentUser else {
+                    showError(message: "No authenticated user found")
+                    return
+                }
+                
+                if newValue {
+                    navigate(to: CasesView(clientId: currentUser.uid).environmentObject(authState), when: $shouldNavigateToCases)
+                }
             }
-            .navigate(to: CasesView(clientId: Auth.auth().currentUser!.uid).environmentObject(authState), when: $shouldNavigateToCases)
-        }
+            .navigate(to: CasesView(clientId: Auth.auth().currentUser?.uid ?? ""), when: $shouldNavigateToCases)
         
     }
     
@@ -282,53 +257,48 @@ struct PhoneVerificationView: View {
     private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "kovomie.BufeTecApp", category: "PhoneVerificationView")
     
     var body: some View {
-        ZStack {
-            LinearGradient(gradient: Gradient(colors: [Color.gradientStart, Color.gradientEnd]),
-                           startPoint: .top, endPoint: .bottom)
-                            .edgesIgnoringSafeArea(.all)
-            VStack(spacing: 30) {
-                Image(systemName: "lock.shield")
-                    .font(.system(size: 60))
-                    .foregroundColor(.text)
-                
-                Text("Verifica tu número telefónico")
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .foregroundColor(.text)
-                
-                Text("Ingresa el código de verificación que se envió a \(phoneNumber)")
-                    .multilineTextAlignment(.center)
-                    .foregroundColor(.textFieldText)
-                    .padding(.horizontal)
-                
-                TextField("Código de verificación", text: $verificationCode)
-                    .keyboardType(.numberPad)
-                    .font(.title2)
-                    .multilineTextAlignment(.center)
-                    .padding()
-                    .background(Color.textFieldBackground)
-                    .cornerRadius(10)
-                    .foregroundColor(.textFieldText)
+        VStack(spacing: 30) {
+            Image(systemName: "lock.shield")
+                .font(.system(size: 60))
+                .foregroundColor(.text)
+            
+            Text("Verifica tu número telefónico")
+                .font(.title2)
+                .fontWeight(.bold)
+                .foregroundColor(.text)
+            
+            Text("Ingresa el código de verificación que se envió a \(phoneNumber)")
+                .multilineTextAlignment(.center)
+                .foregroundColor(.textFieldText)
+                .padding(.horizontal)
+            
+            TextField("Código de verificación", text: $verificationCode)
+                .keyboardType(.numberPad)
+                .font(.title2)
+                .multilineTextAlignment(.center)
+                .padding()
+                .background(Color.textFieldBackground)
+                .cornerRadius(10)
+                .foregroundColor(.textFieldText)
 
-                Button("Verify") {
-                    verifyPhoneNumber()
-                }
-                .disabled(isLoading || verificationCode.count != 6)
-                .opacity((isLoading || verificationCode.count != 6) ? 0.5 : 1)
-                .shadow(radius: 5)
-                
-                if isLoading {
-                    ProgressView()
-                    .progressViewStyle(CircularProgressViewStyle(tint: .text))
-                    .scaleEffect(1.5)
-                }
+            Button("Verify") {
+                verifyPhoneNumber()
             }
-            .padding()
-            .background(Color.background)
-            .cornerRadius(20)
-            .shadow(radius: 10)
-            .padding()
+            .disabled(isLoading || verificationCode.count != 6)
+            .opacity((isLoading || verificationCode.count != 6) ? 0.5 : 1)
+            .shadow(radius: 5)
+            
+            if isLoading {
+                ProgressView()
+                .progressViewStyle(CircularProgressViewStyle(tint: .text))
+                .scaleEffect(1.5)
+            }
         }
+        .padding()
+        .background(Color.background)
+        .cornerRadius(20)
+        .shadow(radius: 10)
+        .padding()
         .alert(isPresented: $showError) {
             Alert(title: Text("Error"), message: Text(errorMessage), dismissButton: .default(Text("OK")))
         }

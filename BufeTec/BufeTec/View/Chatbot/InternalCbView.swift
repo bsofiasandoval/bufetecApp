@@ -24,7 +24,7 @@ struct InternalCbView: View {
                     ScrollView {
                         LazyVStack(spacing: 12) {
                             ForEach(messages) { message in
-                                MessageBubble(message: message)
+                                MessageBubbleInternal(message: message)
                             }
                         }
                         .padding(.horizontal)
@@ -40,7 +40,7 @@ struct InternalCbView: View {
                 
                 HStack {
                     TextField("Escribe tu mensaje aquí", text: $chat)
-                        .padding(10)
+                        .padding(7)
                         .background(Color.textFieldBackground)
                         .cornerRadius(20)
                         .overlay(
@@ -288,7 +288,7 @@ struct InternalCbView: View {
     }
 }
 
-struct MessageBubble: View {
+struct MessageBubbleInternal: View {
     let message: CbMessageModel
     @Environment(\.colorScheme) var colorScheme
 
@@ -296,7 +296,6 @@ struct MessageBubble: View {
         VStack(alignment: message.isFromCurrentUser ? .trailing : .leading, spacing: 8) {
             HStack {
                 if message.isFromCurrentUser {
-                    Spacer()
                     formatMessageText(message.text)
                         .padding(12)
                         .background(Color.userMessageBackground)
@@ -308,7 +307,6 @@ struct MessageBubble: View {
                         .background(Color.botMessageBackground)
                         .foregroundColor(Color.botMessageText)
                         .clipShape(BubbleShape(isFromCurrentUser: false))
-                    Spacer()
                 }
             }
 
