@@ -22,6 +22,7 @@ struct ClientRegisterView: View {
     @State private var showError = false
     @State private var errorMessage = ""
     @State private var showVerificationSheet = false
+    @State private var clientRegistered = false
     @EnvironmentObject var authState: AuthState
     
     private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "kovomie.BufeTec", category: "ClientRegisterView")
@@ -46,7 +47,6 @@ struct ClientRegisterView: View {
                             .foregroundColor(.textFieldText)
                     }
                     
-                    
                     HStack {
                         Image(systemName: "envelope.fill")
                             .foregroundColor(.textFieldText)
@@ -58,8 +58,6 @@ struct ClientRegisterView: View {
                     }
         
                 }
-
-            
                 
                 Section("Detalles del caso") {
                     HStack {
@@ -75,10 +73,6 @@ struct ClientRegisterView: View {
 
                     }
                 }
-
-
-
-                
             }
             .navigationTitle("Crear Cuenta")
             .toolbar{
@@ -99,33 +93,26 @@ struct ClientRegisterView: View {
                     isLoggedOut: $isLoggedOut
                 )
             }
-            .onChange(of: shouldNavigateToCases) { newValue in
-                logger.info("shouldNavigateToCases changed to: \(newValue)")
-                
-                guard let currentUser = Auth.auth().currentUser else {
-                    showError(message: "No authenticated user found")
-                    return
-                }
-                
-                if newValue {
-                    navigate(to: CasesView(clientId: currentUser.uid).environmentObject(authState), when: $shouldNavigateToCases)
-                }
+            .onChange(of: clientRegistered) { newValue in
+               if newValue {
+                   shouldNavigateToCases = true
+               }
             }
-            .navigate(to: CasesView(clientId: Auth.auth().currentUser?.uid ?? ""), when: $shouldNavigateToCases)
+            .navigate(to: CasesView(clientId: Auth.auth().currentUser?.uid ?? "").environmentObject(authState), when: $shouldNavigateToCases)
         
     }
     
     // Function to register client with Firebase UID
     private func registerClient(uid: String) {
+        logger.info("registerClient called with UID: \(uid)")
         isLoading = true
-     
         
         // Prepare the client data
         var clientData: [String: Any] = [
-            "_id": uid,  // Firebase UID as MongoDB _id
+            "_id": uid,  // Use "_id" to match the API expectation
             "nombre": nombre,
             "numero_telefonico": telefono,
-            "correo": "",
+            "correo": correo,
             "tramite": tramite,
             "expediente": "",
             "juzgado": "",
@@ -136,14 +123,10 @@ struct ClientRegisterView: View {
             "rol": "cliente"
         ]
         
-    // Only add email if not empty
-        if !correo.isEmpty {
-            clientData["correo"] = correo
-        }
-
+        // Remove empty fields
+        clientData = clientData.filter { !($0.value is String) || !($0.value as! String).isEmpty }
         
         guard let url = URL(string: "http://10.14.255.51:4000/clientes") else {
-            logger.error("Invalid URL")
             showError(message: "Invalid URL")
             return
         }
@@ -155,48 +138,90 @@ struct ClientRegisterView: View {
         do {
             request.httpBody = try JSONSerialization.data(withJSONObject: clientData)
         } catch {
-            logger.error("Error encoding client data: \(error.localizedDescription)")
-            showError(message: "Error encoding client data")
+            showError(message: "Error encoding client data: \(error.localizedDescription)")
             return
         }
         
-        logger.info("Sending POST request to API")
+        logger.info("Sending POST request to API with data: \(clientData)")
         URLSession.shared.dataTask(with: request) { data, response, error in
             DispatchQueue.main.async {
-                isLoading = false
+                self.isLoading = false
                 
                 if let error = error {
-                    logger.error("Network error: \(error.localizedDescription)")
-                    showError(message: "Network error: \(error.localizedDescription)")
+                    self.showError(message: "Network error: \(error.localizedDescription)")
                     return
                 }
                 
                 guard let httpResponse = response as? HTTPURLResponse else {
-                    logger.error("Invalid response")
-                    showError(message: "Invalid response from server")
+                    self.showError(message: "Invalid response from server")
                     return
                 }
                 
-                logger.info("Received response with status code: \(httpResponse.statusCode)")
+                self.logger.info("Received response with status code: \(httpResponse.statusCode)")
                 
                 if (200...299).contains(httpResponse.statusCode) {
                     if let data = data, let responseString = String(data: data, encoding: .utf8) {
-                        logger.info("Response body: \(responseString)")
+                        self.logger.info("Response body: \(responseString)")
                     }
                     
-                    logger.info("API call successful, showing verification sheet")
+                    self.logger.info("Client registration successful")
+                    self.shouldNavigateToCases = true
                 } else {
                     if let data = data, let responseString = String(data: data, encoding: .utf8) {
-                        logger.error("Server error. Status: \(httpResponse.statusCode), Body: \(responseString)")
-                        showError(message: "Server error: \(responseString)")
+                        self.showError(message: "Server error: \(responseString)")
                     } else {
-                        logger.error("Server error. Status: \(httpResponse.statusCode)")
-                        showError(message: "Server error: Status \(httpResponse.statusCode)")
+                        self.showError(message: "Server error: Status \(httpResponse.statusCode)")
                     }
                 }
             }
         }.resume()
     }
+    
+    private func createCase(for clientId: String) {
+        let caseData: [String: Any] = [
+            "tipo_de_caso": tramite,
+            "cliente_id": clientId,
+            "estado": "Abierto",
+            "fecha_inicio": Date().ISO8601Format(),
+            "descripcion": ""
+        ]
+        
+        guard let url = URL(string: "http://10.14.255.51:4000/casos_legales") else {
+            showError(message: "Invalid URL for case creation")
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: caseData)
+        } catch {
+            showError(message: "Error encoding case data: \(error.localizedDescription)")
+            return
+        }
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            DispatchQueue.main.async {
+                self.isLoading = false
+                
+                if let error = error {
+                    self.showError(message: "Network error: \(error.localizedDescription)")
+                    return
+                }
+                
+                guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
+                    self.showError(message: "Server error during case creation")
+                    return
+                }
+                
+                self.logger.info("Client and case creation successful")
+                self.clientRegistered = true
+            }
+        }.resume()
+    }
+    
     
     private func showError(message: String) {
         logger.error("Error: \(message)")
@@ -343,6 +368,7 @@ struct PhoneVerificationView: View {
                         self.authState.user = user
                         self.authState.setUserRole(.client)
                         self.isLoggedOut = false
+                        onVerificationComplete(user.uid)
                         self.presentationMode.wrappedValue.dismiss()
                     }
                 }
