@@ -15,9 +15,13 @@ struct RespondMessage: View {
     @State private var respuesta: String = ""
     @State private var autorID: String = ""
     
-    @Binding var isPresented: Bool // To dismiss the sheet
-    var post: WelcomeElement // Post info passed from the parent view
-    var onPostSave: () -> Void // Callback when post is saved
+    @Binding var isPresented: Bool // Para cerrar la hoja
+    var post: WelcomeElement // Información del post pasado desde la vista padre
+    var onPostSave: () -> Void // Callback cuando la respuesta es guardada
+    
+    // Estados para el pop-up de error
+    @State private var showAlert = false
+    @State private var alertMessage = ""
     
     var body: some View {
         NavigationView {
@@ -34,12 +38,16 @@ struct RespondMessage: View {
             }
             .navigationBarItems(
                 leading: Button("Cancelar") {
-                    isPresented = false // Close the sheet
+                    isPresented = false // Cerrar la hoja
                 },
                 trailing: Button("Publicar") {
-                    addComment()
+                    validateAndAddComment()
                 }
             )
+            // Mostrar alerta si es necesario
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text("Error en la respuesta"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+            }
             .onAppear {
                 if let user = Auth.auth().currentUser {
                     self.autorID = user.uid
@@ -47,6 +55,16 @@ struct RespondMessage: View {
                     print("No user is signed in")
                 }
             }
+        }
+    }
+    
+    // Función para validar el contenido y mostrar la alerta si no es válido
+    private func validateAndAddComment() {
+        if respuesta.count <= 10 {
+            alertMessage = "La respuesta debe tener más de 10 caracteres."
+            showAlert = true
+        } else {
+            addComment() // Si la validación es exitosa, se procede a agregar el comentario
         }
     }
     
@@ -60,10 +78,10 @@ struct RespondMessage: View {
             switch result {
             case .success(let message):
                 print("Respuesta publicada: \(message)")
-                onPostSave() // Notify parent view
-                isPresented = false // Close the sheet
+                onPostSave() // Notificar a la vista padre
+                isPresented = false // Cerrar la hoja
             case .failure(let error):
-                print("Error creating response: \(error.localizedDescription)")
+                print("Error al crear la respuesta: \(error.localizedDescription)")
             }
         }
     }

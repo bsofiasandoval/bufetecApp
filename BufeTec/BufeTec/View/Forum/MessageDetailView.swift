@@ -16,6 +16,8 @@ struct MessageDetailView: View {
     @State private var isAbogado: Bool = false
     @State private var isPresented = false
     @State private var respuestas: [Respuesta] = []
+    @State private var userNames: [String: String] = [:]
+
     var body: some View {
         VStack {
             Spacer()
@@ -52,6 +54,11 @@ struct MessageDetailView: View {
             ScrollView {
                 ForEach(respuestas, id: \.respuestaID) { respuesta in
                     VStack(alignment: .leading, spacing: 10) {
+                        Text(userNames[respuesta.autorID] ?? "Cargando...")
+                                        .font(.subheadline)
+                                        .bold()
+                                        .lineLimit(1)
+                        
                         Text(respuesta.contenido)
                             .font(.subheadline)
                         
@@ -104,32 +111,51 @@ struct MessageDetailView: View {
     }
     
     private func fetchResponses() {
-            NetworkManager.shared.fetchResponses(for: post.id) { result in
-                switch result {
-                case .success(let fetchedRespuestas):
-                    DispatchQueue.main.async {
-                        self.respuestas = fetchedRespuestas // Actualiza el array de respuestas
-                    }
-                case .failure(let error):
-                    print("Error al obtener respuestas: \(error.localizedDescription)")
-                }
-            }
-        }
-    
-    private func fetchUserData(userId: String) {
-        // Try to fetch as a lawyer first
-        NetworkManager.shared.fetchUserAbogadoById(userId) { result in
+        NetworkManager.shared.fetchResponses(for: post.id) { result in
             switch result {
-            case .success:
+            case .success(let fetchedRespuestas):
                 DispatchQueue.main.async {
-                    isAbogado = true // Set to true if the user is a lawyer
+                    self.respuestas = fetchedRespuestas
+                    // Buscar nombres de autores
+                    for respuesta in fetchedRespuestas {
+                        fetchUserData(userId: respuesta.autorID)
+                    }
                 }
-            case .failure:
-                // If it fails as a lawyer, try as an intern
-                isAbogado = false
+            case .failure(let error):
+                print("Error al obtener respuestas: \(error.localizedDescription)")
             }
         }
     }
+    private func fetchUserData(userId: String) {
+        // Intenta obtener el usuario como abogado primero
+        NetworkManager.shared.fetchUserAbogadoById(userId) { result in
+            switch result {
+            case .success(let user):
+                DispatchQueue.main.async {
+                    self.userNames[userId] = user.nombre // Almacenar nombre del abogado
+                }
+            case .failure:
+                // Si falla, intenta obtener el usuario como becario
+                fetchBecarioData(userId: userId)
+            }
+        }
+    }
+
+    private func fetchBecarioData(userId: String) {
+        NetworkManager.shared.fetchUserBecarioById(userId) { result in
+            switch result {
+            case .success(let user):
+                DispatchQueue.main.async {
+                    self.userNames[userId] = user.nombre // Almacenar nombre del becario
+                }
+            case .failure:
+                DispatchQueue.main.async {
+                    self.userNames[userId] = "Usuario desconocido" // Valor por defecto si falla
+                }
+            }
+        }
+    }
+
 }
 
 func formatTime(_ dateString: String) -> String {
