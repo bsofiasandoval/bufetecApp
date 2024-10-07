@@ -207,7 +207,7 @@ struct ArticleDetailView: View {
                     .foregroundColor(.secondary)
                 Text(article.body)
                     .font(.body)
-                Link("Read full article", destination: URL(string: article.url)!)
+                Link("Leer el articulo", destination: URL(string: article.url)!)
                     .font(.headline)
             }
             .padding()

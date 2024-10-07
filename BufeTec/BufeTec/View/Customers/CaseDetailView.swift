@@ -6,11 +6,15 @@
 //
 
 import SwiftUI
+import FirebaseStorage
+import UniformTypeIdentifiers
 
 struct CaseDetailView: View {
     let legalCase: Case
     let isClient: Bool
     @Environment(\.colorScheme) var colorScheme
+    @State private var isShowingDocumentPicker = false
+    @State private var selectedDocumentURL: URL?
     
     var body: some View {
         ScrollView {
@@ -109,51 +113,99 @@ struct CaseDetailView: View {
     }
     
     private var documentsSection: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack {
-                Text("Documentos")
-                    .font(.headline)
-                Spacer()
-                Button(action: {
-                    // Placeholder action
-                    print("Upload button tapped")
-                }) {
-                    HStack {
-                        Image(systemName: "plus")
+            VStack(alignment: .leading, spacing: 10) {
+                HStack {
+                    Text("Documentos")
+                        .font(.headline)
+                    Spacer()
+                    Button(action: {
+                        // Trigger document picker
+                        isShowingDocumentPicker = true
+                    }) {
+                        HStack {
+                            Image(systemName: "plus")
+                        }
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
                     }
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 6)
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(8)
+                }
+                
+                if legalCase.documentos.isEmpty {
+                    Text("No hay documentos disponibles")
+                        .foregroundColor(.secondary)
+                        .italic()
+                } else {
+                    ForEach(legalCase.documentos, id: \.nombre) { documento in
+                        HStack {
+                            Image(systemName: "doc.fill")
+                                .foregroundColor(.blue)
+                            Text(documento.nombre)
+                            Spacer()
+                            Button(action: {
+                                // Implement logic to view the document
+                                print("Viewing document: \(documento.url)")
+                            }) {
+                                Text("Ver")
+                                    .foregroundColor(.blue)
+                            }
+                        }
+                        .padding(.vertical, 5)
+                    }
                 }
             }
-            
-            if legalCase.documentos.isEmpty {
-                Text("No hay documentos disponibles")
-                    .foregroundColor(.secondary)
-                    .italic()
-            } else {
-                ForEach(legalCase.documentos, id: \.nombre) { documento in
-                    HStack {
-                        Image(systemName: "doc.fill")
-                            .foregroundColor(.blue)
-                        Text(documento.nombre)
-                        Spacer()
-                        Button(action: {
-                            // Here you would implement logic to view the document
-                            print("Viewing document: \(documento.url)")
-                        }) {
-                            Text("Ver")
-                                .foregroundColor(.blue)
-                        }
-                    }
-                    .padding(.vertical, 5)
-                }
+            .sectionStyle()
+            .sheet(isPresented: $isShowingDocumentPicker) {
+                DocumentPicker(selectedDocumentURL: $selectedDocumentURL, onUpload: uploadDocumentToFirebase)
             }
         }
-        .sectionStyle()
+    private func uploadDocumentToFirebase(documentURL: URL) {
+        do {
+            // If the URL is from a security-scoped resource, start accessing it
+            if documentURL.startAccessingSecurityScopedResource() {
+                defer { documentURL.stopAccessingSecurityScopedResource() }
+                
+                // Copy file to a temporary directory
+                let tempDirectory = FileManager.default.temporaryDirectory
+                let targetURL = tempDirectory.appendingPathComponent(documentURL.lastPathComponent)
+                
+                if FileManager.default.fileExists(atPath: targetURL.path) {
+                    try FileManager.default.removeItem(at: targetURL)
+                }
+                
+                try FileManager.default.copyItem(at: documentURL, to: targetURL)
+                print("File copied to temporary location: \(targetURL.path)")
+                
+                let storage = Storage.storage()
+                let storageRef = storage.reference().child("documents/\(targetURL.lastPathComponent)")
+                
+                // Upload the file
+                storageRef.putFile(from: targetURL, metadata: nil) { metadata, error in
+                    if let error = error {
+                        print("Error uploading file: \(error.localizedDescription)")
+                        return
+                    }
+                    
+                    // Retrieve the download URL after upload succeeds
+                    storageRef.downloadURL { (url, error) in
+                        if let error = error {
+                            print("Error getting download URL: \(error.localizedDescription)")
+                        } else if let downloadURL = url {
+                            print("File uploaded successfully. Download URL: \(downloadURL)")
+                            // Here you can store or use the URL as needed
+                        }
+                    }
+                }
+            } else {
+                print("Could not access security-scoped resource")
+            }
+        } catch {
+            print("Error processing file for upload: \(error.localizedDescription)")
+        }
     }
+
     
     private var updatesSection: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -213,6 +265,40 @@ struct CaseDetailView: View {
             return outputFormatter.string(from: date)
         }
         return dateString  // Return original string if parsing fails
+    }
+}
+struct DocumentPicker: UIViewControllerRepresentable {
+    @Binding var selectedDocumentURL: URL?
+    var onUpload: (URL) -> Void
+    
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+    
+    func makeUIViewController(context: Context) -> UIDocumentPickerViewController {
+        let picker = UIDocumentPickerViewController(forOpeningContentTypes: [UTType.item])
+        picker.delegate = context.coordinator
+        return picker
+    }
+    
+    func updateUIViewController(_ uiViewController: UIDocumentPickerViewController, context: Context) {}
+    
+    class Coordinator: NSObject, UIDocumentPickerDelegate {
+        var parent: DocumentPicker
+        
+        init(_ parent: DocumentPicker) {
+            self.parent = parent
+        }
+        
+        func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+            guard let selectedURL = urls.first else { return }
+            parent.selectedDocumentURL = selectedURL
+            parent.onUpload(selectedURL)
+        }
+        
+        func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
+            parent.selectedDocumentURL = nil
+        }
     }
 }
 
