@@ -36,7 +36,7 @@ struct Case: Identifiable, Codable {
 }
 
 struct Documento: Codable {
-    let nombre: String
+    let name: String
     let url: String
 }
 

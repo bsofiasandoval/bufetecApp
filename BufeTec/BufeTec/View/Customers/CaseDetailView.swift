@@ -139,11 +139,11 @@ struct CaseDetailView: View {
                         .foregroundColor(.secondary)
                         .italic()
                 } else {
-                    ForEach(legalCase.documentos, id: \.nombre) { documento in
+                    ForEach(legalCase.documentos, id: \.name) { documento in
                         HStack {
                             Image(systemName: "doc.fill")
                                 .foregroundColor(.blue)
-                            Text(documento.nombre)
+                            Text(documento.name)
                             Spacer()
                             Button(action: {
                                 // Implement logic to view the document
@@ -316,8 +316,8 @@ struct CaseDetailView_Previews: PreviewProvider {
                     fecha_inicio: "2024-08-15T10:00:00Z",
                     fecha_cierre: nil,
                     documentos: [
-                        Documento(nombre: "Acta de matrimonio", url: "https://example.com/acta_matrimonio.pdf"),
-                        Documento(nombre: "Demanda de divorcio", url: "https://example.com/demanda_divorcio.pdf")
+                        Documento(name: "Acta de matrimonio", url: "https://example.com/acta_matrimonio.pdf"),
+                        Documento(name: "Demanda de divorcio", url: "https://example.com/demanda_divorcio.pdf")
                     ],
                     actualizaciones: [
                         Actualizacion(fecha: "2024-08-20T14:30:00Z", descripcion: "Presentación de la demanda de divorcio"),

@@ -13,9 +13,24 @@ import FirebaseAuth
 struct ForumView: View {
     @EnvironmentObject var authState: AuthState
     @StateObject private var apiData = APIData()
+    @State private var showingProfile = false
     @State private var showingAddPostView = false
     @State private var selectedPost: WelcomeElement?
     @State private var showingAskQuestionView = false
+    
+    
+    // Mock user data - replace this with actual user data fetching logic
+    let userData = UserData(
+        id: "lawyer789",
+        name: "Sofia Sandoval",
+        email: "sofia.sandoval@bufetec.com",
+        userType: .lawyer,
+        phoneNumber: "+1 956 600 0773",
+        cedulaProfesional: "LXXXXXX",
+        especialidad: "Derecho Mercantil",
+        yearsOfExperience: 10,
+        clientId: nil // This is nil for lawyers
+    )
 
     var body: some View {
         ZStack {
@@ -90,16 +105,18 @@ struct ForumView: View {
                 .navigationTitle("Foro")
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
-                        Image(systemName: "person")
-                            .resizable()
-                            .frame(width: 24, height: 24)
-                            .foregroundColor(.blue)
+                        Button(action: { showingProfile = true }) {
+                            Image(systemName: "person.fill")
+                        }
                     }
                 }
-                .toolbarBackground(.white, for: .navigationBar)
-                .toolbarBackground(.visible, for: .navigationBar)
+                .sheet(isPresented: $showingProfile) {
+                    ProfileView( userData: userData)
+                        .environmentObject(authState)
+                }
+        
             }
-            .background(Color(.white))
+            .background(Color(.background))
             
             // Floating button
             VStack {
