@@ -135,7 +135,7 @@ struct NewClientCbView: View {
     
     private func classifyText(_ text: String) {
             guard let encodedText = text.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-                  let url = URL(string: "https://chatbot-production-d7fc.up.railway.app/classify-text?text=\(encodedText)") else {
+                  let url = URL(string: "http://127.0.0.1:8080/classify-text?text=\(encodedText)") else {
                 handleError()
                 return
             }

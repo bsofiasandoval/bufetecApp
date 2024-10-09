@@ -16,7 +16,7 @@ struct InternalCbView: View {
     @Environment(\.colorScheme) var colorScheme
     
     let assistantId = "asst_yMrGnZxDMUosMEcbOnEJFooo"
-    let baseURL = "https://chatbot-production-d7fc.up.railway.app"
+    let baseURL = "https://http://127.0.0.1:8080/"
     
     var body: some View {
             VStack(spacing: 0) {
