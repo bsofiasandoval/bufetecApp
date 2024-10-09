@@ -12,11 +12,14 @@ struct InternalCbView: View {
     @State private var messages: [CbMessageModel] = []
     @State private var threadId: String? = nil
     @FocusState private var isFocused: Bool
-   
-    @Environment(\.colorScheme) var colorScheme
     
+    @Environment(\.colorScheme) var colorScheme
     let assistantId = "asst_yMrGnZxDMUosMEcbOnEJFooo"
+<<<<<<< Updated upstream
     let baseURL = "https://http://127.0.0.1:8080/"
+=======
+    let baseURL = "http://10.14.255.51:8080"
+>>>>>>> Stashed changes
     
     var body: some View {
             VStack(spacing: 0) {

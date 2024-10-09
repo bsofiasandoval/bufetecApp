@@ -195,7 +195,52 @@ struct CaseDetailView: View {
                             print("Error getting download URL: \(error.localizedDescription)")
                         } else if let downloadURL = url {
                             print("File uploaded successfully. Download URL: \(downloadURL)")
-                            // Here you can store or use the URL as needed
+                                   
+                               // Prepare the URL with both cliente_id and case_id
+                               guard let postURL = URL(string: "http://10.14.255.51:4000/upload_document_case/\(legalCase.cliente_id)/\(legalCase.id)") else {
+                                   print("Invalid URL")
+                                   return
+                               }
+                               
+                               // Prepare the request body - removed case_id since it's now in the URL
+                               let documentInfo: [String: Any] = [
+                                   "document_url": downloadURL.absoluteString,
+                                   "document_name": targetURL.lastPathComponent
+                               ]
+                               
+                               guard let jsonData = try? JSONSerialization.data(withJSONObject: documentInfo) else {
+                                   print("Error: Unable to serialize JSON")
+                                   return
+                               }
+                               
+                               // Create the request
+                               var request = URLRequest(url: postURL)
+                               request.httpMethod = "POST"
+                               request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                               request.httpBody = jsonData
+                               
+                               // Make the network call
+                               URLSession.shared.dataTask(with: request) { data, response, error in
+                                   if let error = error {
+                                       print("Error making POST request: \(error.localizedDescription)")
+                                       return
+                                   }
+                                   
+                                   guard let httpResponse = response as? HTTPURLResponse else {
+                                       print("Error: Invalid response")
+                                       return
+                                   }
+                                   
+                                   if (200...299).contains(httpResponse.statusCode) {
+                                       print("Document successfully registered with server")
+                                   } else {
+                                       print("Server error: \(httpResponse.statusCode)")
+                                   }
+                                   
+                                   if let data = data, let responseString = String(data: data, encoding: .utf8) {
+                                       print("Server response: \(responseString)")
+                                   }
+                               }.resume()
                         }
                     }
                 }

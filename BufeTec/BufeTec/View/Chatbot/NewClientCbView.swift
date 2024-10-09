@@ -20,7 +20,7 @@ struct NewClientCbView: View {
     @State private var chat: String = ""
     @State private var messages: [CbMessageModel] = []
     @FocusState private var isFocused: Bool
-    @State private var tipoDeCaso: String = ""
+    @State private var tipoDeCaso: String = "Caso Civil"
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var authState: AuthState
     @State private var shouldNavigateToRegister = false
@@ -135,11 +135,15 @@ struct NewClientCbView: View {
     
     private func classifyText(_ text: String) {
             guard let encodedText = text.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+<<<<<<< Updated upstream
                   let url = URL(string: "http://127.0.0.1:8080/classify-text?text=\(encodedText)") else {
+=======
+                  let url = URL(string: "http://10.14.255.51:8080/classify-text?text=\(encodedText)") else {
+>>>>>>> Stashed changes
                 handleError()
                 return
             }
-            
+        
             URLSession.shared.dataTask(with: url) { data, response, error in
                 DispatchQueue.main.async {
                     if let error = error {
