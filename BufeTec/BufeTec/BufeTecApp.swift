@@ -56,7 +56,7 @@ class AuthState: ObservableObject {
         if(user == nil) {
             return nil
         }
-        else if(user?.email?.contains("itesm.mx") == true) {
+        else if(user?.email?.contains("tec.mx") == true) {
             return .internalUser
         }
         else{

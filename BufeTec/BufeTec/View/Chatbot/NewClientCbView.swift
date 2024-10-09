@@ -135,11 +135,7 @@ struct NewClientCbView: View {
     
     private func classifyText(_ text: String) {
             guard let encodedText = text.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-<<<<<<< Updated upstream
-                  let url = URL(string: "http://127.0.0.1:8080/classify-text?text=\(encodedText)") else {
-=======
                   let url = URL(string: "http://10.14.255.51:8080/classify-text?text=\(encodedText)") else {
->>>>>>> Stashed changes
                 handleError()
                 return
             }

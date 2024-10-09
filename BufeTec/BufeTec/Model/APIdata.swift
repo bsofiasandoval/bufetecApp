@@ -222,4 +222,35 @@ class NetworkManager {
                 }
             }.resume()
         }
+    
+    // Add this to your NetworkManager
+    func fetchUserClienteById(_ id: String, completion: @escaping (Result<ClientInformationElement, Error>) -> Void) {
+        let urlString = "\(baseURL)/clientes/\(id)"
+        guard let url = URL(string: urlString) else {
+            print("Invalid URL")
+            return
+        }
+
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+
+            guard let data = data else {
+                print("No data received")
+                return
+            }
+
+            do {
+                let decoder = JSONDecoder()
+                decoder.dateDecodingStrategy = .iso8601 // Assuming your Date format is ISO8601
+                let client = try decoder.decode(ClientInformationElement.self, from: data)
+                completion(.success(client))
+            } catch {
+                completion(.failure(error))
+            }
+        }.resume()
+    }
+
 }

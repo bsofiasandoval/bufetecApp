@@ -14,7 +14,8 @@ struct ForumView: View {
     @EnvironmentObject var authState: AuthState
     @StateObject private var apiData = APIData()
     @State private var showingProfile = false
-    @State private var showingAddPostView = false
+    @State private var showingAddPostView
+    = false
     @State private var selectedPost: WelcomeElement?
     @State private var showingAskQuestionView = false
     

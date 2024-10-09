@@ -8,21 +8,21 @@
 import Foundation
 
 struct UserData {
-    let id: String
-    let name: String
-    let email: String?
-    let userType: UserType
-    let phoneNumber: String?
+    var id: String
+    var name: String
+    var email: String?
+    var userType: UserType
+    var phoneNumber: String?
     
     // Lawyer-specific fields
-    let cedulaProfesional: String?
-    let especialidad: String?
-    let yearsOfExperience: Int?
+    var cedulaProfesional: String?
+    var especialidad: String?
+    var yearsOfExperience: Int?
     
     // Client-specific fields
-    let clientId: String?
+    var clientId: String?
     
-    enum UserType {
+    enum UserType: String, Codable {
         case lawyer
         case client
     }

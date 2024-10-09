@@ -10,7 +10,7 @@ import FirebaseAuth
 
 struct ProfileView: View {
     @State private var showingLogoutAlert = false
-    let userData: UserData
+    @State var userData: UserData
     @EnvironmentObject var authState: AuthState
     @Environment(\.presentationMode) var presentationMode  // To dismiss the view
     
@@ -33,7 +33,7 @@ struct ProfileView: View {
                 // Common Info Cards
                 VStack(spacing: 15) {
                     
-                    if let email = userData.email {
+                    if var email = userData.email {
                         infoCard(title: "Email", value: email)
                     }
                     if let phoneNumber = userData.phoneNumber {
@@ -49,9 +49,9 @@ struct ProfileView: View {
                         if let especialidad = userData.especialidad {
                             infoCard(title: "Especialidad", value: especialidad)
                         }
-                        if let years = userData.yearsOfExperience {
-                            infoCard(title: "Years of Experience", value: "\(years)")
-                        }
+                        //if let years = userData.yearsOfExperience {
+                          //  infoCard(title: "Years of Experience", value: "\(years)")
+                        //}
                     case .client:
                         if let clientId = userData.clientId {
                             infoCard(title: "Client ID", value: clientId)
@@ -69,6 +69,9 @@ struct ProfileView: View {
                 .cornerRadius(10)
             }
         }
+        .onAppear {
+            fetchData(userId: Auth.auth().currentUser?.uid ?? "")
+        }
         .navigationBarTitle("Profile", displayMode: .inline)
         .navigationBarItems(trailing: Button("Close") {
             presentationMode.wrappedValue.dismiss()
@@ -82,6 +85,56 @@ struct ProfileView: View {
                 },
                 secondaryButton: .cancel()
             )
+        }
+    }
+    
+    private func fetchData(userId: String) {
+        NetworkManager.shared.fetchUserAbogadoById(userId) { result in
+            switch result {
+            case .success(let user):
+                DispatchQueue.main.async {
+                    userData.name = user.nombre
+                    userData.email = user.correo
+                    userData.phoneNumber = user.telefono
+                    userData.cedulaProfesional = user.cedula
+                    userData.especialidad = user.areaEspecializacion
+                    
+                    
+                }
+            case .failure(let error):
+                fetchBecarioData(userId: userId)
+            }
+        }
+    }
+    
+    private func fetchBecarioData(userId: String) {
+        NetworkManager.shared.fetchUserBecarioById(userId) { result in
+            switch result {
+            case .success(let user):
+                DispatchQueue.main.async {
+                    userData.name = user.nombre
+                    userData.email = user.correo
+                    userData.phoneNumber = ""
+                    
+                    
+                }
+            case .failure(let error):
+                fetchClientData(userId: userId)
+            }
+        }
+    }
+    
+    private func fetchClientData(userId: String) {
+        NetworkManager.shared.fetchUserClienteById(userId) { result in
+            switch result {
+            case .success(let user):
+                DispatchQueue.main.async {
+                    userData.name = user.nombre
+                    userData.clientId = Auth.auth().currentUser?.uid ?? ""
+                }
+            case .failure(let error):
+                print("Error fetching user data: \(error.localizedDescription)")
+            }
         }
     }
     

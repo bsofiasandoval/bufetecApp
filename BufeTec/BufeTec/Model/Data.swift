@@ -7,8 +7,63 @@
 
 import Foundation
 
+// MARK: - ClientInformationElement
+struct ClientInformationElement: Codable {
+    let id, nombre, numeroTelefonico, correo: String
+    let expediente, juzgado, seguimiento, alumno: String
+    let folio: String
+    let ultimaVezInf: Date
+    let rol: String
+
+    enum CodingKeys: String, CodingKey {
+        case id = "_id"
+        case nombre
+        case numeroTelefonico = "numero_telefonico"
+        case correo, expediente, juzgado, seguimiento, alumno, folio, ultimaVezInf, rol
+    }
+}
+
+typealias ClientInformation = [ClientInformationElement]
+
+
 // MARK: - UserInformationElement
 struct UserInformationElement: Codable {
+    let id: ID
+    let userInformationID, nombre, apellido, correo: String
+    let telefono, rol, areaEspecializacion, cedula: String
+    let casosAsignados: [String]
+    let horariosAtencion: HorariosAtencion
+    let estadoCuenta: String
+
+    enum CodingKeys: String, CodingKey {
+        case id = "_id"
+        case userInformationID = "id"
+        case nombre, apellido, correo, telefono, rol
+        case areaEspecializacion = "area_especializacion"
+        case cedula
+        case casosAsignados = "casos_asignados"
+        case horariosAtencion = "horarios_atencion"
+        case estadoCuenta = "estado_cuenta"
+    }
+}
+
+// MARK: - HorariosAtencion
+struct HorariosAtencion: Codable {
+    let lunes, martes, miércoles, jueves: [String]
+}
+
+// MARK: - ID
+struct ID: Codable {
+    let oid: String
+
+    enum CodingKeys: String, CodingKey {
+        case oid = "$oid"
+    }
+}
+
+typealias UserInformation = [UserInformationElement]
+
+/*struct UserInformationElement: Codable {
     let apellido, areaEspecializacion: JSONNull?
     let casosAsignados: [JSONAny]
     let cedula: JSONNull?
@@ -25,14 +80,7 @@ struct UserInformationElement: Codable {
         case horariosAtencion = "horarios_atencion"
         case id, nombre, rol, telefono
     }
-}
-
-// MARK: - HorariosAtencion
-struct HorariosAtencion: Codable {
-}
-
-typealias UserInformation = [UserInformationElement]
-
+}*/
 
 // MARK: - ForumResponses
 struct WelcomeElement: Codable {
