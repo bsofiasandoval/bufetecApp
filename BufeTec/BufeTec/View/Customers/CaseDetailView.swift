@@ -44,14 +44,15 @@ struct CaseDetailView: View {
             Text(legalCase.descripcion)
                 .font(.body)
             
-            if !isClient && !legalCase.notas.isEmpty {
+            if !isClient, let notas = legalCase.notas, !notas.isEmpty {
                 Text("Notas")
                     .font(.headline)
                     .padding(.top, 5)
-                Text(legalCase.notas)
+                Text(notas)
                     .font(.body)
                     .foregroundColor(.secondary)
             }
+
         }
         .sectionStyle()
     }

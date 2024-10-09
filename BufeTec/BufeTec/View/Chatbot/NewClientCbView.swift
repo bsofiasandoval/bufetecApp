@@ -79,12 +79,12 @@ struct NewClientCbView: View {
             .navigationTitle("BufeBot")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    if !tipoDeCaso.isEmpty {
+//                    if !tipoDeCaso.isEmpty {
                         NavigationLink(destination: ClientRegisterView(tramite: $tipoDeCaso, isLoggedOut: $isLoggedOut).environmentObject(authState)) {
                             Text("Continuar")
                                 .foregroundColor(.blue)
                         }
-                    }
+//                    }
                 }
             }
             .padding(.bottom, bottomPadding)

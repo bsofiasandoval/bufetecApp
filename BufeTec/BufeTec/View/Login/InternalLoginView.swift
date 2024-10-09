@@ -62,7 +62,7 @@ struct InternalLoginView: View {
                                     if (isStudent(email: email) || isLawyer(email: email)) {
                                         if isStudent(email: email) {
                                             pushStudentToMongoDB(uid: uid, email: email, name: name)
-                                        } else if isLawyer(email: email) {
+                                        } else if isLawyer(email: email) || email == "bsofiasandoval@gmail.com" {
                                             pushLawyerToMongoDB(uid: uid, email: email, name: name)
                                         }
                                         DispatchQueue.main.async {
@@ -111,16 +111,16 @@ struct InternalLoginView: View {
     
     // Function to push student (becario) to MongoDB
     func pushStudentToMongoDB(uid: String, email: String, name: String) {
-        let url = URL(string: "http://10.14.255.51:4000/becarios")!  // Endpoint for students
+        // Include the UID in the URL path
+        let url = URL(string: "http://10.14.255.51:4000/becarios/\(uid)")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
         let userInfo: [String: Any] = [
-            "_id": uid,
-            "nombre": name,
+            "nombre": name,  // Remove '_id' since it's now part of the URL
             "correo": email,
-            "rol": "becario"  // Set role to becario for students
+            "rol": "becario"  // Role is still set in the body
         ]
         
         guard let httpBody = try? JSONSerialization.data(withJSONObject: userInfo, options: []) else { return }
@@ -138,7 +138,7 @@ struct InternalLoginView: View {
             }
         }.resume()
     }
-    
+
     // Function to push lawyer (abogado) to MongoDB
     func pushLawyerToMongoDB(uid: String, email: String, name: String) {
         let url = URL(string: "http://10.14.255.51:4000/abogados")!  // Endpoint for lawyers

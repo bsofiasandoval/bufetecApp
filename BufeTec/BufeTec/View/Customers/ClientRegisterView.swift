@@ -63,7 +63,7 @@ struct ClientRegisterView: View {
                     HStack {
                         Text("Tramite")
                         Spacer()
-                        Text(tramite)
+                        Text(tramite.isEmpty ? "Caso Legal" : tramite)
                     }
                     
                     HStack {
@@ -88,6 +88,7 @@ struct ClientRegisterView: View {
                     shouldNavigateToCases: $shouldNavigateToCases,
                     onVerificationComplete: { uid in
                         registerClient(uid: uid)
+                        createCase(for: uid)
                         showVerificationSheet = false
                     },
                     isLoggedOut: $isLoggedOut
@@ -113,7 +114,6 @@ struct ClientRegisterView: View {
             "nombre": nombre,
             "numero_telefonico": telefono,
             "correo": correo,
-            "tramite": tramite,
             "expediente": "",
             "juzgado": "",
             "seguimiento": "",
@@ -178,11 +178,14 @@ struct ClientRegisterView: View {
     }
     
     private func createCase(for clientId: String) {
+        let tramiteValue = tramite.isEmpty ? "Caso Legal" : tramite
+        
         let caseData: [String: Any] = [
-            "tipo_de_caso": tramite,
+            "tipo_de_caso": tramiteValue,
             "cliente_id": clientId,
             "estado": "Abierto",
             "fecha_inicio": Date().ISO8601Format(),
+            "notas": "",
             "descripcion": ""
         ]
         

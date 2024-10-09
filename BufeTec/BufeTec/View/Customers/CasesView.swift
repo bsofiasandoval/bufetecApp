@@ -32,7 +32,7 @@ struct CasesView: View {
             if authState.isLoggedIn {
                 ZStack {
                     if viewModel.cases.isEmpty && !viewModel.isLoading {
-                        Text("No se encontraron casos")
+                        Text("No se encontrar on casos")
                             .font(.headline)
                     } else {
                         List(viewModel.cases) { legalCase in
