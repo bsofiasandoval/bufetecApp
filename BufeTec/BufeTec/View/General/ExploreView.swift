@@ -16,18 +16,6 @@ struct ExploreView: View {
     @State private var showingBibliotecaLegal = false
     
     // Mock user data - replace this with actual user data fetching logic
-    let userData = UserData(
-        id: "lawyer789",
-        name: "Sofia Sandoval",
-        email: "sofia.sandoval@bufetec.com",
-        userType: .lawyer,
-        phoneNumber: "+1 956 600 0773",
-        cedulaProfesional: "LXXXXXX",
-        especialidad: "Derecho Mercantil",
-        yearsOfExperience: 10,
-        clientId: nil // This is nil for lawyers
-    )
-    
 
     var body: some View {
         ScrollView {
@@ -59,7 +47,7 @@ struct ExploreView: View {
             }
         }
         .sheet(isPresented: $showingProfile) {
-            ProfileView( userData: userData)
+            ProfileView()
                 .environmentObject(authState)
         }
         .alert("Error", isPresented: $showingErrorAlert, presenting: errorMessage) { _ in

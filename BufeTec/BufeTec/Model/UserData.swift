@@ -24,6 +24,7 @@ struct UserData {
     
     enum UserType: String, Codable {
         case lawyer
+        case becario
         case client
     }
 }

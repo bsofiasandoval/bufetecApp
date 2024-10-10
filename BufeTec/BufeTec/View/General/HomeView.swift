@@ -16,9 +16,9 @@ struct HomeView: View {
             if isLoading {
                 ProgressView() // Show loading indicator while checking auth state
             } else if authState.isLoggedIn {
-                if authState.userRole == .internalUser {
+                if authState.userRole == .abogado || authState.userRole == .becario {
                     ContentView()
-                } else if authState.userRole == .client {
+                } else if authState.userRole == .cliente {
                     CasesView(clientId: Auth.auth().currentUser!.uid)
                 } else {
                     Text("Unknown user role")
@@ -48,11 +48,18 @@ struct HomeView: View {
         }
     }
     
-    private func getUserRole(_ user: User) -> UserRole? {
-        if user.email?.contains("tec.mx") == true {
-            return .internalUser
-        } else {
-            return .client
+    private func getUserRole(_ user: User?) -> UserRole? {
+        if(user == nil) {
+            return nil
+        }
+        else if(user?.email?.hasSuffix("@tec.mx") == true || user?.email?.hasPrefix("A") == true) {
+            return .becario
+        }
+        else if((user?.email?.hasSuffix("@tec.mx")) == true){
+            return .abogado
+        }
+        else{
+            return .cliente
         }
     }
 }

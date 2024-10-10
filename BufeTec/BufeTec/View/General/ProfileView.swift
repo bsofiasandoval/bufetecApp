@@ -10,7 +10,7 @@ import FirebaseAuth
 
 struct ProfileView: View {
     @State private var showingLogoutAlert = false
-    @State var userData: UserData
+    @State private var userData = UserData(name: "", email: nil, phoneNumber: nil, userType: .client)
     @EnvironmentObject var authState: AuthState
     @Environment(\.presentationMode) var presentationMode  // To dismiss the view
     
@@ -33,10 +33,12 @@ struct ProfileView: View {
                 // Common Info Cards
                 VStack(spacing: 15) {
                     
-                    if var email = userData.email {
+                    if let email = userData.email {
                         infoCard(title: "Email", value: email)
                     }
-                    if let phoneNumber = userData.phoneNumber {
+                    
+                    // Phone number only for "clientes" and "abogados"
+                    if let phoneNumber = userData.phoneNumber, userData.userType == .client || userData.userType == .lawyer {
                         infoCard(title: "Phone Number", value: phoneNumber)
                     }
                     
@@ -49,13 +51,14 @@ struct ProfileView: View {
                         if let especialidad = userData.especialidad {
                             infoCard(title: "Especialidad", value: especialidad)
                         }
-                        //if let years = userData.yearsOfExperience {
-                          //  infoCard(title: "Years of Experience", value: "\(years)")
-                        //}
                     case .client:
                         if let clientId = userData.clientId {
                             infoCard(title: "Client ID", value: clientId)
                         }
+                    case .becario:
+                        Text("Becario Information")
+                    default:
+                        Text("User type not supported")
                     }
                 }
                 .padding()
@@ -70,7 +73,16 @@ struct ProfileView: View {
             }
         }
         .onAppear {
-            fetchData(userId: Auth.auth().currentUser?.uid ?? "")
+            if let role = authState.userRole {
+                switch role {
+                case .abogado:
+                    fetchLawyerData(userId: Auth.auth().currentUser?.uid ?? "")
+                case .cliente:
+                    fetchClientData(userId: Auth.auth().currentUser?.uid ?? "")
+                case .becario:
+                    fetchBecarioData(userId: Auth.auth().currentUser?.uid ?? "")
+                }
+            }
         }
         .navigationBarTitle("Profile", displayMode: .inline)
         .navigationBarItems(trailing: Button("Close") {
@@ -88,21 +100,20 @@ struct ProfileView: View {
         }
     }
     
-    private func fetchData(userId: String) {
+    private func fetchLawyerData(userId: String) {
         NetworkManager.shared.fetchUserAbogadoById(userId) { result in
             switch result {
             case .success(let user):
                 DispatchQueue.main.async {
                     userData.name = user.nombre
                     userData.email = user.correo
-                    userData.phoneNumber = user.telefono
+                    userData.phoneNumber = user.telefono  // Lawyers have phone numbers
                     userData.cedulaProfesional = user.cedula
                     userData.especialidad = user.areaEspecializacion
-                    
-                    
+                    userData.userType = .lawyer
                 }
             case .failure(let error):
-                fetchBecarioData(userId: userId)
+                print("Error fetching lawyer data: \(error.localizedDescription)")
             }
         }
     }
@@ -114,12 +125,11 @@ struct ProfileView: View {
                 DispatchQueue.main.async {
                     userData.name = user.nombre
                     userData.email = user.correo
-                    userData.phoneNumber = ""
-                    
-                    
+                    userData.phoneNumber = nil  // Becarios don’t have phone numbers
+                    userData.userType = .becario
                 }
             case .failure(let error):
-                fetchClientData(userId: userId)
+                print("Error fetching becario data: \(error.localizedDescription)")
             }
         }
     }
@@ -130,10 +140,13 @@ struct ProfileView: View {
             case .success(let user):
                 DispatchQueue.main.async {
                     userData.name = user.nombre
-                    userData.clientId = Auth.auth().currentUser?.uid ?? ""
+                    userData.email = user.correo
+                    userData.clientId = user.id
+                    userData.phoneNumber = user.telefono  // Clients have phone numbers
+                    userData.userType = .client
                 }
             case .failure(let error):
-                print("Error fetching user data: \(error.localizedDescription)")
+                print("Error fetching client data: \(error.localizedDescription)")
             }
         }
     }

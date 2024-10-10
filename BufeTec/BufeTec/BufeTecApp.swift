@@ -29,8 +29,10 @@ struct BufeTecApp: App {
 
 
 enum UserRole {
-    case client
-    case internalUser
+    case cliente
+    case becario
+    case abogado
+    
 }
 
 class AuthState: ObservableObject {
@@ -56,11 +58,14 @@ class AuthState: ObservableObject {
         if(user == nil) {
             return nil
         }
-        else if(user?.email?.contains("tec.mx") == true) {
-            return .internalUser
+        else if(user?.email?.hasSuffix("@tec.mx") == true || user?.email?.hasPrefix("A") == true || user?.email?.hasPrefix("a") == true){
+            return .becario
+        }
+        else if((user?.email?.hasSuffix("@tec.mx")) == true){
+            return .abogado
         }
         else{
-            return .client
+            return .cliente
         }
     }
 

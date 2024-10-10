@@ -41,7 +41,8 @@ struct GenCbView: View {
            }
        }
        .sheet(isPresented: $showingProfile) {
-           ProfileView(userData: userData)
+           ProfileView()
+               .environmentObject(authState)
        }
    }
 }

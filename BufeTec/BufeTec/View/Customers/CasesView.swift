@@ -82,7 +82,7 @@ struct CasesView: View {
                     }
                 }
                 .sheet(isPresented: $showingProfile) {
-                    ProfileView(userData: userData)
+                    ProfileView()
                         .environmentObject(authState)
                 }
                 .sheet(isPresented: $showingNewCaseView) {
