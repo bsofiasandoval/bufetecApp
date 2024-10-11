@@ -33,6 +33,9 @@ struct CaseDetailView: View {
         .onAppear{
             fetchPersonnelNames()
         }
+        .refreshable {
+            fetchPersonnelNames()
+        }
         .navigationBarTitle("Mi Caso", displayMode: .inline)
     }
     
