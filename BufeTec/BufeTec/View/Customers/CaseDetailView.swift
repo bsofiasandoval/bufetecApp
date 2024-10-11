@@ -13,8 +13,10 @@ struct CaseDetailView: View {
     let legalCase: Case
     let isClient: Bool
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.openURL) var openURL
     @State private var isShowingDocumentPicker = false
     @State private var selectedDocumentURL: URL?
+    @State private var personnelNames: [String: String] = [:]  // To store names keyed by ID
     
     var body: some View {
         ScrollView {
@@ -28,6 +30,10 @@ struct CaseDetailView: View {
             .padding()
         }
         .background(Color(UIColor.systemGroupedBackground))
+        .onAppear{
+            fetchPersonnelNames()
+        }
+        .navigationBarTitle("Mi Caso", displayMode: .inline)
     }
     
     private var caseInfoSection: some View {
@@ -80,26 +86,34 @@ struct CaseDetailView: View {
         .sectionStyle()
     }
     
-        private var lawyersSection: some View {
+    private var lawyersSection: some View {
             VStack(alignment: .leading, spacing: 10) {
                 Text("Abogados y Becarios Asignados")
                     .font(.headline)
                 ForEach(legalCase.abogados_becarios_id, id: \.self) { id in
-                    NavigationLink(destination: personDetailView(for: id)) {
-                        HStack {
-                            Image(systemName: "person.fill")
-                                .foregroundColor(.blue)
-                            Text(id)
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .foregroundColor(.gray)
-                        }
-                        .padding(.vertical, 5)
+                    if let name = personnelNames[id] {
+                        personnelRow(name: name, id: id)
+                    } else {
+                        Text("Loading...")  // Show a loading text or an activity indicator
                     }
-                    .buttonStyle(PlainButtonStyle())
                 }
             }
             .sectionStyle()
+        }
+        
+        private func personnelRow(name: String, id: String) -> some View {
+            NavigationLink(destination: MyPersonnelView(internalId: id)) {
+                HStack {
+                    Image(systemName: "person.fill")
+                        .foregroundColor(.blue)
+                    Text(name)  // Display the fetched name
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .foregroundColor(.gray)
+                }
+            }
+            .padding(.vertical, 5)
+            .buttonStyle(PlainButtonStyle())
         }
         
     @ViewBuilder
@@ -114,54 +128,98 @@ struct CaseDetailView: View {
     }
     
     private var documentsSection: some View {
-            VStack(alignment: .leading, spacing: 10) {
-                HStack {
-                    Text("Documentos")
-                        .font(.headline)
-                    Spacer()
-                    Button(action: {
-                        // Trigger document picker
-                        isShowingDocumentPicker = true
-                    }) {
-                        HStack {
-                            Image(systemName: "plus")
-                        }
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 6)
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(8)
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                Text("Documentos")
+                    .font(.headline)
+                Spacer()
+                Button(action: {
+                    // Trigger document picker
+                    isShowingDocumentPicker = true
+                }) {
+                    HStack {
+                        Image(systemName: "plus")
                     }
-                }
-                
-                if legalCase.documentos.isEmpty {
-                    Text("No hay documentos disponibles")
-                        .foregroundColor(.secondary)
-                        .italic()
-                } else {
-                    ForEach(legalCase.documentos, id: \.name) { documento in
-                        HStack {
-                            Image(systemName: "doc.fill")
-                                .foregroundColor(.blue)
-                            Text(documento.name)
-                            Spacer()
-                            Button(action: {
-                                // Implement logic to view the document
-                                print("Viewing document: \(documento.url)")
-                            }) {
-                                Text("Ver")
-                                    .foregroundColor(.blue)
-                            }
-                        }
-                        .padding(.vertical, 5)
-                    }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
                 }
             }
-            .sectionStyle()
-            .sheet(isPresented: $isShowingDocumentPicker) {
-                DocumentPicker(selectedDocumentURL: $selectedDocumentURL, onUpload: uploadDocumentToFirebase)
+            
+            if legalCase.documentos.isEmpty {
+                Text("No hay documentos disponibles")
+                    .foregroundColor(.secondary)
+                    .italic()
+            } else {
+                ForEach(legalCase.documentos, id: \.name) { documento in
+                    HStack {
+                        Image(systemName: "doc.fill")
+                            .foregroundColor(.blue)
+                        Text(documento.name)
+                        Spacer()
+                        Button("Ver") {
+                        // Safely attempt to open the URL
+                        if let url = URL(string: documento.url), UIApplication.shared.canOpenURL(url) {
+                            openURL(url)
+                        } else {
+                            print("Documento Inválido")
+                        }
+                    }
+                    .foregroundColor(.blue)
+                    }
+                    .padding(.vertical, 5)
+                }
             }
         }
+        .sectionStyle()
+        .sheet(isPresented: $isShowingDocumentPicker) {
+            DocumentPicker(selectedDocumentURL: $selectedDocumentURL, onUpload: uploadDocumentToFirebase)
+        }
+    }
+    
+    private func fetchPersonnelNames() {
+        for id in legalCase.abogados_becarios_id {
+            // Assuming your IDs start with "abogado" or "becario" to differentiate the roles
+            let endpoint = id.hasPrefix("abogado") ? "abogados" : "becarios"
+            let urlString = "http://10.14.255.51:4000/\(endpoint)/\(id)"
+            
+            guard let url = URL(string: urlString) else {
+                print("Invalid URL")
+                continue
+            }
+            
+            URLSession.shared.dataTask(with: url) { data, response, error in
+                if let error = error {
+                    print("Failed to fetch data: \(error.localizedDescription)")
+                    return
+                }
+                
+                guard let data = data else {
+                    print("No data received")
+                    return
+                }
+                
+                do {
+                    if endpoint == "abogados" {
+                        let result = try JSONDecoder().decode(AbogadoName.self, from: data)
+                        DispatchQueue.main.async {
+                            self.personnelNames[id] = result.nombre
+                        }
+                    } else {
+                        let result = try JSONDecoder().decode(BecarioName.self, from: data)
+                        DispatchQueue.main.async {
+                            self.personnelNames[id] = result.nombre
+                        }
+                    }
+                } catch {
+                    print("Decoding error: \(error)")
+                }
+            }.resume()
+        }
+    }
+    
     private func uploadDocumentToFirebase(documentURL: URL) {
         do {
             // If the URL is from a security-scoped resource, start accessing it
@@ -388,3 +446,10 @@ extension View {
     }
 }
 
+struct AbogadoName: Codable {
+    let nombre: String
+}
+
+struct BecarioName: Codable {
+    let nombre: String
+}
