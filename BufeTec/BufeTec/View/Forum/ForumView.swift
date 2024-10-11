@@ -20,19 +20,6 @@ struct ForumView: View {
     @State private var showingAskQuestionView = false
     
     
-    // Mock user data - replace this with actual user data fetching logic
-    let userData = UserData(
-        id: "lawyer789",
-        name: "Sofia Sandoval",
-        email: "sofia.sandoval@bufetec.com",
-        userType: .lawyer,
-        phoneNumber: "+1 956 600 0773",
-        cedulaProfesional: "LXXXXXX",
-        especialidad: "Derecho Mercantil",
-        yearsOfExperience: 10,
-        clientId: nil // This is nil for lawyers
-    )
-
     var body: some View {
         ZStack {
             // Main content
@@ -161,7 +148,7 @@ struct ForumView: View {
                 case .success(let posts):
                     DispatchQueue.main.async {
                         self.posts = posts
-                        print("Posts fetched: \(posts.count)")
+                    
                     }
                 case .failure(let error):
                     print("Error fetching posts: \(error.localizedDescription)")
@@ -236,3 +223,4 @@ struct ForumView_Previews: PreviewProvider {
             .environmentObject(AuthState())
     }
 }
+

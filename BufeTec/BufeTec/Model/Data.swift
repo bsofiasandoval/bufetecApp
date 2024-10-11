@@ -1,4 +1,3 @@
-//
 //  Data.swift
 //  ForumTest
 //
@@ -6,17 +5,43 @@
 //
 
 import Foundation
+// MARK: - BecarioInformationElement
+struct BecarioInformationElement: Codable {
+    let id, nombre, correo, rol: String
+
+    enum CodingKeys: String, CodingKey {
+        case id, nombre, correo, rol
+    }
+}
+
+typealias BecarioInformation = [BecarioInformationElement]
+// MARK: - LawyerInformationElement
+struct LawyerInformationElement: Codable {
+    let id, nombre: String
+    let correo, telefono, rol, areaEspecializacion, cedula, estadoCuenta: String?
+    let horariosAtencion: HorariosAtencion?
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case nombre, correo, telefono, rol, cedula
+        case areaEspecializacion = "area_especializacion"
+        case horariosAtencion = "horarios_atencion"
+        case estadoCuenta = "estado_cuenta"
+    }
+}
+
+typealias LawyerInformation = [LawyerInformationElement]
+
 
 // MARK: - ClientInformationElement
 struct ClientInformationElement: Codable {
-    let id, nombre, numeroTelefonico, correo: String
-    let expediente, juzgado, seguimiento, alumno: String
-    let folio: String
-    let ultimaVezInf: Date
-    let rol: String
+    let id, nombre, numeroTelefonico, rol: String
+    let correo, expediente, juzgado, seguimiento, alumno, folio: String?
+    let ultimaVezInf: Date?
+
 
     enum CodingKeys: String, CodingKey {
-        case id = "_id"
+        case id
         case nombre
         case numeroTelefonico = "numero_telefonico"
         case correo, expediente, juzgado, seguimiento, alumno, folio, ultimaVezInf, rol
@@ -29,19 +54,17 @@ typealias ClientInformation = [ClientInformationElement]
 // MARK: - UserInformationElement
 struct UserInformationElement: Codable {
     let id: ID
-    let userInformationID, nombre, apellido, correo: String
+    let userInformationID, nombre, correo: String
     let telefono, rol, areaEspecializacion, cedula: String
-    let casosAsignados: [String]
-    let horariosAtencion: HorariosAtencion
+    let horariosAtencion: HorariosAtencion?
     let estadoCuenta: String
 
     enum CodingKeys: String, CodingKey {
         case id = "_id"
         case userInformationID = "id"
-        case nombre, apellido, correo, telefono, rol
+        case nombre, correo, telefono, rol
         case areaEspecializacion = "area_especializacion"
         case cedula
-        case casosAsignados = "casos_asignados"
         case horariosAtencion = "horarios_atencion"
         case estadoCuenta = "estado_cuenta"
     }
@@ -49,7 +72,7 @@ struct UserInformationElement: Codable {
 
 // MARK: - HorariosAtencion
 struct HorariosAtencion: Codable {
-    let lunes, martes, miércoles, jueves: [String]
+    let lunes, martes, miércoles, jueves: [String]?
 }
 
 // MARK: - ID
@@ -356,3 +379,4 @@ class JSONAny: Codable {
             }
     }
 }
+

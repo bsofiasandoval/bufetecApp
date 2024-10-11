@@ -15,82 +15,10 @@ struct CasesView: View {
     @StateObject private var viewModel = CasesViewModel()
     let clientId: String
     
-    let userData = UserData(
-        id: "client123",
-        name: "Sofia Sandoval",
-        email: nil,
-        userType: .client,
-        phoneNumber: "+19566000773",
-        cedulaProfesional: nil,
-        especialidad: nil,
-        yearsOfExperience: nil,
-        clientId: "CL001"
-    )
-    
     var body: some View {
         Group {
             if authState.isLoggedIn {
-                ZStack {
-                    if viewModel.cases.isEmpty && !viewModel.isLoading {
-                        Text("No se encontrar on casos")
-                            .font(.headline)
-                    } else {
-                        List(viewModel.cases) { legalCase in
-                            NavigationLink(destination: CaseDetailView(legalCase: legalCase, isClient: authState.userRole == .client)) {
-                                VStack(alignment: .leading, spacing: 5) {
-                                    Text(legalCase.tipo_de_caso)
-                                        .font(.headline)
-                                    Text("Estado: \(legalCase.estado)")
-                                        .font(.subheadline)
-                                    Text("Fecha de inicio: \(formatDate(legalCase.fecha_inicio))")
-                                        .font(.caption)
-                                }
-                                .padding(.vertical, 5)
-                            }
-                        }
-                        .refreshable {
-                            await viewModel.fetchCases(for: clientId)
-                        }
-                    }
-                    
-                    if viewModel.isLoading {
-                        LoadingView()
-                    }
-                    
-                    if let errorMessage = viewModel.errorMessage {
-                        Text(errorMessage)
-                            .foregroundColor(.red)
-                            .padding()
-                            .background(Color.white.opacity(0.8))
-                            .cornerRadius(10)
-                    }
-                }
-                .navigationTitle("Mis Casos")
-                .navigationBarBackButtonHidden(true)
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button(action: { showingProfile = true }) {
-                            Image(systemName: "person.fill")
-                        }
-                    }
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        Button(action: {
-                            showingNewCaseView = true
-                        }) {
-                            Image(systemName: "plus")
-                        }
-                    }
-                }
-                .sheet(isPresented: $showingProfile) {
-                    ProfileView()
-                        .environmentObject(authState)
-                }
-                .sheet(isPresented: $showingNewCaseView) {
-                    NewCaseView()  // You'll need to create this view
-                }
-                .task {
-                    await viewModel.fetchCases(for: clientId)
-                }
+                caseContent
             } else {
                 GeneralLoginView()
                     .environmentObject(authState)
@@ -100,6 +28,80 @@ struct CasesView: View {
         .animation(.easeInOut, value: authState.isLoggedIn)
     }
     
+    @ViewBuilder
+    private var caseContent: some View {
+        ZStack {
+            if viewModel.cases.isEmpty && !viewModel.isLoading {
+                Text("No se encontraron casos")
+                    .font(.headline)
+            } else {
+                caseList
+            }
+            
+            if viewModel.isLoading {
+                LoadingView()
+            }
+            
+            if let errorMessage = viewModel.errorMessage {
+                Text(errorMessage)
+                    .foregroundColor(.red)
+                    .padding()
+                    .background(Color.white.opacity(0.8))
+                    .cornerRadius(10)
+            }
+        }
+        .navigationTitle("Mis Casos")
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: { showingProfile = true }) {
+                    Image(systemName: "person.fill")
+                }
+            }
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: { showingNewCaseView = true }) {
+                    Image(systemName: "plus")
+                }
+            }
+        }
+        .sheet(isPresented: $showingProfile) {
+            ProfileView()
+                .environmentObject(authState)
+        }
+        .sheet(isPresented: $showingNewCaseView) {
+            NewCaseView()
+        }
+        .task {
+            await viewModel.fetchCases(for: clientId)
+        }
+    }
+    
+    private var caseList: some View {
+        List(viewModel.cases) { legalCase in
+            NavigationLink(destination: CaseDetailView(legalCase: legalCase, isClient: authState.userRole == .cliente)) {
+                CaseRowView(legalCase: legalCase)
+            }
+        }
+        .refreshable {
+            await viewModel.fetchCases(for: clientId)
+        }
+    }
+}
+
+struct CaseRowView: View {
+    let legalCase: Case
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 5) {
+            Text(legalCase.tipo_de_caso)
+                .font(.headline)
+            Text("Estado: \(legalCase.estado)")
+                .font(.subheadline)
+            Text("Fecha de inicio: \(formatDate(legalCase.fecha_inicio))")
+                .font(.caption)
+        }
+        .padding(.vertical, 5)
+    }
     
     private func formatDate(_ dateString: String) -> String {
         let inputFormatter = DateFormatter()
@@ -113,9 +115,8 @@ struct CasesView: View {
         if let date = inputFormatter.date(from: dateString) {
             return outputFormatter.string(from: date)
         }
-        return dateString  // Return original string if parsing fails
+        return dateString
     }
-    
 }
 
 struct LoadingView: View {
@@ -132,7 +133,3 @@ struct LoadingView: View {
     }
 }
 
-#Preview {
-    CasesView(clientId: "c7BH89up7bNXLKou3RTyvBP3Lmr1")
-        .environmentObject(AuthState())
-}

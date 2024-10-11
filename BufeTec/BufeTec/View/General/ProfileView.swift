@@ -10,9 +10,16 @@ import FirebaseAuth
 
 struct ProfileView: View {
     @State private var showingLogoutAlert = false
-    @State private var userData = UserData(name: "", email: nil, phoneNumber: nil, userType: .client)
     @EnvironmentObject var authState: AuthState
     @Environment(\.presentationMode) var presentationMode  // To dismiss the view
+    
+    // State variables to hold user-specific data
+    @State private var name: String = ""
+    @State private var email: String?
+    @State private var phoneNumber: String?
+    @State private var cedulaProfesional: String?
+    @State private var especialidad: String?
+    @State private var clientId: String?
     
     var body: some View {
         ScrollView {
@@ -26,91 +33,98 @@ struct ProfileView: View {
                     .padding(.top, 40)
                 
                 // Name
-                Text(userData.name)
+                Text(name)
                     .font(.title)
                     .fontWeight(.bold)
                 
                 // Common Info Cards
                 VStack(spacing: 15) {
-                    
-                    if let email = userData.email {
-                        infoCard(title: "Email", value: email)
-                    }
-                    
-                    // Phone number only for "clientes" and "abogados"
-                    if let phoneNumber = userData.phoneNumber, userData.userType == .client || userData.userType == .lawyer {
+                    // Phone number (for clients and lawyers only)
+                    if let phoneNumber = phoneNumber, authState.userRole == .cliente || authState.userRole == .abogado {
                         infoCard(title: "Phone Number", value: phoneNumber)
                     }
                     
-                    // User Type Specific Info
-                    switch userData.userType {
-                    case .lawyer:
-                        if let cedula = userData.cedulaProfesional {
-                            infoCard(title: "Cédula Profesional", value: cedula)
-                        }
-                        if let especialidad = userData.especialidad {
-                            infoCard(title: "Especialidad", value: especialidad)
-                        }
-                    case .client:
-                        if let clientId = userData.clientId {
-                            infoCard(title: "Client ID", value: clientId)
-                        }
-                    case .becario:
-                        Text("Becario Information")
-                    default:
-                        Text("User type not supported")
+                    if let email = email, authState.userRole == .abogado || authState.userRole == .becario {
+                        infoCard(title: "Email", value: email )
                     }
+                    
+                    // User Type Specific Info
+                    if let role = authState.userRole {
+                        switch role {
+                        case .abogado:
+                            if let cedula = cedulaProfesional {
+                                infoCard(title: "Cédula Profesional", value: cedula)
+                            }
+                            if let especialidad = especialidad {
+                                infoCard(title: "Especialidad", value: especialidad)
+                            }
+                        case .cliente:
+                            if let clientId = clientId {
+                                infoCard(title: "Client ID", value: clientId)
+                            }
+                        case .becario:
+                            Text("Becario Information")
+                        }
+                    }
+                    // Logout Button
+                    Button("Logout") {
+                        showingLogoutAlert = true
+                    }
+                    .foregroundColor(.white)
+                    .padding()
+                    .background(Color.red)
+                    .cornerRadius(10)
                 }
                 .padding()
-                
-                Button("Logout") {
-                    showingLogoutAlert = true
-                }
-                .foregroundColor(.white)
-                .padding()
-                .background(Color.red)
-                .cornerRadius(10)
             }
-        }
-        .onAppear {
-            if let role = authState.userRole {
-                switch role {
-                case .abogado:
-                    fetchLawyerData(userId: Auth.auth().currentUser?.uid ?? "")
-                case .cliente:
-                    fetchClientData(userId: Auth.auth().currentUser?.uid ?? "")
-                case .becario:
-                    fetchBecarioData(userId: Auth.auth().currentUser?.uid ?? "")
-                }
+            .onAppear {
+                let userId = Auth.auth().currentUser?.uid ?? ""
+                fetchData(userId: userId)
             }
-        }
-        .navigationBarTitle("Profile", displayMode: .inline)
-        .navigationBarItems(trailing: Button("Close") {
-            presentationMode.wrappedValue.dismiss()
-        })
-        .alert(isPresented: $showingLogoutAlert) {
-            Alert(
-                title: Text("Logout"),
-                message: Text("Are you sure you want to logout?"),
-                primaryButton: .destructive(Text("Logout")) {
-                    authState.logout()
-                },
-                secondaryButton: .cancel()
-            )
+            .navigationBarTitle("Profile", displayMode: .inline)
+            .navigationBarItems(trailing: Button("Close") {
+                presentationMode.wrappedValue.dismiss()
+            })
+            .alert(isPresented: $showingLogoutAlert) {
+                Alert(
+                    title: Text("Logout"),
+                    message: Text("Are you sure you want to logout?"),
+                    primaryButton: .destructive(Text("Logout")) {
+                        authState.logout()
+                    },
+                    secondaryButton: .cancel()
+                )
+            }
         }
     }
     
+    // Fetching Data
+    private func fetchData(userId: String) {
+        if let role = authState.userRole {
+            switch role {
+            case .abogado:
+                fetchLawyerData(userId: userId)
+                
+            case .cliente:
+                fetchClientData(userId: userId)
+                
+            case .becario:
+                fetchBecarioData(userId: userId)
+            }
+        }
+    }
+    
+    // Fetching Lawyer Data
     private func fetchLawyerData(userId: String) {
         NetworkManager.shared.fetchUserAbogadoById(userId) { result in
             switch result {
             case .success(let user):
                 DispatchQueue.main.async {
-                    userData.name = user.nombre
-                    userData.email = user.correo
-                    userData.phoneNumber = user.telefono  // Lawyers have phone numbers
-                    userData.cedulaProfesional = user.cedula
-                    userData.especialidad = user.areaEspecializacion
-                    userData.userType = .lawyer
+                    self.name = user.nombre
+                    self.email = user.correo
+                    self.phoneNumber = user.telefono  // Lawyers have phone numbers
+                    self.cedulaProfesional = user.cedula
+                    self.especialidad = user.areaEspecializacion
                 }
             case .failure(let error):
                 print("Error fetching lawyer data: \(error.localizedDescription)")
@@ -118,32 +132,15 @@ struct ProfileView: View {
         }
     }
     
-    private func fetchBecarioData(userId: String) {
-        NetworkManager.shared.fetchUserBecarioById(userId) { result in
-            switch result {
-            case .success(let user):
-                DispatchQueue.main.async {
-                    userData.name = user.nombre
-                    userData.email = user.correo
-                    userData.phoneNumber = nil  // Becarios don’t have phone numbers
-                    userData.userType = .becario
-                }
-            case .failure(let error):
-                print("Error fetching becario data: \(error.localizedDescription)")
-            }
-        }
-    }
-    
+    // Fetching Client Data
     private func fetchClientData(userId: String) {
         NetworkManager.shared.fetchUserClienteById(userId) { result in
             switch result {
             case .success(let user):
                 DispatchQueue.main.async {
-                    userData.name = user.nombre
-                    userData.email = user.correo
-                    userData.clientId = user.id
-                    userData.phoneNumber = user.telefono  // Clients have phone numbers
-                    userData.userType = .client
+                    self.name = user.nombre
+                    self.clientId = user.id
+                    self.phoneNumber = user.numeroTelefonico // Clients have phone numbers
                 }
             case .failure(let error):
                 print("Error fetching client data: \(error.localizedDescription)")
@@ -151,6 +148,22 @@ struct ProfileView: View {
         }
     }
     
+    // Fetching Becario Data
+    private func fetchBecarioData(userId: String) {
+        NetworkManager.shared.fetchUserBecarioById(userId) { result in
+            switch result {
+            case .success(let user):
+                DispatchQueue.main.async {
+                    self.name = user.nombre
+                    self.email = user.correo
+                }
+            case .failure(let error):
+                print("Error fetching becario data: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    // Info Card for displaying user details
     private func infoCard(title: String, value: String) -> some View {
         VStack(alignment: .leading, spacing: 5) {
             Text(title)
@@ -166,3 +179,4 @@ struct ProfileView: View {
         .cornerRadius(10)
     }
 }
+

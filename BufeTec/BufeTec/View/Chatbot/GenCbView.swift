@@ -12,17 +12,6 @@ struct GenCbView: View {
     @EnvironmentObject var authState: AuthState
     @State private var showingProfile = false
     
-    let userData = UserData(
-        id: "lawyer789",
-        name: "Sofia Sandoval",
-        email: "sofia.sandoval@bufetec.com",
-        userType: .lawyer,
-        phoneNumber: "+1 956 600 0773",
-        cedulaProfesional: "LXXXXXX",
-        especialidad: "Derecho Mercantil",
-        yearsOfExperience: 10,
-        clientId: nil // This is nil for lawyers
-    )
     
    var body: some View {
        Group{

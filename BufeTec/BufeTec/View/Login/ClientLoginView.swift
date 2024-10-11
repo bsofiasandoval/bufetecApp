@@ -199,7 +199,7 @@ struct ClientLoginView: View {
                 if let user = authResult?.user {
                     self.authState.isLoggedIn = true
                     self.authState.user = user
-                    self.authState.setUserRole(.client)
+                    self.authState.setUserRole(.cliente)
                     self.isLoggedOut = false
                     self.presentationMode.wrappedValue.dismiss()
                 }
@@ -286,3 +286,4 @@ struct CustomCountryPicker: View {
 #Preview {
     ClientLoginView(isLoggedOut: .constant(true)).environmentObject(AuthState())
 }
+

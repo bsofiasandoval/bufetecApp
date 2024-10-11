@@ -61,23 +61,23 @@ struct InternalLoginView: View {
                                     // Determine role based on email
                                     if (isStudent(email: email) || isLawyer(email: email)) {
                                         if isStudent(email: email) {
+                                            self.authState.setUserRole(.becario)
                                             pushStudentToMongoDB(uid: uid, email: email, name: name)
-                                        } else if isLawyer(email: email) || email == "bsofiasandoval@gmail.com" {
+                                        } else if isLawyer(email: email)  {
+                                            self.authState.setUserRole(.abogado)
                                             pushLawyerToMongoDB(uid: uid, email: email, name: name)
                                         }
                                         DispatchQueue.main.async {
                                            self.authState.isLoggedIn = true
                                            self.authState.user = user
-                                           self.authState.setUserRole(.internalUser)
+                                           
                                            self.dismiss()
                                         }
                                     } else {
                                         print("Email format not recognized")
                                     }
                                 }
-                                
                                 dismiss() // Dismiss view after login
-                                
                             } catch AuthenticationError.runtimeError(let errorMessage) {
                                 err = errorMessage
                             }
@@ -100,13 +100,13 @@ struct InternalLoginView: View {
     // Helper function to check if email belongs to a student
     func isStudent(email: String) -> Bool {
         // Check if the email starts with "A" and ends with "@tec.mx"
-        return email.hasPrefix("A") || email.hasPrefix("a") && email.hasSuffix("@tec.mx")
+        return (email.hasPrefix("A") || email.hasPrefix("a") ) && email.hasSuffix("@tec.mx")
     }
     
     // Helper function to check if email belongs to a lawyer
     func isLawyer(email: String) -> Bool {
         // Check if the email ends with "@tec.mx" but does not start with "A"
-        return email.hasSuffix("@tec.mx") && !email.hasPrefix("A")
+        return email.hasSuffix("@tec.mx") && (!email.hasPrefix("A")  || !email.hasPrefix("a")) || email.hasSuffix("@gmail.com")
     }
     
     // Function to push student (becario) to MongoDB
@@ -141,13 +141,12 @@ struct InternalLoginView: View {
 
     // Function to push lawyer (abogado) to MongoDB
     func pushLawyerToMongoDB(uid: String, email: String, name: String) {
-        let url = URL(string: "http://10.14.255.51:4000/abogados")!  // Endpoint for lawyers
+        let url = URL(string: "http://10.14.255.51:4000/abogados/\(uid)")!  // Endpoint for lawyers
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
         let userInfo: [String: Any] = [
-            "id": uid,
             "nombre": name,
             "correo": email,
             "rol": "abogado"  // Set role to abogado for lawyers
@@ -173,3 +172,4 @@ struct InternalLoginView: View {
 #Preview {
     InternalLoginView()
 }
+

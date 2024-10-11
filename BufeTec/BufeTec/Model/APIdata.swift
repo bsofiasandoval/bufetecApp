@@ -100,37 +100,52 @@ class NetworkManager {
     }
     
     //Method to get the data of the author of a post
-    func fetchUserBecarioById(_ id: String, completion: @escaping (Result<UserInformationElement, Error>) -> Void) {
-        let urlString = "http://10.14.255.51:4000/becarios/\(id)"
-        //let urlString = "http://127.0.0.1:5000/becarios/\(id)"
-        guard let url = URL(string: urlString) else {
-            print("Invalid URL")
-            return
+    func fetchUserBecarioById(_ id: String, completion: @escaping (Result<BecarioInformationElement, Error>) -> Void) {
+            let urlString = "http://10.14.255.51:4000/becarios/\(id)"
+            guard let url = URL(string: urlString) else {
+                print("Invalid URL")
+                completion(.failure(NSError(domain: "NetworkManager", code: 0, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])))
+                return
+            }
+
+            URLSession.shared.dataTask(with: url) { data, response, error in
+                if let error = error {
+                    print("Network error: \(error.localizedDescription)")
+                    completion(.failure(error))
+                    return
+                }
+
+                guard let httpResponse = response as? HTTPURLResponse else {
+                    print("Invalid response")
+                    completion(.failure(NSError(domain: "NetworkManager", code: 0, userInfo: [NSLocalizedDescriptionKey: "Invalid response"])))
+                    return
+                }
+
+                print("HTTP Status Code: \(httpResponse.statusCode)")
+
+                guard let data = data else {
+                    print("No data received")
+                    completion(.failure(NSError(domain: "NetworkManager", code: 0, userInfo: [NSLocalizedDescriptionKey: "No data received"])))
+                    return
+                }
+
+                do {
+                    if let jsonString = String(data: data, encoding: .utf8) {
+                        print("Received JSON: \(jsonString)")
+                    }
+                    
+                    let decoder = JSONDecoder()
+                    let user = try decoder.decode(BecarioInformationElement.self, from: data)
+                    completion(.success(user))
+                } catch {
+                    print("Decoding error: \(error)")
+                    completion(.failure(error))
+                }
+            }.resume()
         }
-
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-
-            guard let data = data else {
-                print("No data received")
-                return
-            }
-
-            do {
-                let decoder = JSONDecoder()
-                let user = try decoder.decode(UserInformationElement.self, from: data)
-                completion(.success(user))
-            } catch {
-                completion(.failure(error))
-            }
-        }.resume()
-    }
     
     //Method to fetch abogados by id
-    func fetchUserAbogadoById(_ id: String, completion: @escaping (Result<UserInformationElement, Error>) -> Void) {
+    func fetchUserAbogadoById(_ id: String, completion: @escaping (Result<LawyerInformationElement, Error>) -> Void) {
         let urlString = "http://10.14.255.51:4000/abogados/\(id)"
         //let urlString = "http://127.0.0.1:5000/abogados/\(id)"
         guard let url = URL(string: urlString) else {
@@ -151,7 +166,7 @@ class NetworkManager {
 
             do {
                 let decoder = JSONDecoder()
-                let user = try decoder.decode(UserInformationElement.self, from: data)
+                let user = try decoder.decode(LawyerInformationElement.self, from: data)
                 completion(.success(user))
             } catch {
                 completion(.failure(error))
@@ -254,3 +269,4 @@ class NetworkManager {
     }
 
 }
+

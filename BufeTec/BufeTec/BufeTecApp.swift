@@ -61,7 +61,7 @@ class AuthState: ObservableObject {
         else if(user?.email?.hasSuffix("@tec.mx") == true || user?.email?.hasPrefix("A") == true || user?.email?.hasPrefix("a") == true){
             return .becario
         }
-        else if((user?.email?.hasSuffix("@tec.mx")) == true){
+        else if((user?.email?.hasSuffix("@tec.mx")) == true || user?.email?.hasSuffix("@gmail") == true){
             return .abogado
         }
         else{

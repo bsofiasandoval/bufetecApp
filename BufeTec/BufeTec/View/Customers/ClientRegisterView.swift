@@ -369,7 +369,7 @@ struct PhoneVerificationView: View {
                     if let user = authResult?.user {
                         self.authState.isLoggedIn = true
                         self.authState.user = user
-                        self.authState.setUserRole(.client)
+                        self.authState.setUserRole(.cliente)
                         self.isLoggedOut = false
                         onVerificationComplete(user.uid)
                         self.presentationMode.wrappedValue.dismiss()
@@ -407,3 +407,4 @@ extension View {
         }
     }
 }
+

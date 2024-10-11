@@ -13,7 +13,6 @@ struct ExploreView: View {
     @State private var showingProfile = false
     @State private var errorMessage: String?
     @State private var showingErrorAlert = false
-    @State private var showingBibliotecaLegal = false
     
     // Mock user data - replace this with actual user data fetching logic
 
@@ -21,7 +20,7 @@ struct ExploreView: View {
         ScrollView {
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 110))], spacing: 20) {
                 ExploreButton(title: "Biblioteca Legal", icon: "book.fill", colors: [Color(hex: "4A69BD"), Color(hex: "1E3799")]) {
-                    showingBibliotecaLegal = true
+                    
                 }
                 ExploreButton(title: "Guías", icon: "map.fill", colors: [Color(hex: "60A3BC"), Color(hex: "3C6382")]) {
                     // Placeholder action
@@ -29,11 +28,20 @@ struct ExploreView: View {
                 ExploreButton(title: "Artículos", icon: "doc.text.fill", colors: [Color(hex: "6A89CC"), Color(hex: "4A69BD")]) {
                     // Placeholder action
                 }
-                ExploreButton(title: "Noticias", icon: "newspaper.fill", colors: [Color(hex: "82CCDD"), Color(hex: "60A3BC")]) {
-                    // Placeholder action
+                NavigationLink(destination: NewsView()) {
+                    ExploreButton(title: "Noticias", icon: "newspaper.fill", colors: [Color(hex: "82CCDD"), Color(hex: "60A3BC")]) {
+                    }
                 }
                 ExploreButton(title: "Videos", icon: "video.fill", colors: [Color(hex: "4A69BD"), Color(hex: "1E3799")]) {
                     // Placeholder action
+                }
+                NavigationLink(destination: ClientsView()) {
+                    ExploreButton(title: "Casos", icon: "briefcase.fill", colors: [Color(hex: "60A3BC"), Color(hex: "3C6382")]){
+                    }
+                }
+                NavigationLink(destination: myClientsView()) {
+                    ExploreButton(title: "Mis Casos", icon: "briefcase.fill", colors: [Color(hex: "60A3BC"), Color(hex: "3C6382")]){
+                    }
                 }
             }
             .padding()
@@ -54,15 +62,6 @@ struct ExploreView: View {
             Button("OK", role: .cancel) {}
         } message: { error in
             Text(error)
-        }
-        .sheet(isPresented: $showingBibliotecaLegal) {
-            NavigationView {
-                BibliotecaLegalView()
-                    .navigationBarTitle("Biblioteca Legal")
-                    .navigationBarItems(trailing: Button("Close") {
-                        showingBibliotecaLegal = false
-                    })
-            }
         }
     }
 }

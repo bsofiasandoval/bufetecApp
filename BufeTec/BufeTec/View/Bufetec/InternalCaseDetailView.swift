@@ -1,5 +1,5 @@
 //
-//  CaseView.swift
+//  InternalCaseDetailView.swift
 //  BufeTec
 //
 //  Created by Sofia Sandoval on 10/1/24.
@@ -9,7 +9,7 @@ import SwiftUI
 import FirebaseStorage
 import UniformTypeIdentifiers
 
-struct CaseDetailView: View {
+struct InternalCaseDetailView: View {
     let legalCase: Case
     let isClient: Bool
     @Environment(\.colorScheme) var colorScheme
@@ -313,45 +313,12 @@ struct CaseDetailView: View {
         return dateString  // Return original string if parsing fails
     }
 }
-struct DocumentPicker: UIViewControllerRepresentable {
-    @Binding var selectedDocumentURL: URL?
-    var onUpload: (URL) -> Void
-    
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
-    
-    func makeUIViewController(context: Context) -> UIDocumentPickerViewController {
-        let picker = UIDocumentPickerViewController(forOpeningContentTypes: [UTType.item])
-        picker.delegate = context.coordinator
-        return picker
-    }
-    
-    func updateUIViewController(_ uiViewController: UIDocumentPickerViewController, context: Context) {}
-    
-    class Coordinator: NSObject, UIDocumentPickerDelegate {
-        var parent: DocumentPicker
-        
-        init(_ parent: DocumentPicker) {
-            self.parent = parent
-        }
-        
-        func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-            guard let selectedURL = urls.first else { return }
-            parent.selectedDocumentURL = selectedURL
-            parent.onUpload(selectedURL)
-        }
-        
-        func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
-            parent.selectedDocumentURL = nil
-        }
-    }
-}
 
-struct CaseDetailView_Previews: PreviewProvider {
+
+struct InternalCaseDetailView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            CaseDetailView(
+            InternalCaseDetailView(
                 legalCase: Case(
                     id: "case_001",
                     tipo_de_caso: "Divorcio",
@@ -374,17 +341,6 @@ struct CaseDetailView_Previews: PreviewProvider {
                 isClient: true  // Set to false to see the notes in the preview
             )
         }
-    }
-}
-
-
-extension View {
-    func sectionStyle() -> some View {
-        self
-            .padding()
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(RoundedRectangle(cornerRadius: 12).fill(Color(UIColor.secondarySystemGroupedBackground)))
-            .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
     }
 }
 

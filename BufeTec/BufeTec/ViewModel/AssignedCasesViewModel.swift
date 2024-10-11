@@ -1,22 +1,22 @@
 //
-//  CasesViewModel.swift
+//  AssignedCasesViewModel.swift
 //  BufeTec
 //
-//  Created by Sofia Sandoval on 10/1/24.
+//  Created by Sofia Sandoval on 10/10/24.
 //
 
 import SwiftUI
 
-class CasesViewModel: ObservableObject {
+class AssignedCasesViewModel: ObservableObject {
     @Published var cases: [Case] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
     
-    func fetchCases(for clientId: String) {
+    func fetchCases(for internalId: String) {
         isLoading = true
         errorMessage = nil
         
-        guard let url = URL(string: "http://10.14.255.51:4000/casos_legales/cliente/\(clientId)") else {
+        guard let url = URL(string: "http://10.14.255.51:4000/casos_legales/internal/\(internalId)") else {
             DispatchQueue.main.async {
                 self.isLoading = false
                 self.errorMessage = "Invalid URL"
@@ -24,7 +24,7 @@ class CasesViewModel: ObservableObject {
             return
         }
         
-        print("Fetching cases for client ID: \(clientId)")
+        print("Fetching cases for client ID: \(internalId)")
         let startTime = Date()
         
         URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
@@ -77,4 +77,3 @@ class CasesViewModel: ObservableObject {
         }.resume()
     }
 }
-

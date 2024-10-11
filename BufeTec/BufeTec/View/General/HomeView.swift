@@ -52,10 +52,10 @@ struct HomeView: View {
         if(user == nil) {
             return nil
         }
-        else if(user?.email?.hasSuffix("@tec.mx") == true || user?.email?.hasPrefix("A") == true) {
+        else if(user?.email?.hasSuffix("@tec.mx") == true && user?.email?.hasPrefix("A") == true || user?.email?.hasPrefix("a") == true  ) {
             return .becario
         }
-        else if((user?.email?.hasSuffix("@tec.mx")) == true){
+        else if((user?.email?.hasSuffix("@tec.mx")) == true || (user?.email?.hasSuffix("@gmail.com") == true)){
             return .abogado
         }
         else{
@@ -63,3 +63,4 @@ struct HomeView: View {
         }
     }
 }
+
