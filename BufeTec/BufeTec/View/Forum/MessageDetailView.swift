@@ -26,18 +26,20 @@ struct MessageDetailView: View {
                 VStack(alignment: .leading, spacing: 10) {
                     Text(post.titulo)
                         .font(.headline)
+                        .foregroundColor(Color.text)
                     
                     Text(post.contenido)
                         .font(.subheadline)
+                        .foregroundColor(Color.text)
                     
                     // Aquí se llama a la función formatTime que ahora devuelve el día y el mes
                     Text(formatTime(post.fechaCreacion))
                         .font(.caption)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.text)
                 }
                 .padding()
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Color.white)
+                .background(Color.cajitas)
                 .cornerRadius(15)
                 .padding(.horizontal)
             
@@ -46,6 +48,7 @@ struct MessageDetailView: View {
                     Text("Respuestas")
                         .font(.headline)
                         .padding(.leading, 30)
+                        .padding(.top, 10)
                         .foregroundColor(.secondary)
                 }
                 Spacer()
@@ -58,25 +61,27 @@ struct MessageDetailView: View {
                                         .font(.subheadline)
                                         .bold()
                                         .lineLimit(1)
+                                        .foregroundColor(Color.text)
                         
                         Text(respuesta.contenido)
                             .font(.subheadline)
+                            .foregroundColor(Color.text)
                         
                         // Aquí se llama a la función formatTime que ahora devuelve el día y el mes
                         Text(formatTime(respuesta.fechaCreacion))
                             .font(.caption)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.text)
                     }
                     .padding()
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(Color.white)
+                    .background(Color.cajitas)
                     .cornerRadius(15)
                     .padding(.horizontal)
                 }
             }
             
         }
-        .background(Color(.systemGray6))
+        .background(Color.forumBack)
         .onAppear {
                     fetchUserData(userId: Auth.auth().currentUser?.uid ?? "")
                     fetchResponses()
@@ -87,12 +92,19 @@ struct MessageDetailView: View {
                 ? "Responder mensaje"
                 : "Detalles del mensaje"
         )
+        .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             // Conditionally show "Responder" button if user is the post's author or a lawyer
             if post.autorID == Auth.auth().currentUser?.uid || isAbogado {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Responder") {
+                    Button(action:{
                         isPresented = true
+                    }) {
+                        Image(systemName: "paperplane")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 24, height: 24) // Adjust size as needed
+                            .foregroundColor(.blue)
                     }
                 }
             }
@@ -106,8 +118,6 @@ struct MessageDetailView: View {
         .onAppear{
             fetchResponses()
         }
-        .toolbarBackground(.white, for: .navigationBar)
-        .toolbarBackground(.visible, for: .navigationBar)
     }
     
     private func fetchResponses() {

@@ -63,6 +63,7 @@ struct InternalCbView: View {
                 }
                 .padding()
             }
+            .navigationTitle("BufeBot")
             .task {
                 await createThread()
             }
@@ -292,21 +293,24 @@ struct MessageBubbleInternal: View {
 
     var body: some View {
         VStack(alignment: message.isFromCurrentUser ? .trailing : .leading, spacing: 8) {
-            HStack {
+            HStack(alignment: .bottom, spacing: 0) {
                 if message.isFromCurrentUser {
                     formatMessageText(message.text)
-                        .padding(12)
+                        .padding(10)
                         .background(Color.userMessageBackground)
                         .foregroundColor(Color.userMessageText)
                         .clipShape(BubbleShape(isFromCurrentUser: true))
                 } else {
                     formatMessageText(message.text)
-                        .padding(12)
+                        .padding(10)
                         .background(Color.botMessageBackground)
                         .foregroundColor(Color.botMessageText)
                         .clipShape(BubbleShape(isFromCurrentUser: false))
                 }
             }
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+        }
 
             // Display unique citations
             if let citations = message.citations {
@@ -333,31 +337,37 @@ struct MessageBubbleInternal: View {
     // Function to process the message text and apply bold and bullet formatting
     func formatMessageText(_ text: String) -> Text {
         var finalText = Text("")
-        let lines = text.components(separatedBy: "\n")
+        let lines = text.components(separatedBy: "\n").filter { !$0.isEmpty } // Remove empty lines from array
 
-        for line in lines {
+        for (index, line) in lines.enumerated() {
             if line.contains("**") {
+                // Splitting text for bold formatting
                 let boldParts = line.components(separatedBy: "**")
                 for (index, part) in boldParts.enumerated() {
-                    if index % 2 == 1 {
+                    if index % 2 == 1 { // Apply bold to text between ** markers
                         finalText = finalText + Text(part).bold()
                     } else {
                         finalText = finalText + Text(part)
                     }
                 }
             } else if line.starts(with: "- ") {
+                // Formatting for bullet points
                 let bulletText = line.replacingOccurrences(of: "- ", with: "• ")
                 finalText = finalText + Text(bulletText)
             } else {
+                // Normal text
                 finalText = finalText + Text(line)
             }
 
-            finalText = finalText + Text("\n")
+            if index < lines.count - 1 {
+                // Add a newline only if it's not the last line
+                finalText = finalText + Text("\n")
+            }
         }
 
         return finalText
     }
-}
+
 
 struct CitationBox: View {
     let citation: Citation
@@ -369,8 +379,6 @@ struct CitationBox: View {
             }
         }) {
             HStack {
-                Image(systemName: "link")
-                    .foregroundColor(.white)
                 Text(citation.fileName)
                     .foregroundColor(.white)
                 Spacer()
@@ -378,7 +386,7 @@ struct CitationBox: View {
                     .foregroundColor(.white)
             }
             .padding()
-            .background(Color.green)
+            .background(Color.gradientStart)
             .cornerRadius(10)
         }
         .buttonStyle(PlainButtonStyle())

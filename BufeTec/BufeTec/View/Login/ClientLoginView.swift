@@ -5,7 +5,6 @@
 //  Created by Sofia Sandoval y Diego Sabillon on 9/13/24.
 //
 
-
 import SwiftUI
 import FirebaseAuth
 import os
@@ -24,7 +23,6 @@ struct Country: Identifiable, Hashable {
         lhs.id == rhs.id
     }
 }
-
 
 struct ClientLoginView: View {
     @State private var selectedCountry: Country
@@ -84,7 +82,7 @@ struct ClientLoginView: View {
         }
         .navigationBarBackButtonHidden(true)
         .alert(item: $errorMessage) { error in
-            Alert(title: Text("Error"), message: Text(error.message), dismissButton: .default(Text("OK")))
+            Alert(title: Text(error.title), message: Text(error.message), dismissButton: .default(Text("Aceptar")))
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
@@ -110,6 +108,12 @@ struct ClientLoginView: View {
                     .background(Color.white.opacity(0.2))
                     .cornerRadius(10)
                     .foregroundColor(.white)
+                    .onChange(of: phoneNumber) { newValue in
+                        // Solo permitir hasta 10 dígitos
+                        if newValue.count > 10 {
+                            phoneNumber = String(newValue.prefix(10))
+                        }
+                    }
             }
             
             Button(action: sendOTP) {
@@ -151,11 +155,9 @@ struct ClientLoginView: View {
     
     func sendOTP() {
         let fullPhoneNumber = selectedCountry.code + phoneNumber
-        print("Attempting to send OTP to: \(fullPhoneNumber)")
         isLoading = true
-        guard !phoneNumber.isEmpty else {
-            print("Phone number is empty")
-            errorMessage = LoginErrorMessage(message: "Phone number cannot be empty.")
+        guard phoneNumber.count == 10 else {
+            errorMessage = LoginErrorMessage(title: "Número Invalido", message: "Intenta de nuevo, recuerda que deben de ser 10 dígitos")
             isLoading = false
             return
         }
@@ -164,7 +166,7 @@ struct ClientLoginView: View {
             .verifyPhoneNumber(fullPhoneNumber, uiDelegate: nil) { verificationID, error in
                 isLoading = false
                 if let error = error {
-                    errorMessage = LoginErrorMessage(message: error.localizedDescription)
+                    errorMessage = LoginErrorMessage(title: "Error", message: error.localizedDescription)
                     return
                 }
                 self.verificationID = verificationID
@@ -175,7 +177,7 @@ struct ClientLoginView: View {
     func verifyCode() {
         isLoading = true
         guard let verificationID = verificationID else {
-            errorMessage = LoginErrorMessage(message: "Verification ID is missing. Please try sending the code again.")
+            errorMessage = LoginErrorMessage(title: "Error", message: "Inténtalo de nuevo.")
             isLoading = false
             return
         }
@@ -185,14 +187,17 @@ struct ClientLoginView: View {
             verificationCode: verificationCode
         )
         
-        // After successful login:
         Auth.auth().signIn(with: credential) { authResult, error in
             DispatchQueue.main.async {
                 self.isLoading = false
                 
                 if let error = error {
-                    print("Error during login: \(error.localizedDescription)")
-                    self.errorMessage = LoginErrorMessage(message: error.localizedDescription)
+                    if (error as NSError).code == AuthErrorCode.invalidVerificationCode.rawValue {
+                        // Mostrar un error específico si el código es incorrecto
+                        self.errorMessage = LoginErrorMessage(title: "Código Inválido", message: "El código de verificación es incorrecto. Inténtalo de nuevo.")
+                    } else {
+                        self.errorMessage = LoginErrorMessage(title: "Error", message: error.localizedDescription)
+                    }
                     return
                 }
                 
@@ -206,52 +211,11 @@ struct ClientLoginView: View {
             }
         }
     }
-
-
-    
-    func pushClientToMongoDB(uid: String, phoneNumber: String, name:String) {
-        let url = URL(string: "http://10.14.255.51:4000/clientes")!
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        // Pass the Firebase uid as _id
-        let userInfo: [String: Any] = [
-            "_id": uid,  // Use Firebase uid as MongoDB _id
-            "nombre": name,
-            "numero_telefonico": phoneNumber,
-            "correo": "",   // Add email if needed
-            "tramite": "Caso Legal",  // Example tramite, replace with actual data
-            "expediente": "",
-            "juzgado": "",
-            "seguimiento": "",
-            "alumno": "",
-            "folio": "",
-            "ultimaVezInf": ISO8601DateFormatter().string(from: Date()),  // Set current date in ISO format
-            "rol": "cliente"
-        ]
-        
-        guard let httpBody = try? JSONSerialization.data(withJSONObject: userInfo, options: []) else { return }
-        request.httpBody = httpBody
-        
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                print("Error pushing user to MongoDB: \(error)")
-                return
-            }
-            
-            guard let data = data else { return }
-            if let responseString = String(data: data, encoding: .utf8) {
-                print("MongoDB response: \(responseString)")
-            }
-        }.resume()
-    }
 }
-
-
 
 struct LoginErrorMessage: Identifiable {
     let id = UUID()
+    let title: String
     let message: String
 }
 
@@ -269,10 +233,9 @@ struct CustomCountryPicker: View {
         } label: {
             HStack {
                 Text(selectedCountry.flag)
-                    .font(.title3)  // Increased font size
+                    .font(.title3)
                 Image(systemName: "chevron.down")
                     .font(.caption)
-                
             }
             .padding()
             .background(Color.white.opacity(0.2))
@@ -281,9 +244,6 @@ struct CustomCountryPicker: View {
     }
 }
 
-
-
 #Preview {
     ClientLoginView(isLoggedOut: .constant(true)).environmentObject(AuthState())
 }
-

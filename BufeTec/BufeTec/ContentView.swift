@@ -36,7 +36,7 @@ struct ContentView: View {
             .tag(1)
             
             NavigationView {
-                GenCbView()  // Similarly, remove isLoggedOut from this view as well
+                InternalCbView() // Similarly, remove isLoggedOut from this view as well
             }
             .tabItem {
                 Label("BufeBot", systemImage: "sparkles")

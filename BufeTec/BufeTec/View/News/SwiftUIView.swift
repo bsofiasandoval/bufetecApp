@@ -104,7 +104,6 @@ struct NewsView: View {
     @StateObject private var viewModel = NewsViewModel()
     
     var body: some View {
-        NavigationView {
             VStack {
                 SearchBar(text: $viewModel.searchText)
                 
@@ -149,7 +148,7 @@ struct NewsView: View {
             .onAppear {
                 viewModel.fetchNews()
             }
-        }
+        
     }
 }
 

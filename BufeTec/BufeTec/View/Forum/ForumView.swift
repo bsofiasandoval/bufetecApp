@@ -54,7 +54,7 @@ struct ForumView: View {
                                             .font(.system(size: 14))
                                             .bold()
                                             .lineLimit(1)
-                                            .foregroundColor(.black)
+                                            .foregroundColor(.text)
                                         Spacer()
                                         
                                         HStack(spacing: 5) {
@@ -68,7 +68,7 @@ struct ForumView: View {
                                     
                                     Text(post.titulo)
                                         .font(.subheadline)
-                                        .foregroundColor(.black)
+                                        .foregroundColor(.text)
                                     
                                     Text(post.contenido)
                                         .font(.subheadline)
@@ -82,14 +82,14 @@ struct ForumView: View {
                                 }
                             }
                             .padding()
-                            .background(Color.white)
+                            .background(Color.cajitas)
                             .cornerRadius(15)
                             .padding(.horizontal)
                             .padding(.top, 16)
                         }
                     }
                 }
-                .background(Color(.systemGray6))
+               
                 .navigationTitle("Foro")
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
@@ -104,7 +104,7 @@ struct ForumView: View {
                 }
         
             }
-            .background(Color(.background))
+            .background(Color.forumBack)
             
             // Floating button
             VStack {

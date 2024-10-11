@@ -22,78 +22,79 @@ struct ProfileView: View {
     @State private var clientId: String?
     
     var body: some View {
-        ScrollView {
-            VStack(spacing: 20) {
-                // Profile Image
-                Image(systemName: "person.circle.fill")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 150, height: 150)
-                    .foregroundColor(.blue)
-                    .padding(.top, 40)
-                
-                // Name
-                Text(name)
-                    .font(.title)
-                    .fontWeight(.bold)
-                
-                // Common Info Cards
-                VStack(spacing: 15) {
-                    // Phone number (for clients and lawyers only)
-                    if let phoneNumber = phoneNumber, authState.userRole == .cliente || authState.userRole == .abogado {
-                        infoCard(title: "Phone Number", value: phoneNumber)
-                    }
+        NavigationView {
+            ScrollView {
+                VStack(spacing: 20) {
+                    // Profile Image
+                    Image(systemName: "person.circle.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 150, height: 150)
+                        .foregroundColor(.blue)
+                        .padding(.top, 40)
                     
-                    if let email = email, authState.userRole == .abogado || authState.userRole == .becario {
-                        infoCard(title: "Email", value: email )
-                    }
+                    // Name
+                    Text(name)
+                        .font(.title)
+                        .fontWeight(.bold)
                     
-                    // User Type Specific Info
-                    if let role = authState.userRole {
-                        switch role {
-                        case .abogado:
-                            if let cedula = cedulaProfesional {
-                                infoCard(title: "Cédula Profesional", value: cedula)
-                            }
-                            if let especialidad = especialidad {
-                                infoCard(title: "Especialidad", value: especialidad)
-                            }
-                        case .cliente:
-                            if let clientId = clientId {
-                                infoCard(title: "Client ID", value: clientId)
-                            }
-                        case .becario:
-                            Text("Becario Information")
+                    // Common Info Cards
+                    VStack(spacing: 15) {
+                        // Phone number (for clients and lawyers only)
+                        if let phoneNumber = phoneNumber, authState.userRole == .cliente || authState.userRole == .abogado {
+                            infoCard(title: "Número de Teléfono", value: phoneNumber)
                         }
+                        
+                        if let email = email, authState.userRole == .abogado || authState.userRole == .becario {
+                            infoCard(title: "Correo Electrónico", value: email )
+                        }
+                        
+                        // User Type Specific Info
+                        if let role = authState.userRole {
+                            switch role {
+                            case .abogado:
+                                if let cedula = cedulaProfesional {
+                                    infoCard(title: "Cédula Profesional", value: cedula)
+                                }
+                                if let especialidad = especialidad {
+                                    infoCard(title: "Especialidad", value: especialidad)
+                                }
+                            case .cliente:
+                                if let clientId = clientId {
+                                    infoCard(title: "ID del Cliente", value: clientId)
+                                }
+                            case .becario:
+                                infoCard(title: "Rol", value: "Becario")
+                            }
+                        }
+                        // Logout Button
+                        Button("Cerrar Sesión") {
+                            showingLogoutAlert = true
+                        }
+                        .foregroundColor(.white)
+                        .padding()
+                        .background(Color.gradientEnd)
+                        .cornerRadius(10)
                     }
-                    // Logout Button
-                    Button("Logout") {
-                        showingLogoutAlert = true
-                    }
-                    .foregroundColor(.white)
                     .padding()
-                    .background(Color.red)
-                    .cornerRadius(10)
                 }
-                .padding()
-            }
-            .onAppear {
-                let userId = Auth.auth().currentUser?.uid ?? ""
-                fetchData(userId: userId)
-            }
-            .navigationBarTitle("Profile", displayMode: .inline)
-            .navigationBarItems(trailing: Button("Close") {
-                presentationMode.wrappedValue.dismiss()
-            })
-            .alert(isPresented: $showingLogoutAlert) {
-                Alert(
-                    title: Text("Logout"),
-                    message: Text("Are you sure you want to logout?"),
-                    primaryButton: .destructive(Text("Logout")) {
-                        authState.logout()
-                    },
-                    secondaryButton: .cancel()
-                )
+                .onAppear {
+                    let userId = Auth.auth().currentUser?.uid ?? ""
+                    fetchData(userId: userId)
+                }
+                .navigationBarItems(trailing: Button("Cerrar") {
+                    presentationMode.wrappedValue.dismiss()
+                })
+                .alert(isPresented: $showingLogoutAlert) {
+                    Alert(
+                        title: Text("Cerrar Sesión"),
+                        message: Text("¿Estás seguro de cerrar sesión?"),
+                        primaryButton: .destructive(Text("Cerrar Sesión")) {
+                            authState.logout()
+                        },
+                        secondaryButton: .cancel(Text("Cancelar"))
+                    )
+                }
             }
         }
     }

@@ -45,8 +45,9 @@ struct AskQuestionView: View {
                         }
                     }
                 }
-                .background(Color(.systemGray6))
+                .background(Color.forumBack)
             }
+            .navigationTitle("Nuevo Hilo")
             .navigationBarItems(
                 leading: Button("Cancelar") {
                     isPresented = false // Cerrar la vista

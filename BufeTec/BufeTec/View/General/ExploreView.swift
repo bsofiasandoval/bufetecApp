@@ -20,28 +20,27 @@ struct ExploreView: View {
         ScrollView {
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 110))], spacing: 20) {
                 ExploreButton(title: "Biblioteca Legal", icon: "book.fill", colors: [Color(hex: "4A69BD"), Color(hex: "1E3799")]) {
-                    
+                    Text("Biblioteca Content Here")
                 }
                 ExploreButton(title: "Guías", icon: "map.fill", colors: [Color(hex: "60A3BC"), Color(hex: "3C6382")]) {
-                    // Placeholder action
+                    Text("Guías Content Here")
                 }
                 ExploreButton(title: "Artículos", icon: "doc.text.fill", colors: [Color(hex: "6A89CC"), Color(hex: "4A69BD")]) {
-                    // Placeholder action
+                    Text("Artículos Content Here")
                 }
-                NavigationLink(destination: NewsView()) {
-                    ExploreButton(title: "Noticias", icon: "newspaper.fill", colors: [Color(hex: "82CCDD"), Color(hex: "60A3BC")]) {
-                    }
+                ExploreButton(title: "Noticias", icon: "newspaper.fill", colors: [Color(hex: "82CCDD"), Color(hex: "60A3BC")]) {
+                    NewsView()
                 }
                 ExploreButton(title: "Videos", icon: "video.fill", colors: [Color(hex: "4A69BD"), Color(hex: "1E3799")]) {
-                    // Placeholder action
+                    Text("Videos Content Here")
                 }
-                NavigationLink(destination: ClientsView()) {
-                    ExploreButton(title: "Casos", icon: "briefcase.fill", colors: [Color(hex: "60A3BC"), Color(hex: "3C6382")]){
+                if(authState.userRole == .abogado){
+                    ExploreButton(title: "Casos", icon: "briefcase.fill", colors: [Color(hex: "60A3BC"), Color(hex: "3C6382")]) {
+                        ClientsView()
                     }
                 }
-                NavigationLink(destination: myClientsView()) {
-                    ExploreButton(title: "Mis Casos", icon: "briefcase.fill", colors: [Color(hex: "60A3BC"), Color(hex: "3C6382")]){
-                    }
+                ExploreButton(title: "Mis Casos", icon: "briefcase.fill", colors: [Color(hex: "60A3BC"), Color(hex: "3C6382")]) {
+                    myClientsView()
                 }
             }
             .padding()
@@ -58,6 +57,7 @@ struct ExploreView: View {
             ProfileView()
                 .environmentObject(authState)
         }
+
         .alert("Error", isPresented: $showingErrorAlert, presenting: errorMessage) { _ in
             Button("OK", role: .cancel) {}
         } message: { error in
@@ -66,30 +66,34 @@ struct ExploreView: View {
     }
 }
 
-struct ExploreButton: View {
+struct ExploreButton<Content: View>: View {
     let title: String
     let icon: String
     let colors: [Color]
-    let action: () -> Void
-    
+    let content: Content
+
+    init(title: String, icon: String, colors: [Color], @ViewBuilder content: () -> Content) {
+        self.title = title
+        self.icon = icon
+        self.colors = colors
+        self.content = content()
+    }
+
     var body: some View {
-        Button(action: action) {
+        NavigationLink(destination: content) {
             VStack {
                 Spacer()
                 Text(title)
-                    
                     .foregroundColor(.white)
                     .multilineTextAlignment(.center)
                     .fontWeight(.medium)
                 
                 Spacer()
-
                 Image(systemName: icon)
                     .resizable()
                     .scaledToFit()
                     .frame(width: 40, height: 40)
                     .foregroundColor(.white)
-
                 Spacer()
             }
             .frame(width: 110, height: 110)
@@ -101,6 +105,7 @@ struct ExploreButton: View {
         }
     }
 }
+
 
 struct LogoutButton: View {
     @Binding var showingLogoutAlert: Bool
