@@ -97,7 +97,7 @@ struct CaseDetailView: View {
                     if let name = personnelNames[id] {
                         personnelRow(name: name, id: id)
                     } else {
-                        Text("Loading...")  // Show a loading text or an activity indicator
+                        Text("Cargando...")  // Show a loading text or an activity indicator
                     }
                 }
             }
