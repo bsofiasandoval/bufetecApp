@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-class UnassignedCasesViewModel: ObservableObject {
+class AllCasesViewModel: ObservableObject {
     @Published var cases: [Case] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
@@ -17,7 +17,7 @@ class UnassignedCasesViewModel: ObservableObject {
         isLoading = true
         errorMessage = nil
         
-        guard let url = URL(string: "http://10.14.255.51:4000/casos_legales/unassigned") else {
+        guard let url = URL(string: "http://10.14.255.51:4000/casos_legales") else {
             DispatchQueue.main.async {
                 self.isLoading = false
                 self.errorMessage = "Invalid URL"
@@ -25,7 +25,7 @@ class UnassignedCasesViewModel: ObservableObject {
             return
         }
         
-        print("Fetching unassigned cases:")
+        print("Fetching all cases:")
         let startTime = Date()
         
         URLSession.shared.dataTask(with: url) { [weak self] data, response, error in

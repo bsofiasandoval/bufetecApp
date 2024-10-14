@@ -106,7 +106,6 @@ struct NewsView: View {
     var body: some View {
             VStack {
                 SearchBar(text: $viewModel.searchText)
-                
                 List {
                     if viewModel.isLoading {
                         ProgressView()
@@ -211,7 +210,6 @@ struct ArticleDetailView: View {
             }
             .padding()
         }
-        .navigationTitle("Article")
     }
 }
 

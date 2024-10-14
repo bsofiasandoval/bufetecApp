@@ -12,11 +12,16 @@ import UniformTypeIdentifiers
 struct CaseDetailView: View {
     let legalCase: Case
     let isClient: Bool
+    @EnvironmentObject var authState: AuthState
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.openURL) var openURL
     @State private var isShowingDocumentPicker = false
     @State private var selectedDocumentURL: URL?
     @State private var personnelNames: [String: String] = [:]  // To store names keyed by ID
+    @State private var isShowingAssignmentSheet = false
+    @State private var availablePersonnel: [Personnel] = []
+    @State private var selectedPersonnelID: String = ""
+    @State private var selectedPersonnel: [String] = []
     
     var body: some View {
         ScrollView {
@@ -89,6 +94,43 @@ struct CaseDetailView: View {
         .sectionStyle()
     }
     
+    private func fetchAvailablePersonnel() {
+            guard let url = URL(string: "http://10.14.255.51:4000/asignables") else { return }
+
+            URLSession.shared.dataTask(with: url) { data, response, error in
+                if let data = data {
+                    do {
+                        let result = try JSONDecoder().decode([Personnel].self, from: data)
+                        DispatchQueue.main.async {
+                            self.availablePersonnel = result
+                        }
+                    } catch {
+                        print("Error decoding personnel: \(error)")
+                    }
+                }
+            }.resume()
+        }
+
+        private func assignCaseToSelectedPersonnel() {
+            guard let url = URL(string: "http://10.14.255.51:4000/casos_legales/\(legalCase.id)/assign") else { return }
+
+            let assignmentData: [String: Any] = ["abogados_becarios_id": selectedPersonnel]
+            let jsonData = try? JSONSerialization.data(withJSONObject: assignmentData)
+            
+            var request = URLRequest(url: url)
+            request.httpMethod = "PUT"
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.httpBody = jsonData
+
+            URLSession.shared.dataTask(with: request) { data, response, error in
+                if let error = error {
+                    print("Failed to assign case: \(error.localizedDescription)")
+                } else {
+                    print("Case successfully assigned")
+                }
+            }.resume()
+        }
+    
     private var lawyersSection: some View {
             VStack(alignment: .leading, spacing: 10) {
                 Text("Abogados y Becarios Asignados")
@@ -96,12 +138,28 @@ struct CaseDetailView: View {
                 ForEach(legalCase.abogados_becarios_id, id: \.self) { id in
                     if let name = personnelNames[id] {
                         personnelRow(name: name, id: id)
-                    } else {
-                        Text("Cargando...")  // Show a loading text or an activity indicator
                     }
+                }
+                
+                if !isClient && authState.userRole == .abogado {
+                    Button("Asignar Personal"){
+                        isShowingAssignmentSheet = true
+                    }
+                    .padding()
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
                 }
             }
             .sectionStyle()
+            .onAppear {
+               fetchAvailablePersonnel()
+            }
+            .sheet(isPresented: $isShowingAssignmentSheet) {
+                AssignmentSheetView(selectedPersonnel: $selectedPersonnel, availablePersonnel: availablePersonnel) {
+                    assignCaseToSelectedPersonnel()
+                }
+            }
         }
         
         private func personnelRow(name: String, id: String) -> some View {
@@ -456,3 +514,59 @@ struct AbogadoName: Codable {
 struct BecarioName: Codable {
     let nombre: String
 }
+
+
+struct Personnel: Identifiable, Codable {
+    let id: String
+    let nombre: String
+    let rol: String
+}
+
+// AssignmentSheetView for selecting abogados/becarios
+struct AssignmentSheetView: View {
+    @Binding var selectedPersonnel: [String]
+    let availablePersonnel: [Personnel]
+    var onSave: () -> Void
+    
+    var body: some View {
+        NavigationView {
+            List(availablePersonnel) { person in
+                MultipleSelectionRow(title: person.nombre, isSelected: selectedPersonnel.contains(person.id)) {
+                    if selectedPersonnel.contains(person.id) {
+                        selectedPersonnel.removeAll { $0 == person.id }
+                    } else {
+                        selectedPersonnel.append(person.id)
+                    }
+                }
+            }
+            .navigationTitle("Asignar Personal")
+            .navigationBarItems(leading: Button("Cancelar") {
+                // Dismiss
+            }, trailing: Button("Guardar") {
+                onSave()
+            })
+        }
+    }
+}
+
+// Multiple selection row
+struct MultipleSelectionRow: View {
+    var title: String
+    var isSelected: Bool
+    var action: () -> Void
+
+    var body: some View {
+        HStack {
+            Text(title)
+            Spacer()
+            if isSelected {
+                Image(systemName: "checkmark")
+                    .foregroundColor(.blue)
+            }
+        }
+        .onTapGesture {
+            action()
+        }
+    }
+}
+

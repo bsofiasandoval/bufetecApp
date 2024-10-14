@@ -17,13 +17,7 @@ struct CasesView: View {
     
     var body: some View {
         Group {
-            if authState.isLoggedIn {
-                caseContent
-            } else {
-                GeneralLoginView()
-                    .environmentObject(authState)
-                    .transition(.slide)
-            }
+            caseContent
         }
         .animation(.easeInOut, value: authState.isLoggedIn)
     }
@@ -100,7 +94,6 @@ struct CaseRowView: View {
             Text("Fecha de inicio: \(formatDate(legalCase.fecha_inicio))")
                 .font(.caption)
         }
-        .padding(.vertical, 5)
     }
     
     private func formatDate(_ dateString: String) -> String {

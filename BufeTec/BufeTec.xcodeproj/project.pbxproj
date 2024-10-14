@@ -21,12 +21,9 @@
 		A91E73ED2CACCAC2009C331C /* LawyerDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91E73EC2CACCAC2009C331C /* LawyerDetailView.swift */; };
 		A91E73EF2CACCADE009C331C /* BecarioDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91E73EE2CACCADE009C331C /* BecarioDetailView.swift */; };
 		A91E73F12CACCE35009C331C /* NewCaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91E73F02CACCE35009C331C /* NewCaseView.swift */; };
-		A93F60752CB8458D005B0FA7 /* myClientsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93F60742CB8458D005B0FA7 /* myClientsView.swift */; };
-		A93F607B2CB849CB005B0FA7 /* UnassignedCasesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93F607A2CB849CB005B0FA7 /* UnassignedCasesViewModel.swift */; };
+		A93F607B2CB849CB005B0FA7 /* AllCasesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93F607A2CB849CB005B0FA7 /* AllCasesViewModel.swift */; };
 		A93F607D2CB84B95005B0FA7 /* AssignedCasesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93F607C2CB84B95005B0FA7 /* AssignedCasesViewModel.swift */; };
-		A93F607F2CB84E09005B0FA7 /* UnassignedCasesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93F607E2CB84E09005B0FA7 /* UnassignedCasesView.swift */; };
-		A93F60812CB84E16005B0FA7 /* AssignedCasesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93F60802CB84E16005B0FA7 /* AssignedCasesView.swift */; };
-		A93F60832CB84EEB005B0FA7 /* InternalCaseDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93F60822CB84EEB005B0FA7 /* InternalCaseDetailView.swift */; };
+		A93F607F2CB84E09005B0FA7 /* AllCasesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93F607E2CB84E09005B0FA7 /* AllCasesView.swift */; };
 		A93F608D2CB8C736005B0FA7 /* MyPersonnelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93F608C2CB8C736005B0FA7 /* MyPersonnelView.swift */; };
 		A9571A252CA507E6000EFFC1 /* ClientRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9571A242CA507E6000EFFC1 /* ClientRegisterView.swift */; };
 		A9571A272CA511E5000EFFC1 /* CasesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9571A262CA511E5000EFFC1 /* CasesView.swift */; };
@@ -39,7 +36,6 @@
 		A96E5C552C954DA70056B657 /* ClientLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96E5C542C954DA70056B657 /* ClientLoginView.swift */; };
 		A96E5C572C954DB30056B657 /* InternalLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96E5C562C954DB30056B657 /* InternalLoginView.swift */; };
 		A96E5C592C954DC60056B657 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96E5C582C954DC60056B657 /* ProfileView.swift */; };
-		A96E5C5B2C954DD20056B657 /* ClientsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96E5C5A2C954DD20056B657 /* ClientsView.swift */; };
 		A96E5C672C954EBA0056B657 /* ExploreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96E5C662C954EBA0056B657 /* ExploreView.swift */; };
 		A96E5C692C954EE60056B657 /* GeneralLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96E5C682C954EE60056B657 /* GeneralLoginView.swift */; };
 		A97036E32CACA20500A4ACCC /* Case.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97036E22CACA20500A4ACCC /* Case.swift */; };
@@ -54,6 +50,7 @@
 		A9DC153D2CA248CA00858D21 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = A9DC153C2CA248CA00858D21 /* FirebaseMessaging */; };
 		A9DC153F2CA248F100858D21 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = A9DC153E2CA248F100858D21 /* FirebaseMessaging */; };
 		A9DD75032CBD90A2006007FB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A9DD75022CBD90A2006007FB /* GoogleService-Info.plist */; };
+		A9DD75052CBD9AE6006007FB /* AssignedCasesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9DD75042CBD9AE0006007FB /* AssignedCasesView.swift */; };
 		C1F286232CAF153800EF6AF7 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = C1F286222CAF153800EF6AF7 /* FirebaseAnalytics */; };
 		C1F286252CAF153800EF6AF7 /* FirebaseAnalyticsOnDeviceConversion in Frameworks */ = {isa = PBXBuildFile; productRef = C1F286242CAF153800EF6AF7 /* FirebaseAnalyticsOnDeviceConversion */; };
 		C1F286272CAF153800EF6AF7 /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */ = {isa = PBXBuildFile; productRef = C1F286262CAF153800EF6AF7 /* FirebaseAnalyticsWithoutAdIdSupport */; };
@@ -78,12 +75,9 @@
 		A91E73EC2CACCAC2009C331C /* LawyerDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LawyerDetailView.swift; sourceTree = "<group>"; };
 		A91E73EE2CACCADE009C331C /* BecarioDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BecarioDetailView.swift; sourceTree = "<group>"; };
 		A91E73F02CACCE35009C331C /* NewCaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewCaseView.swift; sourceTree = "<group>"; };
-		A93F60742CB8458D005B0FA7 /* myClientsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = myClientsView.swift; sourceTree = "<group>"; };
-		A93F607A2CB849CB005B0FA7 /* UnassignedCasesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnassignedCasesViewModel.swift; sourceTree = "<group>"; };
+		A93F607A2CB849CB005B0FA7 /* AllCasesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllCasesViewModel.swift; sourceTree = "<group>"; };
 		A93F607C2CB84B95005B0FA7 /* AssignedCasesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignedCasesViewModel.swift; sourceTree = "<group>"; };
-		A93F607E2CB84E09005B0FA7 /* UnassignedCasesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnassignedCasesView.swift; sourceTree = "<group>"; };
-		A93F60802CB84E16005B0FA7 /* AssignedCasesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignedCasesView.swift; sourceTree = "<group>"; };
-		A93F60822CB84EEB005B0FA7 /* InternalCaseDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternalCaseDetailView.swift; sourceTree = "<group>"; };
+		A93F607E2CB84E09005B0FA7 /* AllCasesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllCasesView.swift; sourceTree = "<group>"; };
 		A93F608C2CB8C736005B0FA7 /* MyPersonnelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPersonnelView.swift; sourceTree = "<group>"; };
 		A9571A242CA507E6000EFFC1 /* ClientRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientRegisterView.swift; sourceTree = "<group>"; };
 		A9571A262CA511E5000EFFC1 /* CasesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CasesView.swift; sourceTree = "<group>"; };
@@ -96,7 +90,6 @@
 		A96E5C542C954DA70056B657 /* ClientLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientLoginView.swift; sourceTree = "<group>"; };
 		A96E5C562C954DB30056B657 /* InternalLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternalLoginView.swift; sourceTree = "<group>"; };
 		A96E5C582C954DC60056B657 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
-		A96E5C5A2C954DD20056B657 /* ClientsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientsView.swift; sourceTree = "<group>"; };
 		A96E5C662C954EBA0056B657 /* ExploreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreView.swift; sourceTree = "<group>"; };
 		A96E5C682C954EE60056B657 /* GeneralLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralLoginView.swift; sourceTree = "<group>"; };
 		A97036E22CACA20500A4ACCC /* Case.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Case.swift; sourceTree = "<group>"; };
@@ -110,6 +103,7 @@
 		A9AEED632C9A147D00DE3FA4 /* CbMessageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CbMessageModel.swift; sourceTree = "<group>"; };
 		A9DC15402CA24A9600858D21 /* BufeTec.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BufeTec.entitlements; sourceTree = "<group>"; };
 		A9DD75022CBD90A2006007FB /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		A9DD75042CBD9AE0006007FB /* AssignedCasesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignedCasesView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -272,13 +266,10 @@
 		A96E5C612C954E260056B657 /* Bufetec */ = {
 			isa = PBXGroup;
 			children = (
-				A96E5C5A2C954DD20056B657 /* ClientsView.swift */,
+				A9DD75042CBD9AE0006007FB /* AssignedCasesView.swift */,
 				A91E73EC2CACCAC2009C331C /* LawyerDetailView.swift */,
 				A91E73EE2CACCADE009C331C /* BecarioDetailView.swift */,
-				A93F60742CB8458D005B0FA7 /* myClientsView.swift */,
-				A93F607E2CB84E09005B0FA7 /* UnassignedCasesView.swift */,
-				A93F60802CB84E16005B0FA7 /* AssignedCasesView.swift */,
-				A93F60822CB84EEB005B0FA7 /* InternalCaseDetailView.swift */,
+				A93F607E2CB84E09005B0FA7 /* AllCasesView.swift */,
 			);
 			path = Bufetec;
 			sourceTree = "<group>";
@@ -297,7 +288,7 @@
 			isa = PBXGroup;
 			children = (
 				A97036E52CACA22300A4ACCC /* CasesViewModel.swift */,
-				A93F607A2CB849CB005B0FA7 /* UnassignedCasesViewModel.swift */,
+				A93F607A2CB849CB005B0FA7 /* AllCasesViewModel.swift */,
 				A93F607C2CB84B95005B0FA7 /* AssignedCasesViewModel.swift */,
 			);
 			path = ViewModel;
@@ -387,15 +378,12 @@
 				A9AEED642C9A147D00DE3FA4 /* CbMessageModel.swift in Sources */,
 				A9571A272CA511E5000EFFC1 /* CasesView.swift in Sources */,
 				A9571A332CA53956000EFFC1 /* UserData.swift in Sources */,
-				A96E5C5B2C954DD20056B657 /* ClientsView.swift in Sources */,
 				A9947D882CA21D76001F8D24 /* Authentication.swift in Sources */,
 				A96E5C592C954DC60056B657 /* ProfileView.swift in Sources */,
 				497EB0CC2CB2469F0033376B /* RespondMessage.swift in Sources */,
 				A900EBE82C954AED001E5311 /* ContentView.swift in Sources */,
-				A93F60752CB8458D005B0FA7 /* myClientsView.swift in Sources */,
 				A91E73EF2CACCADE009C331C /* BecarioDetailView.swift in Sources */,
 				A9571A252CA507E6000EFFC1 /* ClientRegisterView.swift in Sources */,
-				A93F60832CB84EEB005B0FA7 /* InternalCaseDetailView.swift in Sources */,
 				A981ED392CA5CDCF000ACCB7 /* Message.swift in Sources */,
 				A981ED3B2CA5CDE9000ACCB7 /* MessageDetailView.swift in Sources */,
 				A97036E32CACA20500A4ACCC /* Case.swift in Sources */,
@@ -413,12 +401,12 @@
 				A96E5C4D2C954CDB0056B657 /* ForumView.swift in Sources */,
 				A981ED3D2CA5CE0A000ACCB7 /* AskQuestionView.swift in Sources */,
 				A900EBE62C954AED001E5311 /* BufeTecApp.swift in Sources */,
-				A93F60812CB84E16005B0FA7 /* AssignedCasesView.swift in Sources */,
-				A93F607F2CB84E09005B0FA7 /* UnassignedCasesView.swift in Sources */,
+				A93F607F2CB84E09005B0FA7 /* AllCasesView.swift in Sources */,
+				A9DD75052CBD9AE6006007FB /* AssignedCasesView.swift in Sources */,
 				A9947D8C2CA22018001F8D24 /* HomeView.swift in Sources */,
 				A96E5C672C954EBA0056B657 /* ExploreView.swift in Sources */,
 				A96E5C692C954EE60056B657 /* GeneralLoginView.swift in Sources */,
-				A93F607B2CB849CB005B0FA7 /* UnassignedCasesViewModel.swift in Sources */,
+				A93F607B2CB849CB005B0FA7 /* AllCasesViewModel.swift in Sources */,
 				A91535692CA0F3ED00DA3289 /* AppDelegate.swift in Sources */,
 				A915356B2CA0F40900DA3289 /* ViewExt.swift in Sources */,
 			);

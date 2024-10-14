@@ -28,12 +28,25 @@ struct ContentView: View {
             .tag(0)
             
             NavigationView {
+                if authState.userRole == .becario {
+                    AssignedCasesView()
+                }
+                else{
+                    AllCasesView()
+                }
+            }
+            .tabItem {
+                Label("Casos", systemImage: "briefcase")
+            }
+            .tag(1)
+            
+            NavigationView {
                 ForumView()
             }
             .tabItem {
                 Label("Foro", systemImage: "person.2")
             }
-            .tag(1)
+            .tag(2)
             
             NavigationView {
                 InternalCbView() // Similarly, remove isLoggedOut from this view as well
@@ -41,7 +54,7 @@ struct ContentView: View {
             .tabItem {
                 Label("BufeBot", systemImage: "sparkles")
             }
-            .tag(2)
+            .tag(3)
         }
         .navigationBarBackButtonHidden(true)
         .onAppear {

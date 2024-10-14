@@ -34,15 +34,6 @@ struct ExploreView: View {
                 ExploreButton(title: "Videos", icon: "video.fill", colors: [Color(hex: "4A69BD"), Color(hex: "1E3799")]) {
                     Text("Videos Content Here")
                 }
-                if(authState.userRole == .abogado){
-                    ExploreButton(title: "Casos", icon: "briefcase.fill", colors: [Color(hex: "60A3BC"), Color(hex: "3C6382")]) {
-                        ClientsView()
-                    }
-                }
-                ExploreButton(title: "Mis Casos", icon: "briefcase.fill", colors: [Color(hex: "60A3BC"), Color(hex: "3C6382")]) {
-                    MyClientsView()
-                    
-                }
             }
             .padding()
         }
