@@ -39,7 +39,7 @@ struct CasesView: View {
             }
             
             if viewModel.isLoading {
-                LoadingView()
+                LoadingViewCase()
             }
             
             if let errorMessage = viewModel.errorMessage {
@@ -119,7 +119,7 @@ struct CaseRowView: View {
     }
 }
 
-struct LoadingView: View {
+struct LoadingViewCase: View {
     var body: some View {
         VStack {
             ProgressView()

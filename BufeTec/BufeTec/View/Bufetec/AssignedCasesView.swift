@@ -16,8 +16,8 @@
 //    @EnvironmentObject var authState: AuthState
 //    @StateObject private var viewModel = AssignedCasesViewModel()
 //    let internalId: String
-//    
-//    
+//
+//
 //    var body: some View {
 //        Group {
 //            if authState.isLoggedIn {
@@ -43,11 +43,11 @@
 //                            await viewModel.fetchCases(for: internalId)
 //                        }
 //                    }
-//                    
+//
 //                    if viewModel.isLoading {
 //                        LoadingView()
 //                    }
-//                    
+//
 //                    if let errorMessage = viewModel.errorMessage {
 //                        Text(errorMessage)
 //                            .foregroundColor(.red)
@@ -90,23 +90,23 @@
 //        }
 //        .animation(.easeInOut, value: authState.isLoggedIn)
 //    }
-//    
-//    
+//
+//
 //    private func formatDate(_ dateString: String) -> String {
 //        let inputFormatter = DateFormatter()
 //        inputFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
 //        inputFormatter.timeZone = TimeZone(abbreviation: "UTC")
-//        
+//
 //        let outputFormatter = DateFormatter()
 //        outputFormatter.dateFormat = "dd/MM/yyyy"
 //        outputFormatter.timeZone = TimeZone.current
-//        
+//
 //        if let date = inputFormatter.date(from: dateString) {
 //            return outputFormatter.string(from: date)
 //        }
 //        return dateString  // Return original string if parsing fails
 //    }
-//    
+//
 //}
 //
 //struct LoadingView: View {

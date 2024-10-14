@@ -51,24 +51,6 @@ class AssignedCasesViewModel: ObservableObject {
                 } catch {
                     self?.errorMessage = "Decoding error: \(error.localizedDescription)"
                     print("JSON decoding error: \(error)")
-                    if let decodingError = error as? DecodingError {
-                        switch decodingError {
-                        case .keyNotFound(let key, let context):
-                            print("Key '\(key.stringValue)' not found:", context.debugDescription)
-                            print("codingPath:", context.codingPath)
-                        case .valueNotFound(let value, let context):
-                            print("Value '\(value)' not found:", context.debugDescription)
-                            print("codingPath:", context.codingPath)
-                        case .typeMismatch(let type, let context):
-                            print("Type '\(type)' mismatch:", context.debugDescription)
-                            print("codingPath:", context.codingPath)
-                        case .dataCorrupted(let context):
-                            print("Data corrupted:", context.debugDescription)
-                            print("codingPath:", context.codingPath)
-                        @unknown default:
-                            print("Unknown decoding error")
-                        }
-                    }
                     if let dataString = String(data: data, encoding: .utf8) {
                         print("Received data: \(dataString)")
                     }
