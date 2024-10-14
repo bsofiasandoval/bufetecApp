@@ -24,7 +24,7 @@ class AssignedCasesViewModel: ObservableObject {
             return
         }
         
-        print("Fetching cases for client ID: \(internalId)")
+        print("Fetching cases for internal ID: \(internalId)")
         let startTime = Date()
         
         URLSession.shared.dataTask(with: url) { [weak self] data, response, error in

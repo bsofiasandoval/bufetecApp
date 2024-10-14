@@ -40,7 +40,8 @@ struct ExploreView: View {
                     }
                 }
                 ExploreButton(title: "Mis Casos", icon: "briefcase.fill", colors: [Color(hex: "60A3BC"), Color(hex: "3C6382")]) {
-                    MyClientsView(clientId:Auth.auth().currentUser?.uid ?? "")
+                    MyClientsView()
+                    
                 }
             }
             .padding()

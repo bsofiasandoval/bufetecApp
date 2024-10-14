@@ -16,7 +16,7 @@ class CasesViewModel: ObservableObject {
         isLoading = true
         errorMessage = nil
         
-        guard let url = URL(string: "http://10.14.255.51:4000/casos_legales/internal/\(clientId)") else {
+        guard let url = URL(string: "http://10.14.255.51:4000/casos_legales/clientes/\(clientId)") else {
             DispatchQueue.main.async {
                 self.isLoading = false
                 self.errorMessage = "Invalid URL"
@@ -24,7 +24,7 @@ class CasesViewModel: ObservableObject {
             return
         }
         
-        print("Fetching cases for clie nt ID: \(clientId)")
+        print("Fetching cases for client ID: \(clientId)")
         let startTime = Date()
         
         URLSession.shared.dataTask(with: url) { [weak self] data, response, error in

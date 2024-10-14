@@ -9,9 +9,7 @@ import SwiftUI
 import FirebaseAuth
 
 struct MyClientsView: View {
-    @StateObject private var viewModel = CasesViewModel()
-    let clientId: String
-    
+    @StateObject private var viewModel = AssignedCasesViewModel()
     var body: some View {
         VStack {
             if viewModel.isLoading {
@@ -35,8 +33,7 @@ struct MyClientsView: View {
         }
         .navigationTitle("Tus casos asignados")
         .onAppear {
-            // Fetch the cases when the view appears
-            viewModel.fetchCases(for: clientId)
+            viewModel.fetchCases(for: Auth.auth().currentUser!.uid)
         }
     }
 }

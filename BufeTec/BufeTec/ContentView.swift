@@ -12,7 +12,7 @@ struct ContentView: View {
     @State private var selectedTab: Int
     @State private var showingProfile = false
     @EnvironmentObject var authState: AuthState  // Use global authState
-
+    
     init(initialTab: Int = 0) {
         _selectedTab = State(initialValue: initialTab)
     }
