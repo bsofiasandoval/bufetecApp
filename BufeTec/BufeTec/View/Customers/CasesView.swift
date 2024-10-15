@@ -73,7 +73,7 @@ struct CasesView: View {
     private var caseList: some View {
         List(viewModel.cases) { legalCase in
             NavigationLink(destination: CaseDetailView(legalCase: legalCase, isClient: authState.userRole == .cliente)) {
-                CaseRowView(legalCase: legalCase)
+                CaseRowViewClient(legalCase: legalCase)
             }
         }
         .refreshable {
@@ -82,7 +82,7 @@ struct CasesView: View {
     }
 }
 
-struct CaseRowView: View {
+struct CaseRowViewClient: View {
     let legalCase: Case
     
     var body: some View {

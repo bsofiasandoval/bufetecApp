@@ -92,6 +92,37 @@ struct AllCasesView: View {
     }
 }
 
+struct CaseRowView: View {
+    let legalCase: Case
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 5) {
+            Text(legalCase.cliente_id)
+                .font(.headline)
+            Text("Estado: \(legalCase.estado)")
+                .font(.subheadline)
+            Text("Fecha de inicio: \(formatDate(legalCase.fecha_inicio))")
+                .font(.caption)
+        }
+    }
+    
+    private func formatDate(_ dateString: String) -> String {
+        let inputFormatter = DateFormatter()
+        inputFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+        inputFormatter.timeZone = TimeZone(abbreviation: "UTC")
+        
+        let outputFormatter = DateFormatter()
+        outputFormatter.dateFormat = "dd/MM/yyyy"
+        outputFormatter.timeZone = TimeZone.current
+        
+        if let date = inputFormatter.date(from: dateString) {
+            return outputFormatter.string(from: date)
+        }
+        return dateString
+    }
+}
+
+
 // Enum to represent case type for picker
 enum CaseType: String {
     case assigned = "Assigned"

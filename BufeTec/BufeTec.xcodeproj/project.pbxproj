@@ -21,6 +21,8 @@
 		A91E73ED2CACCAC2009C331C /* LawyerDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91E73EC2CACCAC2009C331C /* LawyerDetailView.swift */; };
 		A91E73EF2CACCADE009C331C /* BecarioDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91E73EE2CACCADE009C331C /* BecarioDetailView.swift */; };
 		A91E73F12CACCE35009C331C /* NewCaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91E73F02CACCE35009C331C /* NewCaseView.swift */; };
+		A936CFC42CBF094200891D70 /* Vapi in Frameworks */ = {isa = PBXBuildFile; productRef = A936CFC32CBF094200891D70 /* Vapi */; };
+		A936CFC62CBF097300891D70 /* SpeechBot.swift in Sources */ = {isa = PBXBuildFile; fileRef = A936CFC52CBF097300891D70 /* SpeechBot.swift */; };
 		A93F607B2CB849CB005B0FA7 /* AllCasesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93F607A2CB849CB005B0FA7 /* AllCasesViewModel.swift */; };
 		A93F607D2CB84B95005B0FA7 /* AssignedCasesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93F607C2CB84B95005B0FA7 /* AssignedCasesViewModel.swift */; };
 		A93F607F2CB84E09005B0FA7 /* AllCasesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93F607E2CB84E09005B0FA7 /* AllCasesView.swift */; };
@@ -78,6 +80,7 @@
 		A91E73EC2CACCAC2009C331C /* LawyerDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LawyerDetailView.swift; sourceTree = "<group>"; };
 		A91E73EE2CACCADE009C331C /* BecarioDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BecarioDetailView.swift; sourceTree = "<group>"; };
 		A91E73F02CACCE35009C331C /* NewCaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewCaseView.swift; sourceTree = "<group>"; };
+		A936CFC52CBF097300891D70 /* SpeechBot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechBot.swift; sourceTree = "<group>"; };
 		A93F607A2CB849CB005B0FA7 /* AllCasesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllCasesViewModel.swift; sourceTree = "<group>"; };
 		A93F607C2CB84B95005B0FA7 /* AssignedCasesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignedCasesViewModel.swift; sourceTree = "<group>"; };
 		A93F607E2CB84E09005B0FA7 /* AllCasesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllCasesView.swift; sourceTree = "<group>"; };
@@ -129,6 +132,7 @@
 				A9DC153D2CA248CA00858D21 /* FirebaseMessaging in Frameworks */,
 				A915355F2CA0F29400DA3289 /* FirebaseAuth in Frameworks */,
 				C1F286272CAF153800EF6AF7 /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */,
+				A936CFC42CBF094200891D70 /* Vapi in Frameworks */,
 				C1F286232CAF153800EF6AF7 /* FirebaseAnalytics in Frameworks */,
 				A91535622CA0F2A300DA3289 /* GoogleSignIn in Frameworks */,
 				C1F2862B2CAF153800EF6AF7 /* FirebaseAppDistribution-Beta in Frameworks */,
@@ -255,6 +259,7 @@
 		A96E5C5F2C954E010056B657 /* Chatbot */ = {
 			isa = PBXGroup;
 			children = (
+				A936CFC52CBF097300891D70 /* SpeechBot.swift */,
 				A96E5C522C954D4A0056B657 /* InternalCbView.swift */,
 				A96E5C502C954D380056B657 /* NewClientCbView.swift */,
 				A95047512CBE059900B4FA8E /* TypingNavigationView.swift */,
@@ -353,6 +358,7 @@
 			packageReferences = (
 				A915355D2CA0F29400DA3289 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				A91535602CA0F2A300DA3289 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+				A936CFC22CBF094200891D70 /* XCRemoteSwiftPackageReference "ios" */,
 			);
 			productRefGroup = A900EBE32C954AED001E5311 /* Products */;
 			projectDirPath = "";
@@ -421,6 +427,7 @@
 				A93F607B2CB849CB005B0FA7 /* AllCasesViewModel.swift in Sources */,
 				A91535692CA0F3ED00DA3289 /* AppDelegate.swift in Sources */,
 				A915356B2CA0F40900DA3289 /* ViewExt.swift in Sources */,
+				A936CFC62CBF097300891D70 /* SpeechBot.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -650,6 +657,14 @@
 				minimumVersion = 8.0.0;
 			};
 		};
+		A936CFC22CBF094200891D70 /* XCRemoteSwiftPackageReference "ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/VapiAI/ios";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -662,6 +677,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A91535602CA0F2A300DA3289 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
 			productName = GoogleSignIn;
+		};
+		A936CFC32CBF094200891D70 /* Vapi */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A936CFC22CBF094200891D70 /* XCRemoteSwiftPackageReference "ios" */;
+			productName = Vapi;
 		};
 		A9DC153C2CA248CA00858D21 /* FirebaseMessaging */ = {
 			isa = XCSwiftPackageProductDependency;

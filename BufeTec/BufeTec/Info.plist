@@ -34,6 +34,12 @@
 	<array>
 		<string>fetch</string>
 		<string>remote-notification</string>
+        <string>App provides Voice over IP services</string>
 	</array>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Se necesita tu ubicación para mostrar tu posición en el mapa.</string>
 </dict>
 </plist>
+
+
+

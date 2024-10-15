@@ -21,7 +21,7 @@ struct GoogleSignInBtn: View {
                     .background(Color.white)
                     .clipShape(Circle())
                 
-                Text("Sign in with Google")
+                Text("Inicia Sesión")
                     .fontWeight(.medium)
                     .foregroundColor(.black)
                 
