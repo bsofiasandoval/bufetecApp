@@ -16,6 +16,7 @@ struct ClassificationResponse: Codable {
     }
 }
 
+
 struct NewClientCbView: View {
     @State private var chat: String = ""
     @State private var messages: [CbMessageModel] = []
@@ -28,6 +29,7 @@ struct NewClientCbView: View {
     @State private var messageCount: Int = 0
     @State private var keyboardHeight: CGFloat = 0
     @State private var bottomPadding: CGFloat = 0
+    @State private var isWaitingForResponse = false
 
     var body: some View {
         GeometryReader { geometry in
@@ -37,6 +39,16 @@ struct NewClientCbView: View {
                         LazyVStack(spacing: 12) {
                             ForEach(messages) { message in
                                 MessageBubble(message: message)
+                            }
+
+                            if isWaitingForResponse {
+                                HStack {
+                                    TypingAnimationView()
+                                    Spacer()
+                                }
+                                .padding(.horizontal)
+                                .frame(alignment: .leading)
+                                .transition(.opacity)
                             }
                         }
                         .padding(.horizontal)
@@ -79,12 +91,10 @@ struct NewClientCbView: View {
             .navigationTitle("BufeBot")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-//                    if !tipoDeCaso.isEmpty {
-                        NavigationLink(destination: ClientRegisterView(tramite: $tipoDeCaso, isLoggedOut: $isLoggedOut).environmentObject(authState)) {
-                            Text("Continuar")
-                                .foregroundColor(.blue)
-                        }
-//                    }
+                    NavigationLink(destination: ClientRegisterView(tramite: $tipoDeCaso, isLoggedOut: $isLoggedOut).environmentObject(authState)) {
+                        Text("Continuar")
+                            .foregroundColor(.blue)
+                    }
                 }
             }
             .padding(.bottom, bottomPadding)
@@ -97,6 +107,7 @@ struct NewClientCbView: View {
                 let bottomSafeArea = geometry.safeAreaInsets.bottom
                 bottomPadding = max(newValue - bottomSafeArea, 0)
             }
+            .dismissKeyboardOnTap() 
         }
     }
     
@@ -114,62 +125,63 @@ struct NewClientCbView: View {
     }
     
     private func sendInitialMessage() {
-            let initialMessage = CbMessageModel(
-                text: "¡Hola! Soy BufeBot. Por favor, descríbeme tu caso legal.".trimmingCharacters(in: .whitespacesAndNewlines),
-                isFromCurrentUser: false,
-                citations: nil
-            )
-            messages.append(initialMessage)
-        }
-        
-        private func sendMessage() {
-            guard !chat.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
-            
-            let userMessage = chat.trimmingCharacters(in: .whitespacesAndNewlines)
-            let newMessage = CbMessageModel(text: userMessage, isFromCurrentUser: true, citations: nil)
-            messages.append(newMessage)
-            chat = ""
-            
-            classifyText(userMessage)
-        }
+        let initialMessage = CbMessageModel(
+            text: "¡Hola! Soy BufeBot. Por favor, descríbeme tu caso legal.".trimmingCharacters(in: .whitespacesAndNewlines),
+            isFromCurrentUser: false,
+            citations: nil
+        )
+        messages.append(initialMessage)
+    }
     
+    private func sendMessage() {
+        guard !chat.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
+        
+        let userMessage = chat.trimmingCharacters(in: .whitespacesAndNewlines)
+        let newMessage = CbMessageModel(text: userMessage, isFromCurrentUser: true, citations: nil)
+        messages.append(newMessage)
+        chat = ""
+        
+        isWaitingForResponse = true
+        classifyText(userMessage)
+    }
+
     private func classifyText(_ text: String) {
-            guard let encodedText = text.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-                  let url = URL(string: "http://10.14.255.51:8080/classify-text?text=\(encodedText)") else {
-                handleError()
-                return
-            }
-        
-            URLSession.shared.dataTask(with: url) { data, response, error in
-                DispatchQueue.main.async {
-                    if let error = error {
-                        print("Error: \(error.localizedDescription)")
-                        handleError()
-                        return
-                    }
-                    
-                    guard let data = data else {
-                        handleError()
-                        return
-                    }
-                    
-                    do {
-                        let decodedResponse = try JSONDecoder().decode(ClassificationResponse.self, from: data)
-                        tipoDeCaso = decodedResponse.classification.label
-                        let botResponse = CbMessageModel(
-                            text: "Tu caso parece ser un caso \(decodedResponse.classification.label).".trimmingCharacters(in: .whitespacesAndNewlines),
-                            isFromCurrentUser: false,
-                            citations: nil
-                        )
-                        messages.append(botResponse)
-                    } catch {
-                        print("Decoding error: \(error)")
-                        handleError()
-                    }
-                }
-            }.resume()
+        guard let encodedText = text.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+              let url = URL(string: "http://10.14.255.51:8080/classify-text?text=\(encodedText)") else {
+            handleError()
+            return
         }
-        
+
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    print("Error: \(error.localizedDescription)")
+                    handleError()
+                    return
+                }
+
+                guard let data = data else {
+                    handleError()
+                    return
+                }
+
+                do {
+                    let decodedResponse = try JSONDecoder().decode(ClassificationResponse.self, from: data)
+                    tipoDeCaso = decodedResponse.classification.label
+                    let botResponse = CbMessageModel(
+                        text: "Tu caso parece ser un caso \(decodedResponse.classification.label).".trimmingCharacters(in: .whitespacesAndNewlines),
+                        isFromCurrentUser: false,
+                        citations: nil
+                    )
+                    messages.append(botResponse)
+                    isWaitingForResponse = false
+                } catch {
+                    print("Decoding error: \(error)")
+                    handleError()
+                }
+            }
+        }.resume()
+    }
     
     private func handleError() {
         let errorMessage = CbMessageModel(
@@ -178,10 +190,11 @@ struct NewClientCbView: View {
             citations: nil
         )
         messages.append(errorMessage)
+        isWaitingForResponse = false
     }
 }
 
-
+// MARK: - MessageBubble
 struct MessageBubble: View {
     let message: CbMessageModel
     
@@ -191,9 +204,9 @@ struct MessageBubble: View {
             
             Text(message.text)
                 .padding(10)
-                .background(message.isFromCurrentUser ? Color.blue : Color.gray.opacity(0.2))
-                .foregroundColor(message.isFromCurrentUser ? .white : .primary)
-                .cornerRadius(10)
+                .background(message.isFromCurrentUser ? Color.userMessageBackground : Color.botMessageBackground)
+                .foregroundColor(message.isFromCurrentUser ? Color.userMessageText : Color.botMessageText)
+                .clipShape(BubbleShape(isFromCurrentUser: message.isFromCurrentUser))
                 .fixedSize(horizontal: false, vertical: true)
             
             if !message.isFromCurrentUser { Spacer() }
@@ -202,6 +215,8 @@ struct MessageBubble: View {
         .padding(.vertical, 4)
     }
 }
+
+
 
 
 

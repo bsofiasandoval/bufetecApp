@@ -147,7 +147,6 @@ class NetworkManager {
     //Method to fetch abogados by id
     func fetchUserAbogadoById(_ id: String, completion: @escaping (Result<LawyerInformationElement, Error>) -> Void) {
         let urlString = "http://10.14.255.51:4000/abogados/\(id)"
-        //let urlString = "http://127.0.0.1:5000/abogados/\(id)"
         guard let url = URL(string: urlString) else {
             print("Invalid URL")
             return
@@ -181,8 +180,6 @@ class NetworkManager {
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
-        
-        
         let response = [
             "contenido": contenido,
             "autor_id": autorID

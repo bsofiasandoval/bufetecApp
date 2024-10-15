@@ -14,6 +14,7 @@ struct CaseDetailView: View {
     let isClient: Bool
     @EnvironmentObject var authState: AuthState
     @Environment(\.colorScheme) var colorScheme
+
     @Environment(\.openURL) var openURL
     @State private var isShowingDocumentPicker = false
     @State private var selectedDocumentURL: URL?
@@ -528,6 +529,7 @@ struct Personnel: Identifiable, Codable {
 struct AssignmentSheetView: View {
     @Binding var selectedPersonnel: [String]
     let availablePersonnel: [Personnel]
+    @Environment(\.presentationMode) var presentationMode
     var onSave: () -> Void
     
     var body: some View {
@@ -546,6 +548,7 @@ struct AssignmentSheetView: View {
                 // Dismiss
             }, trailing: Button("Guardar") {
                 onSave()
+                self.presentationMode.wrappedValue.dismiss()
             })
         }
     }

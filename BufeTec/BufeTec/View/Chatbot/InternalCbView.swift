@@ -12,6 +12,7 @@ struct InternalCbView: View {
     @State private var messages: [CbMessageModel] = []
     @State private var threadId: String? = nil
     @FocusState private var isFocused: Bool
+    @State private var isWaitingForResponse: Bool = false
     
     @Environment(\.colorScheme) var colorScheme
     let assistantId = "asst_yMrGnZxDMUosMEcbOnEJFooo"
@@ -24,6 +25,12 @@ struct InternalCbView: View {
                             ForEach(messages) { message in
                                 MessageBubbleInternal(message: message)
                             }
+                            if isWaitingForResponse {
+                                HStack {
+                                    TypingAnimationView()
+                                    Spacer()
+                                }
+                            }
                         }
                         .padding(.horizontal)
                         .padding(.top, 8)
@@ -33,6 +40,14 @@ struct InternalCbView: View {
                         withAnimation {
                             proxy.scrollTo(messages.last?.id, anchor: .bottom)
                         }
+                    }
+                    .onChange(of: isWaitingForResponse) { _ in
+                        withAnimation {
+                            proxy.scrollTo(messages.last?.id, anchor: .bottom)
+                        }
+                    }
+                    .onAppear {
+                        sendInitialMessage()
                     }
                 }
                 
@@ -67,6 +82,7 @@ struct InternalCbView: View {
             .task {
                 await createThread()
             }
+            .dismissKeyboardOnTap() 
     }
     
     private func createThread() async {
@@ -87,26 +103,32 @@ struct InternalCbView: View {
         }
     }
     
+    private func sendInitialMessage() {
+        let initialMessage = CbMessageModel(
+            text: "¡Hola! Soy BufeBot. Estoy aquí para ayudarte 😊.".trimmingCharacters(in: .whitespacesAndNewlines),
+            isFromCurrentUser: false,
+            citations: nil
+        )
+        messages.append(initialMessage)
+    }
+    
     private func sendMessage() async {
         guard let threadId = threadId else {
             print("Thread ID is not available.")
             return
         }
-        
+
         let trimmedChat = chat.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedChat.isEmpty else { return }
-        
+
         // Append user's message locally
         let userMessage = CbMessageModel(text: trimmedChat, isFromCurrentUser: true, citations: nil)
         DispatchQueue.main.async {
             self.messages.append(userMessage)
-        }
-        
-        // Clear the input field
-        DispatchQueue.main.async {
             self.chat = ""
+            self.isWaitingForResponse = true  // Set this to true while waiting for the response
         }
-        
+
         // Create message via API
         let createMessageURL = "\(baseURL)/create-message?thread_id=\(threadId)&content=\(trimmedChat.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")"
         
@@ -114,22 +136,11 @@ struct InternalCbView: View {
             print("Invalid URL for creating message")
             return
         }
-        
+
         do {
             let (data, response) = try await URLSession.shared.data(from: url)
-            
-            guard let httpResponse = response as? HTTPURLResponse else {
-                print("Invalid response when creating message")
-                return
-            }
-            
-            if httpResponse.statusCode != 200 {
-                if let errorResponse = try? JSONDecoder().decode([String: String].self, from: data),
-                   let errorMessage = errorResponse["error"] {
-                    print("Error creating message: \(errorMessage)")
-                } else {
-                    print("Unknown error creating message.")
-                }
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                print("Error creating message")
                 return
             }
             
@@ -144,128 +155,43 @@ struct InternalCbView: View {
             print("Error creating message: \(error)")
             return
         }
-        
-        // Run the thread via API
+
+        // Run the thread via API and wait for the response
         let runThreadURL = "\(baseURL)/run-thread?thread_id=\(threadId)&assistant_id=\(assistantId)"
         
         guard let runURL = URL(string: runThreadURL) else {
             print("Invalid URL for running thread")
             return
         }
-        
-        var runId: String?
-        var runStatus: String = "queued"
-        
+
         do {
-            let (data, response) = try await URLSession.shared.data(from: runURL)
-            
-            guard let httpResponse = response as? HTTPURLResponse else {
-                print("Invalid response when running thread")
-                return
-            }
-            
-            if httpResponse.statusCode != 200 {
-                if let errorResponse = try? JSONDecoder().decode([String: String].self, from: data),
-                   let errorMessage = errorResponse["error"] {
-                    print("Error running thread: \(errorMessage)")
-                } else {
-                    print("Unknown error running thread.")
-                }
-                return
-            }
-            
+            let (data, _) = try await URLSession.shared.data(from: runURL)
             let runResponse = try JSONDecoder().decode(RunResponse.self, from: data)
-            let retrievedRunId = runResponse.run.id
-            runId = retrievedRunId
-            runStatus = runResponse.run.status
-            print("Run initiated with ID: \(runId!)")
-            
+            let runStatus = runResponse.run.status
+
+            if runStatus == "completed" {
+                // Get the chatbot's message
+                await getBotResponse()
+            }
+
         } catch {
             print("Error running thread: \(error)")
-            return
         }
-        
-        guard let finalRunId = runId else { return }
-        
-        // Polling to check run status
-        var runCompleted = (runStatus == "completed")
-        var pollCount = 0
-        let maxPollAttempts = 30 // Adjust as needed (e.g., max 60 seconds if polling every 2 seconds)
-        
-        while !runCompleted && pollCount < maxPollAttempts {
-            try? await Task.sleep(nanoseconds: 2 * 1_000_000_000) // Wait for 2 seconds before polling
-            pollCount += 1
-            
-            let getRunURL = "\(baseURL)/get-run?thread_id=\(threadId)&run_id=\(finalRunId)"
-            guard let url = URL(string: getRunURL) else {
-                print("Invalid URL for getting run status")
-                continue
-            }
-            
-            do {
-                let (data, response) = try await URLSession.shared.data(from: url)
-                
-                guard let httpResponse = response as? HTTPURLResponse else {
-                    print("Invalid response when getting run status")
-                    continue
-                }
-                
-                if httpResponse.statusCode != 200 {
-                    if let errorResponse = try? JSONDecoder().decode([String: String].self, from: data),
-                       let errorMessage = errorResponse["error"] {
-                        print("Error getting run status: \(errorMessage)")
-                    } else {
-                        print("Unknown error getting run status.")
-                    }
-                    continue
-                }
-                
-                let runStatusResponse = try JSONDecoder().decode(RunResponse.self, from: data)
-                runStatus = runStatusResponse.run.status
-                print("Current run status: \(runStatus)")
-                
-                if runStatus == "completed" {
-                    runCompleted = true
-                }
-                
-            } catch {
-                print("Error checking run status: \(error)")
-            }
-        }
-        
-        if !runCompleted {
-            print("Run did not complete within the expected time.")
-            return
-        }
-        
-        // Retrieve the last message from the API
+    }
+
+    private func getBotResponse() async {
+        guard let threadId = threadId else { return }
         let getLastMessageURL = "\(baseURL)/retrieve-message?thread_id=\(threadId)"
         
-        guard let lastMessageURL = URL(string: getLastMessageURL) else {
-              print("Invalid URL for getting last message")
-              return
-          }
-        
-        do {
-            let (data, response) = try await URLSession.shared.data(from: lastMessageURL)
-            
-            guard let httpResponse = response as? HTTPURLResponse else {
-                        print("Invalid response when getting last message")
-                        return
-                    }
-            
-            if httpResponse.statusCode != 200 {
-                        if let errorResponse = try? JSONDecoder().decode([String: String].self, from: data),
-                           let errorMessage = errorResponse["error"] {
-                            print("Error getting last message: \(errorMessage)")
-                        } else {
-                            print("Unknown error getting last message.")
-                        }
-                        return
-                    }
+        guard let url = URL(string: getLastMessageURL) else {
+            print("Invalid URL for getting last message")
+            return
+        }
 
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
             let lastMessageResponse = try JSONDecoder().decode(LastMessageResponse.self, from: data)
-                    
+            
             guard let assistantMessage = lastMessageResponse.message else {
                 print("Assistant message not found.")
                 return
@@ -279,12 +205,18 @@ struct InternalCbView: View {
             
             DispatchQueue.main.async {
                 self.messages.append(botMessage)
+                self.isWaitingForResponse = false  // Set this to false when the response is received
             }
             
         } catch {
             print("Error retrieving last message: \(error)")
+            DispatchQueue.main.async {
+                self.isWaitingForResponse = false  // Reset in case of error
+            }
         }
     }
+
+
 }
 
 struct MessageBubbleInternal: View {
@@ -292,47 +224,53 @@ struct MessageBubbleInternal: View {
     @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
-        VStack(alignment: message.isFromCurrentUser ? .trailing : .leading, spacing: 8) {
-            HStack(alignment: .bottom, spacing: 0) {
-                if message.isFromCurrentUser {
-                    formatMessageText(message.text)
-                        .padding(10)
-                        .background(Color.userMessageBackground)
-                        .foregroundColor(Color.userMessageText)
-                        .clipShape(BubbleShape(isFromCurrentUser: true))
-                } else {
-                    formatMessageText(message.text)
-                        .padding(10)
-                        .background(Color.botMessageBackground)
-                        .foregroundColor(Color.botMessageText)
-                        .clipShape(BubbleShape(isFromCurrentUser: false))
+            VStack(alignment: message.isFromCurrentUser ? .trailing : .leading, spacing: 8) {
+                HStack {
+                    if !message.isFromCurrentUser {
+                        messageBubble
+                        Spacer()
+                    } else {
+                        Spacer()
+                        messageBubble
+                    }
                 }
-            }
-            .padding(.horizontal, 8)
-            .padding(.vertical, 4)
-        }
+                .padding(.horizontal, 8)
+                .padding(.vertical, 4)
 
-            // Display unique citations
-            if let citations = message.citations {
-                let uniqueCitations = removeDuplicateCitations(citations)
-                ForEach(uniqueCitations) { citation in
-                    CitationBox(citation: citation)
+                // Display unique citations
+                if let citations = message.citations {
+                    let uniqueCitations = removeDuplicateCitations(citations)
+                    ForEach(uniqueCitations) { citation in
+                        CitationBox(citation: citation)
+                            .frame(maxWidth: 300)
+                            .padding(.horizontal, 8)
+                    }
                 }
             }
         }
-    }
+    
+        private var messageBubble: some View {
+            formatMessageText(message.text)
+                .padding(10)
+                .background(message.isFromCurrentUser ? Color.userMessageBackground : Color.botMessageBackground)
+                .foregroundColor(message.isFromCurrentUser ? Color.userMessageText : Color.botMessageText)
+                .clipShape(BubbleShape(isFromCurrentUser: message.isFromCurrentUser))
+        }
+    
+        private func removeDuplicateCitations(_ citations: [Citation]) -> [Citation] {
+            var seen = Set<String>()
+            return citations.filter { citation in
+                guard !seen.contains(citation.fileName) else {
+                    return false
+                }
+                seen.insert(citation.fileName)
+                return true
+            }
+        }
+    
 
     // Function to remove duplicate citations based on fileName
-    private func removeDuplicateCitations(_ citations: [Citation]) -> [Citation] {
-        var seen = Set<String>()
-        return citations.filter { citation in
-            guard !seen.contains(citation.fileName) else {
-                return false
-            }
-            seen.insert(citation.fileName)
-            return true
-        }
-    }
+    
 
     // Function to process the message text and apply bold and bullet formatting
     func formatMessageText(_ text: String) -> Text {
@@ -367,7 +305,7 @@ struct MessageBubbleInternal: View {
 
         return finalText
     }
-
+}
 
 struct CitationBox: View {
     let citation: Citation
@@ -395,7 +333,7 @@ struct CitationBox: View {
 
 struct BubbleShape: Shape {
     let isFromCurrentUser: Bool
-    
+
     func path(in rect: CGRect) -> Path {
         let path = UIBezierPath(roundedRect: rect,
                     byRoundingCorners: [.topLeft, .topRight, isFromCurrentUser ? .bottomLeft : .bottomRight],

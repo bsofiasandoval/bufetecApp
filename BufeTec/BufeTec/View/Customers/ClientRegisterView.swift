@@ -82,6 +82,7 @@ struct ClientRegisterView: View {
                     }
                 }
             }
+            .dismissKeyboardOnTap() 
             .sheet(isPresented: $showVerificationSheet) {
                 PhoneVerificationView(
                     phoneNumber: telefono,

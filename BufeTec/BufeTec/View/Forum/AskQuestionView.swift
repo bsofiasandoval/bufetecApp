@@ -47,6 +47,7 @@ struct AskQuestionView: View {
                 }
                 .background(Color.forumBack)
             }
+            .dismissKeyboardOnTap() 
             .navigationTitle("Nuevo Hilo")
             .navigationBarItems(
                 leading: Button("Cancelar") {

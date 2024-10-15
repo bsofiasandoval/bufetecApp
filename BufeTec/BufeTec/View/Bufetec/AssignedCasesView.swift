@@ -10,6 +10,8 @@ import FirebaseAuth
 
 struct AssignedCasesView: View {
     @StateObject private var viewModel = AssignedCasesViewModel()
+    @State private var showingProfile = false
+    @EnvironmentObject var authState: AuthState
     var body: some View {
         VStack {
             if viewModel.isLoading {
@@ -37,6 +39,17 @@ struct AssignedCasesView: View {
         .navigationTitle("Casos asignados")
         .onAppear {
             viewModel.fetchCases(for: Auth.auth().currentUser!.uid)
+        }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: { showingProfile = true }) {
+                    Image(systemName: "person.fill")
+                }
+            }
+        }
+        .sheet(isPresented: $showingProfile) {
+            ProfileView()
+                .environmentObject(authState)
         }
     }
 }

@@ -94,6 +94,7 @@ struct ClientLoginView: View {
                 }
             }
         }
+        .dismissKeyboardOnTap()
     }
     
     private var phoneNumberView: some View {

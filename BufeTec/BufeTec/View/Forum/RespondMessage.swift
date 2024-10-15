@@ -37,6 +37,7 @@ struct RespondMessage: View {
                 .background(Color.forumBack)
             }
             .navigationTitle("Responder al Hilo")
+            .dismissKeyboardOnTap() 
             .navigationBarItems(
                 leading: Button("Cancelar") {
                     isPresented = false // Cerrar la hoja

@@ -25,6 +25,9 @@
 		A93F607D2CB84B95005B0FA7 /* AssignedCasesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93F607C2CB84B95005B0FA7 /* AssignedCasesViewModel.swift */; };
 		A93F607F2CB84E09005B0FA7 /* AllCasesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93F607E2CB84E09005B0FA7 /* AllCasesView.swift */; };
 		A93F608D2CB8C736005B0FA7 /* MyPersonnelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93F608C2CB8C736005B0FA7 /* MyPersonnelView.swift */; };
+		A95047522CBE059900B4FA8E /* TypingNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95047512CBE059900B4FA8E /* TypingNavigationView.swift */; };
+		A95047542CBE0C4400B4FA8E /* Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95047532CBE0C4400B4FA8E /* Keyboard.swift */; };
+		A95047562CBE114100B4FA8E /* LocationCheckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95047552CBE114100B4FA8E /* LocationCheckView.swift */; };
 		A9571A252CA507E6000EFFC1 /* ClientRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9571A242CA507E6000EFFC1 /* ClientRegisterView.swift */; };
 		A9571A272CA511E5000EFFC1 /* CasesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9571A262CA511E5000EFFC1 /* CasesView.swift */; };
 		A9571A292CA533A9000EFFC1 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9571A282CA533A9000EFFC1 /* Data.swift */; };
@@ -79,6 +82,9 @@
 		A93F607C2CB84B95005B0FA7 /* AssignedCasesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignedCasesViewModel.swift; sourceTree = "<group>"; };
 		A93F607E2CB84E09005B0FA7 /* AllCasesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllCasesView.swift; sourceTree = "<group>"; };
 		A93F608C2CB8C736005B0FA7 /* MyPersonnelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPersonnelView.swift; sourceTree = "<group>"; };
+		A95047512CBE059900B4FA8E /* TypingNavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypingNavigationView.swift; sourceTree = "<group>"; };
+		A95047532CBE0C4400B4FA8E /* Keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keyboard.swift; sourceTree = "<group>"; };
+		A95047552CBE114100B4FA8E /* LocationCheckView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationCheckView.swift; sourceTree = "<group>"; };
 		A9571A242CA507E6000EFFC1 /* ClientRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientRegisterView.swift; sourceTree = "<group>"; };
 		A9571A262CA511E5000EFFC1 /* CasesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CasesView.swift; sourceTree = "<group>"; };
 		A9571A282CA533A9000EFFC1 /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
@@ -190,6 +196,7 @@
 				A91535682CA0F3ED00DA3289 /* AppDelegate.swift */,
 				A915356A2CA0F40900DA3289 /* ViewExt.swift */,
 				A9947D872CA21D76001F8D24 /* Authentication.swift */,
+				A95047532CBE0C4400B4FA8E /* Keyboard.swift */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -202,6 +209,7 @@
 				A90B08D42CACBDE800D16F8F /* CaseDetailView.swift */,
 				A91E73F02CACCE35009C331C /* NewCaseView.swift */,
 				A93F608C2CB8C736005B0FA7 /* MyPersonnelView.swift */,
+				A95047552CBE114100B4FA8E /* LocationCheckView.swift */,
 			);
 			path = Customers;
 			sourceTree = "<group>";
@@ -249,6 +257,7 @@
 			children = (
 				A96E5C522C954D4A0056B657 /* InternalCbView.swift */,
 				A96E5C502C954D380056B657 /* NewClientCbView.swift */,
+				A95047512CBE059900B4FA8E /* TypingNavigationView.swift */,
 			);
 			path = Chatbot;
 			sourceTree = "<group>";
@@ -393,6 +402,7 @@
 				A96E5C532C954D4A0056B657 /* InternalCbView.swift in Sources */,
 				A9571A2D2CA533CE000EFFC1 /* APIdata.swift in Sources */,
 				A91535662CA0F2CE00DA3289 /* GoogleSignInBtn.swift in Sources */,
+				A95047562CBE114100B4FA8E /* LocationCheckView.swift in Sources */,
 				A91E73F12CACCE35009C331C /* NewCaseView.swift in Sources */,
 				A90B08D52CACBDE800D16F8F /* CaseDetailView.swift in Sources */,
 				A93F607D2CB84B95005B0FA7 /* AssignedCasesViewModel.swift in Sources */,
@@ -400,9 +410,11 @@
 				A9571A292CA533A9000EFFC1 /* Data.swift in Sources */,
 				A96E5C4D2C954CDB0056B657 /* ForumView.swift in Sources */,
 				A981ED3D2CA5CE0A000ACCB7 /* AskQuestionView.swift in Sources */,
+				A95047522CBE059900B4FA8E /* TypingNavigationView.swift in Sources */,
 				A900EBE62C954AED001E5311 /* BufeTecApp.swift in Sources */,
 				A93F607F2CB84E09005B0FA7 /* AllCasesView.swift in Sources */,
 				A9DD75052CBD9AE6006007FB /* AssignedCasesView.swift in Sources */,
+				A95047542CBE0C4400B4FA8E /* Keyboard.swift in Sources */,
 				A9947D8C2CA22018001F8D24 /* HomeView.swift in Sources */,
 				A96E5C672C954EBA0056B657 /* ExploreView.swift in Sources */,
 				A96E5C692C954EE60056B657 /* GeneralLoginView.swift in Sources */,

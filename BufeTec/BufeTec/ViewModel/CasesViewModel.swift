@@ -16,7 +16,7 @@ class CasesViewModel: ObservableObject {
         isLoading = true
         errorMessage = nil
         
-        guard let url = URL(string: "http://10.14.255.51:4000/casos_legales/clientes/\(clientId)") else {
+        guard let url = URL(string: "http://10.14.255.51:4000/casos_legales/cliente/\(clientId)") else {
             DispatchQueue.main.async {
                 self.isLoading = false
                 self.errorMessage = "Invalid URL"

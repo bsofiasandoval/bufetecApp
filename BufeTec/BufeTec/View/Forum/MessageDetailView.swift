@@ -118,6 +118,7 @@ struct MessageDetailView: View {
         .onAppear{
             fetchResponses()
         }
+        .dismissKeyboardOnTap() 
     }
     
     private func fetchResponses() {
@@ -136,6 +137,7 @@ struct MessageDetailView: View {
             }
         }
     }
+    
     private func fetchUserData(userId: String) {
         // Intenta obtener el usuario como abogado primero
         NetworkManager.shared.fetchUserAbogadoById(userId) { result in

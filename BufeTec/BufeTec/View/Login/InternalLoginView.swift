@@ -89,6 +89,7 @@ struct InternalLoginView: View {
         }
         .edgesIgnoringSafeArea(.top)
         .navigationBarBackButtonHidden(true)
+        .dismissKeyboardOnTap() 
         .navigationBarItems(leading: Button(action: {
             self.presentationMode.wrappedValue.dismiss()
         }) {

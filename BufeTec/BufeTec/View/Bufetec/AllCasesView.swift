@@ -11,6 +11,7 @@ import FirebaseAuth
 struct AllCasesView: View {
     @StateObject private var viewModel = AllCasesViewModel()
     @EnvironmentObject var authState: AuthState
+    @State private var showingProfile = false
     
     // Picker state to track the selected case type
     @State private var selectedCaseType: CaseType = .unassigned
@@ -63,6 +64,17 @@ struct AllCasesView: View {
         .navigationTitle("Casos Bufetec")
         .task {
             await viewModel.fetchCases()
+        }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: { showingProfile = true }) {
+                    Image(systemName: "person.fill")
+                }
+            }
+        }
+        .sheet(isPresented: $showingProfile) {
+            ProfileView()
+                .environmentObject(authState)
         }
     }
     

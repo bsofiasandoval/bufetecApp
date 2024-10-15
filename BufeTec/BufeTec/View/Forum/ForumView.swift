@@ -5,8 +5,6 @@
 //  Created by Sofia Sandoval on 9/13/24.
 //
 
-// Claudia
-
 import SwiftUI
 import FirebaseAuth
 
@@ -14,19 +12,48 @@ struct ForumView: View {
     @EnvironmentObject var authState: AuthState
     @StateObject private var apiData = APIData()
     @State private var showingProfile = false
-    @State private var showingAddPostView
-    = false
+    @State private var showingAddPostView = false
     @State private var selectedPost: WelcomeElement?
     @State private var showingAskQuestionView = false
     
+    // New state for search
+    @State private var searchText: String = ""
     
     var body: some View {
         ZStack {
             // Main content
             VStack {
+                // Search bar
+                HStack {
+                    TextField("Buscar...", text: $searchText)
+                        .padding(8)
+                        .padding(.horizontal, 24)
+                        .background(.textFieldBackground)
+                        .cornerRadius(8)
+                        .overlay(
+                            HStack {
+                                Image(systemName: "magnifyingglass")
+                                    .foregroundColor(Color(.systemGray2))
+                                    .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
+                                    .padding(.leading, 8)
+                                
+                                if !searchText.isEmpty {
+                                    Button(action: {
+                                        self.searchText = ""
+                                    }) {
+                                        Image(systemName: "multiply.circle.fill")
+                                            .foregroundColor(.gray)
+                                            .padding(.trailing, 8)
+                                    }
+                                }
+                            }
+                        )
+                }
+                .padding(.horizontal)
+                
                 ScrollView {
-                    ForEach(apiData.posts.sorted(by: { post1, post2 in
-                        // Compare creation dates
+                    // Filtered posts based on the search text
+                    ForEach(filteredPosts.sorted(by: { post1, post2 in
                         guard let date1 = dateFromString(post1.fechaCreacion),
                               let date2 = dateFromString(post2.fechaCreacion) else {
                             return false
@@ -89,8 +116,8 @@ struct ForumView: View {
                         }
                     }
                 }
-               
                 .navigationTitle("Foro")
+                .dismissKeyboardOnTap() 
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button(action: { showingProfile = true }) {
@@ -102,17 +129,16 @@ struct ForumView: View {
                     ProfileView()
                         .environmentObject(authState)
                 }
-        
             }
             .background(Color.forumBack)
             
-            // Floating button
+            // Floating button for asking a question
             VStack {
                 Spacer()
                 HStack {
                     Spacer()
                     Button(action: {
-                        showingAskQuestionView.toggle() // Corregido: quitar el paréntesis adicional
+                        showingAskQuestionView.toggle()
                     }) {
                         ZStack {
                             Circle()
@@ -133,14 +159,27 @@ struct ForumView: View {
         }
         .sheet(isPresented: $showingAskQuestionView) {
             AskQuestionView(isPresented: $showingAskQuestionView, onPostSave: {
-                // Reload posts after a new post is saved
                 apiData.fetchPosts()
             })
-            .environmentObject(authState)}
+            .environmentObject(authState)
+        }
     }
+    
+    // Filter the posts based on the search text
+    var filteredPosts: [WelcomeElement] {
+        if searchText.isEmpty {
+            return apiData.posts
+        } else {
+            return apiData.posts.filter { post in
+                post.titulo.lowercased().contains(searchText.lowercased()) ||
+                post.contenido.lowercased().contains(searchText.lowercased())
+            }
+        }
+    }
+    
     class APIData: ObservableObject {
         @Published var posts: [WelcomeElement] = []
-        @Published var userNames: [String: String] = [:] // Store user names
+        @Published var userNames: [String: String] = [:]
         
         func fetchPosts() {
             NetworkManager.shared.fetchPosts { result in
@@ -148,7 +187,6 @@ struct ForumView: View {
                 case .success(let posts):
                     DispatchQueue.main.async {
                         self.posts = posts
-                    
                     }
                 case .failure(let error):
                     print("Error fetching posts: \(error.localizedDescription)")
@@ -174,27 +212,21 @@ struct ForumView: View {
         if let date = formatter.date(from: dateString) {
             let timeFormatter = DateFormatter()
             timeFormatter.dateFormat = "h:mm a"
-            timeFormatter.timeZone = TimeZone(identifier: "America/Mexico") // CST (UTC-6)
-            
-            let formattedTime = timeFormatter.string(from: date)
-            return formattedTime
+            timeFormatter.timeZone = TimeZone(identifier: "America/Mexico")
+            return timeFormatter.string(from: date)
         } else {
-            print("Error: Could not parse date string: \(dateString)") // Debugging message
+            return dateString
         }
-        
-        return dateString
     }
     
     private func fetchUserData(userId: String) {
-        // Try to fetch as a lawyer first
         NetworkManager.shared.fetchUserAbogadoById(userId) { result in
             switch result {
             case .success(let user):
                 DispatchQueue.main.async {
-                    self.apiData.userNames[userId] = user.nombre // Store lawyer's name
+                    self.apiData.userNames[userId] = user.nombre
                 }
             case .failure:
-                // If it fails as a lawyer, try as an intern
                 self.fetchBecarioData(userId: userId)
             }
         }
@@ -205,16 +237,17 @@ struct ForumView: View {
             switch result {
             case .success(let user):
                 DispatchQueue.main.async {
-                    self.apiData.userNames[userId] = user.nombre // Store intern's name
+                    self.apiData.userNames[userId] = user.nombre
                 }
             case .failure:
                 DispatchQueue.main.async {
-                    self.apiData.userNames[userId] = "Bufetec" // Fallback name
+                    self.apiData.userNames[userId] = "Bufetec"
                 }
             }
         }
     }
 }
+
 
 
 struct ForumView_Previews: PreviewProvider {

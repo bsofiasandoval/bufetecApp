@@ -35,7 +35,7 @@ struct GeneralLoginView: View {
                 Spacer()
                 
                 VStack(spacing: 20) {
-                    NavigationLink(destination: NewClientCbView().environmentObject(authState)) {
+                    NavigationLink(destination: LocationCheckView().environmentObject(authState)) {
                         Text("Requiero Asesoría Legal")
                             .frame(minWidth: 200)
                             .fontWeight(.medium)

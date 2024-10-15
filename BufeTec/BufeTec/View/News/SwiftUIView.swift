@@ -147,6 +147,7 @@ struct NewsView: View {
             .onAppear {
                 viewModel.fetchNews()
             }
+            .dismissKeyboardOnTap() 
         
     }
 }
@@ -156,7 +157,7 @@ struct SearchBar: View {
     
     var body: some View {
         HStack {
-            TextField("Search...", text: $text)
+            TextField("Buscar...", text: $text)
                 .padding(8)
                 .padding(.horizontal, 24)
                 .background(Color(.systemGray6))
