@@ -142,7 +142,7 @@ struct MessageDetailView: View {
             switch result {
             case .success(let user):
                 DispatchQueue.main.async {
-                    self.userNames[userId] = user.nombre // Almacenar nombre del abogado
+                    isAbogado = true
                 }
             case .failure:
                 // Si falla, intenta obtener el usuario como becario
