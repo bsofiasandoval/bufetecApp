@@ -133,23 +133,26 @@ struct CaseDetailView: View {
     
     private var lawyersSection: some View {
             VStack(alignment: .leading, spacing: 10) {
-                Text("Abogados y Becarios Asignados")
-                    .font(.headline)
+                HStack{
+                    Text("Personal Asignado")
+                        .font(.headline)
+                    Spacer()
+                    if !isClient && authState.userRole == .abogado {
+                        Button(action: {
+                            isShowingAssignmentSheet = true
+                        }) {
+                            Text(Image(systemName: "person.2"))
+                        }
+                        .foregroundColor(.blue)
+                    }
+                }
+               
                 ForEach(legalCase.abogados_becarios_id, id: \.self) { id in
                     if let name = personnelNames[id] {
                         personnelRow(name: name, id: id)
                     }
                 }
-                
-                if !isClient && authState.userRole == .abogado {
-                    Button("Asignar Personal"){
-                        isShowingAssignmentSheet = true
-                    }
-                    .padding()
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
-                }
+               
             }
             .sectionStyle()
             .onAppear {
@@ -162,20 +165,21 @@ struct CaseDetailView: View {
             }
         }
         
-        private func personnelRow(name: String, id: String) -> some View {
-            NavigationLink(destination: MyPersonnelView(internalId: id)) {
-                HStack {
-                    Image(systemName: "person.fill")
-                        .foregroundColor(.blue)
-                    Text(name)  // Display the fetched name
-                    Spacer()
-                    Image(systemName: "chevron.right")
-                        .foregroundColor(.gray)
-                }
+    private func personnelRow(name: String?, id: String) -> some View {
+        NavigationLink(destination: MyPersonnelView(internalId: id)) {
+            HStack {
+                Image(systemName: "person.fill")
+                    .foregroundColor(.blue)
+                Text(name ?? "Nombre no disponible")  // Provide fallback for missing names
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .foregroundColor(.gray)
             }
-            .padding(.vertical, 5)
-            .buttonStyle(PlainButtonStyle())
         }
+        .padding(.vertical, 5)
+        .buttonStyle(PlainButtonStyle())
+    }
+
         
     @ViewBuilder
     private func personDetailView(for id: String) -> some View {
@@ -242,9 +246,7 @@ struct CaseDetailView: View {
     
     private func fetchPersonnelNames() {
         for id in legalCase.abogados_becarios_id {
-            // Assuming your IDs start with "abogado" or "becario" to differentiate the roles
-            let endpoint = id.hasPrefix("abogado") ? "abogados" : "becarios"
-            let urlString = "http://10.14.255.51:4000/\(endpoint)/\(id)"
+            let urlString = "http://10.14.255.51:4000/personnel/\(id)"
             
             guard let url = URL(string: urlString) else {
                 print("Invalid URL")
@@ -253,33 +255,33 @@ struct CaseDetailView: View {
             
             URLSession.shared.dataTask(with: url) { data, response, error in
                 if let error = error {
-                    print("Failed to fetch data: \(error.localizedDescription)")
+                    print("Failed to fetch data for \(id): \(error.localizedDescription)")
                     return
                 }
                 
                 guard let data = data else {
-                    print("No data received")
+                    print("No data received for \(id)")
                     return
                 }
                 
+                // Print the raw response data for debugging
+                if let dataString = String(data: data, encoding: .utf8) {
+                    print("Received data for \(id): \(dataString)")
+                }
+                
                 do {
-                    if endpoint == "abogados" {
-                        let result = try JSONDecoder().decode(AbogadoName.self, from: data)
-                        DispatchQueue.main.async {
-                            self.personnelNames[id] = result.nombre
-                        }
-                    } else {
-                        let result = try JSONDecoder().decode(BecarioName.self, from: data)
-                        DispatchQueue.main.async {
-                            self.personnelNames[id] = result.nombre
-                        }
+                    let result = try JSONDecoder().decode(Personnel.self, from: data)
+                    DispatchQueue.main.async {
+                        self.personnelNames[id] = result.nombre ?? "Nombre no disponible"
                     }
                 } catch {
-                    print("Decoding error: \(error)")
+                    print("Decoding error for \(id): \(error)")
                 }
             }.resume()
         }
     }
+
+
     
     private func uploadDocumentToFirebase(documentURL: URL) {
         do {

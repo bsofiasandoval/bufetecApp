@@ -83,9 +83,9 @@ struct MessageDetailView: View {
         }
         .background(Color.forumBack)
         .onAppear {
-                    fetchUserData(userId: Auth.auth().currentUser?.uid ?? "")
-                    fetchResponses()
-                }
+            fetchUserData(userId: Auth.auth().currentUser?.uid ?? "")
+            fetchResponses()
+        }
         .navigationTitle(
             // Conditional navigation title based on the user role
             post.autorID == Auth.auth().currentUser?.uid || isAbogado
