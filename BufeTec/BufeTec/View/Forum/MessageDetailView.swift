@@ -17,34 +17,35 @@ struct MessageDetailView: View {
     @State private var isPresented = false
     @State private var respuestas: [Respuesta] = []
     @State private var userNames: [String: String] = [:]
-
+    
+    @State private var showDeleteConfirmation = false  // Estado para mostrar alerta de confirmación
+    @State private var isDeleting = false  // Para manejar la animación de carga mientras se elimina el post
+    
     var body: some View {
         VStack {
             Spacer()
            
-            //you can obtain the postid with post.id
-                VStack(alignment: .leading, spacing: 10) {
-                    Text(post.titulo)
-                        .font(.headline)
-                        .foregroundColor(Color.text)
-                    
-                    Text(post.contenido)
-                        .font(.subheadline)
-                        .foregroundColor(Color.text)
-                    
-                    // Aquí se llama a la función formatTime que ahora devuelve el día y el mes
-                    Text(formatTime(post.fechaCreacion))
-                        .font(.caption)
-                        .foregroundColor(Color.text)
-                }
-                .padding()
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Color.cajitas)
-                .cornerRadius(15)
-                .padding(.horizontal)
+            VStack(alignment: .leading, spacing: 10) {
+                Text(post.titulo)
+                    .font(.headline)
+                    .foregroundColor(Color.text)
+                
+                Text(post.contenido)
+                    .font(.subheadline)
+                    .foregroundColor(Color.text)
+                
+                Text(formatTime(post.fechaCreacion))
+                    .font(.caption)
+                    .foregroundColor(Color.text)
+            }
+            .padding()
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color.cajitas)
+            .cornerRadius(15)
+            .padding(.horizontal)
             
             HStack {
-                VStack(alignment: .leading, spacing: 40 ){
+                VStack(alignment: .leading, spacing: 40) {
                     Text("Respuestas")
                         .font(.headline)
                         .padding(.leading, 30)
@@ -53,21 +54,20 @@ struct MessageDetailView: View {
                 }
                 Spacer()
             }
-            //Respuestas de la publicacion (hay que iterar sobre cada respuesta)
+            
             ScrollView {
                 ForEach(respuestas, id: \.respuestaID) { respuesta in
                     VStack(alignment: .leading, spacing: 10) {
                         Text(userNames[respuesta.autorID] ?? "Cargando...")
-                                        .font(.subheadline)
-                                        .bold()
-                                        .lineLimit(1)
-                                        .foregroundColor(Color.text)
+                            .font(.subheadline)
+                            .bold()
+                            .lineLimit(1)
+                            .foregroundColor(Color.text)
                         
                         Text(respuesta.contenido)
                             .font(.subheadline)
                             .foregroundColor(Color.text)
                         
-                        // Aquí se llama a la función formatTime que ahora devuelve el día y el mes
                         Text(formatTime(respuesta.fechaCreacion))
                             .font(.caption)
                             .foregroundColor(Color.text)
@@ -79,7 +79,6 @@ struct MessageDetailView: View {
                     .padding(.horizontal)
                 }
             }
-            
         }
         .background(Color.forumBack)
         .onAppear {
@@ -87,38 +86,73 @@ struct MessageDetailView: View {
             fetchResponses()
         }
         .navigationTitle(
-            // Conditional navigation title based on the user role
             post.autorID == Auth.auth().currentUser?.uid || isAbogado
                 ? "Responder mensaje"
                 : "Detalles del mensaje"
         )
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            // Conditionally show "Responder" button if user is the post's author or a lawyer
             if post.autorID == Auth.auth().currentUser?.uid || isAbogado {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action:{
+                    Button(action: {
                         isPresented = true
                     }) {
                         Image(systemName: "paperplane")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(width: 24, height: 24) // Adjust size as needed
+                            .frame(width: 24, height: 24)
                             .foregroundColor(.blue)
+                    }
+                }
+                
+                // Botón de eliminar con el ícono de basura
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        showDeleteConfirmation = true  // Mostrar alerta de confirmación
+                    }) {
+                        Image(systemName: "trash")
+                            .foregroundColor(.red)
                     }
                 }
             }
         }
         .sheet(isPresented: $isPresented) {
-                    RespondMessage(isPresented: $isPresented, post: post, onPostSave: {
-                        fetchResponses()
-                        print("Post saved")
-                    })
-                }
-        .onAppear{
-            fetchResponses()
+            RespondMessage(isPresented: $isPresented, post: post, onPostSave: {
+                fetchResponses()
+                print("Post saved")
+            })
         }
-        .dismissKeyboardOnTap() 
+        .alert(isPresented: $showDeleteConfirmation) {
+            Alert(
+                title: Text("Eliminar post"),
+                message: Text("¿Estás seguro de que quieres eliminar este post?"),
+                primaryButton: .destructive(Text("Eliminar")) {
+                    deletePost(postID: post.id)  // Llamar la función de eliminación
+                },
+                secondaryButton: .cancel()
+            )
+        }
+    }
+    
+    // Función para eliminar el post
+    private func deletePost(postID: String) {
+        isDeleting = true
+        NetworkManager.shared.deletePost(postID: postID) { result in
+            DispatchQueue.main.async {
+                isDeleting = false
+                switch result {
+                case .success(let message):
+                    print(message)  // Aquí puedes hacer un manejo adicional
+                    // Navegar hacia atrás después de eliminar el post
+                    // Por ejemplo:
+                    // self.presentationMode.wrappedValue.dismiss()
+                    
+                case .failure(let error):
+                    print("Error al eliminar el post: \(error.localizedDescription)")
+                    // Aquí puedes mostrar un mensaje de error al usuario si es necesario
+                }
+            }
+        }
     }
     
     private func fetchResponses() {
