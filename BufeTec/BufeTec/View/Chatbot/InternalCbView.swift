@@ -7,83 +7,97 @@
 
 import SwiftUI
 
+
 struct InternalCbView: View {
     @State private var chat: String = ""
     @State private var messages: [CbMessageModel] = []
     @State private var threadId: String? = nil
     @FocusState private var isFocused: Bool
     @State private var isWaitingForResponse: Bool = false
-    
+    @State private var showingPhoneView = false
+    @Environment(\.presentationMode) var presentationMode
     @Environment(\.colorScheme) var colorScheme
+    
     let assistantId = "asst_yMrGnZxDMUosMEcbOnEJFooo"
     let baseURL = "http://10.14.255.51:8080"
+    
     var body: some View {
-            VStack(spacing: 0) {
-                ScrollViewReader { proxy in
-                    ScrollView {
-                        LazyVStack(spacing: 12) {
-                            ForEach(messages) { message in
-                                MessageBubbleInternal(message: message)
+        VStack(spacing: 0) {
+            ScrollViewReader { proxy in
+                ScrollView {
+                    LazyVStack(spacing: 12) {
+                        ForEach(messages) { message in
+                            MessageBubbleInternal(message: message)
+                        }
+                        if isWaitingForResponse {
+                            HStack {
+                                TypingAnimationView()
+                                Spacer()
                             }
-                            if isWaitingForResponse {
-                                HStack {
-                                    TypingAnimationView()
-                                    Spacer()
-                                }
-                            }
-                        }
-                        .padding(.horizontal)
-                        .padding(.top, 8)
-                        .padding(.bottom, 16)
-                    }
-                    .onChange(of: messages) { _ in
-                        withAnimation {
-                            proxy.scrollTo(messages.last?.id, anchor: .bottom)
                         }
                     }
-                    .onChange(of: isWaitingForResponse) { _ in
-                        withAnimation {
-                            proxy.scrollTo(messages.last?.id, anchor: .bottom)
-                        }
-                    }
-                    .onAppear {
-                        sendInitialMessage()
+                    .padding(.horizontal)
+                    .padding(.top, 8)
+                    .padding(.bottom, 16)
+                }
+                .onChange(of: messages) { _ in
+                    withAnimation {
+                        proxy.scrollTo(messages.last?.id, anchor: .bottom)
                     }
                 }
+                .onChange(of: isWaitingForResponse) { _ in
+                    withAnimation {
+                        proxy.scrollTo(messages.last?.id, anchor: .bottom)
+                    }
+                }
+                .onAppear {
+                    sendInitialMessage()
+                }
+            }
+            
+            HStack {
+                TextField("Escribe tu mensaje aquí", text: $chat)
+                    .padding(7)
+                    .background(Color.textFieldBackground)
+                    .cornerRadius(20)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 20)
+                            .stroke(Color.textFieldBorder, lineWidth: 1)
+                    )
+                    .focused($isFocused)
                 
-                HStack {
-                    TextField("Escribe tu mensaje aquí", text: $chat)
-                        .padding(7)
-                        .background(Color.textFieldBackground)
-                        .cornerRadius(20)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 20)
-                                .stroke(Color.textFieldBorder, lineWidth: 1)
-                        )
-                        .focused($isFocused)
-                    
-                    Button(action: {
-                        Task {
-                            await sendMessage()
-                        }
-                    }) {
-                        Text("↑")
-                            .font(.system(size: 24, weight: .bold))
-                            .foregroundColor(.white)
-                            .frame(width: 35, height: 35)
-                            .background(chat.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? Color.sendButtonDisabled : Color.sendButtonEnabled)
-                            .clipShape(Circle())
+                Button(action: {
+                    Task {
+                        await sendMessage()
                     }
-                    .disabled(chat.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                }) {
+                    Text("↑")
+                        .font(.system(size: 24, weight: .bold))
+                        .foregroundColor(.white)
+                        .frame(width: 35, height: 35)
+                        .background(chat.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? Color.sendButtonDisabled : Color.sendButtonEnabled)
+                        .clipShape(Circle())
                 }
-                .padding()
+                .disabled(chat.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             }
-            .navigationTitle("BufeBot")
-            .task {
-                await createThread()
+            .padding()
+        }
+        .navigationTitle("BufeBot")
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                NavigationLink(destination: SpeechBot()) {
+                    Image(systemName: "phone")
+                        .foregroundColor(.white)
+                }
             }
-            .dismissKeyboardOnTap() 
+        }
+        .task {
+            await createThread()
+        }
+        .dismissKeyboardOnTap()
     }
+        
     
     private func createThread() async {
         guard let url = URL(string: "\(baseURL)/create-thread") else {

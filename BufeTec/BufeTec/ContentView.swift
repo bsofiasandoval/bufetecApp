@@ -12,6 +12,8 @@ struct ContentView: View {
     @State private var selectedTab: Int
     @State private var showingProfile = false
     @EnvironmentObject var authState: AuthState  // Use global authState
+  
+
     
     init(initialTab: Int = 0) {
         _selectedTab = State(initialValue: initialTab)
@@ -49,7 +51,7 @@ struct ContentView: View {
             .tag(2)
             
             NavigationView {
-                InternalCbView() // Similarly, remove isLoggedOut from this view as well
+                InternalCbView()
             }
             .tabItem {
                 Label("BufeBot", systemImage: "sparkles")

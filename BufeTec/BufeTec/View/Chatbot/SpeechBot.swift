@@ -178,56 +178,62 @@ class CallManager: ObservableObject {
 
 struct SpeechBot: View {
     @StateObject private var callManager = CallManager()
-
+    @Environment(\.presentationMode) var presentationMode
     var body: some View {
-        ZStack {
-            // Background gradient
-            LinearGradient(gradient: Gradient(colors: [Color.blue.opacity(0.7), Color.blue.opacity(0.9)]), startPoint: .top, endPoint: .bottom)
-                .edgesIgnoringSafeArea(.all)
+        VStack(spacing: 20) {
+            Spacer()
+            Text("Bufetec")
+                .font(.largeTitle)
+                .fontWeight(.bold)
+                .foregroundColor(.white)
+                .padding()
+            
+            Text(callManager.callStateText)
+                .font(.title)
+                .fontWeight(.semibold)
+                .foregroundColor(.text)
+                .padding()
+                .cornerRadius(10)
+            
+            AudioResponsiveCircleView()
+                .frame(width: 300, height: 300)
+                .padding()
+            
+            Spacer()
 
-            VStack(spacing: 20) {
-                Text("Bufetec")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .foregroundColor(.white)
-                
-                AudioResponsiveCircleView()
-                    .frame(width: 300, height: 300)
-                    .padding()
-                
-                Spacer()
-
-                Text(callManager.callStateText)
-                    .font(.title)
-                    .fontWeight(.semibold)
-                    .foregroundColor(.white)
-                    .padding()
-                    .background(callManager.callStateColor)
-                    .cornerRadius(10)
-
-                Spacer()
-
-                Button(action: {
-                    Task {
-                        await callManager.handleCallAction()
-                    }
-                }) {
-                    ZStack {
-                        Circle()
-                            .fill(callManager.buttonColor)
-                            .frame(width: 70, height: 70)
-                        
-                        Image(systemName: callManager.buttonImageName)
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 30, height: 30)
-                            .foregroundColor(.white)
-                    }
+            Button(action: {
+                Task {
+                    await callManager.handleCallAction()
                 }
-                .disabled(callManager.callState == .loading)
-                .padding(.bottom, 40)
+            }) {
+                ZStack {
+                    Circle()
+                        .fill(callManager.buttonColor)
+                        .frame(width: 70, height: 70)
+                    
+                    Image(systemName: callManager.buttonImageName)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 30, height: 30)
+                        .foregroundColor(.white)
+                }
+            }
+            .disabled(callManager.callState == .loading)
+            .padding(.bottom, 40)
 
-                Spacer()
+            Spacer()
+        }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
+                    self.presentationMode.wrappedValue.dismiss()
+                }) {
+                    HStack {
+                        Image(systemName: "chevron.left")
+                    }
+                    .foregroundColor(.white)
+                }
             }
         }
         .onAppear {
@@ -241,9 +247,9 @@ struct SpeechBot: View {
 extension CallManager {
     var callStateText: String {
         switch callState {
-        case .started: return "Call in Progress"
-        case .loading: return "Connecting..."
-        case .ended: return "Call Off"
+        case .started: return "Llamada en progeso"
+        case .loading: return "Conectando..."
+        case .ended: return "Llamada entrante"
         }
     }
 
@@ -270,4 +276,10 @@ extension CallManager {
         case .started: return "phone.down.fill"
         }
     }
+}
+
+
+
+#Preview {
+    SpeechBot()
 }

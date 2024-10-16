@@ -16,7 +16,6 @@ struct LocationCheckView: View {
     
     
     @State private var userLocation: CLLocationCoordinate2D? = nil
-    @State private var showingNewClientView = false
     @Environment(\.openURL) var openURL
     @EnvironmentObject var authState: AuthState
     @StateObject private var locationManager = LocationManager()
@@ -84,9 +83,6 @@ struct LocationCheckView: View {
             Image(systemName: "chevron.left")
                 .foregroundColor(.white)
         })
-        .sheet(isPresented: $showingNewClientView) {
-            NewClientCbView().environmentObject(authState) // The view you want to show
-        }
     }
 }
 

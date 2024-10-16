@@ -38,6 +38,8 @@
 	</array>
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>Se necesita tu ubicación para mostrar tu posición en el mapa.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Se necesita para poder hablar con Bufebot Speech to Speech</string>
 </dict>
 </plist>
 
