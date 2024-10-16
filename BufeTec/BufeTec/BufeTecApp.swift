@@ -10,6 +10,7 @@
 import SwiftUI
 import Firebase
 import FirebaseAuth
+import WidgetKit
 
 @main
 struct BufeTecApp: App {
@@ -21,6 +22,27 @@ struct BufeTecApp: App {
             NavigationView {
                 HomeView()
                     .environmentObject(authState)  // Pass the global authState to HomeView
+                    .onOpenURL { url in
+                        handleDeepLink(url:url)
+                    }
+            }
+        }
+    }
+    
+    
+    func handleDeepLink(url: URL) {
+        if url.scheme == "myapp" {
+            switch url.host {
+            case "showSpeechBot":
+                if authState.isLoggedIn && (authState.userRole == .abogado || authState.userRole == .becario) {
+                    NotificationCenter.default.post(name: Notification.Name("showSpeechBot"), object: nil)
+                } else {
+                    NotificationCenter.default.post(name: Notification.Name("showLogin"), object: nil)
+                }
+            case "login":
+                NotificationCenter.default.post(name: Notification.Name("showLogin"), object: nil)
+            default:
+                break
             }
         }
     }
@@ -39,6 +61,7 @@ class AuthState: ObservableObject {
     @Published var isLoggedIn: Bool
     @Published var user: User?
     @Published var userRole: UserRole?
+    @AppStorage("isLoggedIn") var widgetLoggedIn: Bool = false
     
     init() {
         self.isLoggedIn = Auth.auth().currentUser != nil
@@ -50,6 +73,7 @@ class AuthState: ObservableObject {
                 self?.isLoggedIn = user != nil
                 self?.user = user
                 self?.userRole = self?.getUserRole(user)
+                WidgetCenter.shared.reloadAllTimelines()
             }
         }
     }
@@ -79,11 +103,14 @@ class AuthState: ObservableObject {
         do {
             try Auth.auth().signOut()
             self.isLoggedIn = false
+            self.widgetLoggedIn = false 
             self.user = nil
             self.userRole = nil
+            WidgetCenter.shared.reloadAllTimelines()
         } catch {
             print("Error signing out: \(error.localizedDescription)")
         }
     }
 }
+
 

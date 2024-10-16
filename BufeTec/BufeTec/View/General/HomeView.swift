@@ -10,6 +10,7 @@ import FirebaseAuth
 struct HomeView: View {
     @EnvironmentObject var authState: AuthState
     @State private var isLoading = true
+    @State private var showSpeechBot = false
 
     var body: some View {
         Group {
@@ -18,8 +19,12 @@ struct HomeView: View {
             } else if authState.isLoggedIn {
                 if authState.userRole == .abogado || authState.userRole == .becario {
                     ContentView()
+                    NavigationLink(destination: SpeechBot(), isActive: $showSpeechBot) {
+                        EmptyView() // Invisible navigation link to trigger SpeechBot view
+                    }
                 } else if authState.userRole == .cliente {
                     CasesView(clientId: Auth.auth().currentUser!.uid)
+                    
                 } else {
                     Text("Unknown user role")
                 }
@@ -28,6 +33,9 @@ struct HomeView: View {
             }
         }
         .navigationViewStyle(StackNavigationViewStyle())
+        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("showSpeechBot"))) { _ in
+            showSpeechBot = true
+        }
         .onAppear(perform: setupAuthStateListener)
     }
     

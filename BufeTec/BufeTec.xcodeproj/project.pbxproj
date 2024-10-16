@@ -12,6 +12,9 @@
 		A900EBE82C954AED001E5311 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A900EBE72C954AED001E5311 /* ContentView.swift */; };
 		A900EBEA2C954AEF001E5311 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A900EBE92C954AEF001E5311 /* Assets.xcassets */; };
 		A900EBED2C954AEF001E5311 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A900EBEC2C954AEF001E5311 /* Preview Assets.xcassets */; };
+		A90729C82CBFA013004C43C8 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A90729C72CBFA013004C43C8 /* WidgetKit.framework */; };
+		A90729CA2CBFA013004C43C8 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A90729C92CBFA013004C43C8 /* SwiftUI.framework */; };
+		A90729DB2CBFA015004C43C8 /* BufeTecAppWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = A90729C52CBFA013004C43C8 /* BufeTecAppWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		A90B08D52CACBDE800D16F8F /* CaseDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90B08D42CACBDE800D16F8F /* CaseDetailView.swift */; };
 		A915355F2CA0F29400DA3289 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = A915355E2CA0F29400DA3289 /* FirebaseAuth */; };
 		A91535622CA0F2A300DA3289 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = A91535612CA0F2A300DA3289 /* GoogleSignIn */; };
@@ -65,6 +68,30 @@
 		C1F2862F2CAF155E00EF6AF7 /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = C1F2862E2CAF155E00EF6AF7 /* FirebaseStorageCombine-Community */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		A90729D92CBFA015004C43C8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A900EBDA2C954AED001E5311 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A90729C42CBFA013004C43C8;
+			remoteInfo = BufeTecAppWidgetExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A90729DC2CBFA015004C43C8 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				A90729DB2CBFA015004C43C8 /* BufeTecAppWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		497EB0CB2CB246860033376B /* RespondMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RespondMessage.swift; sourceTree = "<group>"; };
 		A900EBE22C954AED001E5311 /* BufeTec.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BufeTec.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -72,6 +99,9 @@
 		A900EBE72C954AED001E5311 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		A900EBE92C954AEF001E5311 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A900EBEC2C954AEF001E5311 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		A90729C52CBFA013004C43C8 /* BufeTecAppWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = BufeTecAppWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		A90729C72CBFA013004C43C8 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		A90729C92CBFA013004C43C8 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		A90B08D42CACBDE800D16F8F /* CaseDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaseDetailView.swift; sourceTree = "<group>"; };
 		A91535652CA0F2CE00DA3289 /* GoogleSignInBtn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleSignInBtn.swift; sourceTree = "<group>"; };
 		A91535682CA0F3ED00DA3289 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -115,7 +145,18 @@
 		A9DD75042CBD9AE0006007FB /* AssignedCasesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignedCasesView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		A90729DF2CBFA015004C43C8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = A90729C42CBFA013004C43C8 /* BufeTecAppWidgetExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		A90729CB2CBFA013004C43C8 /* BufeTecAppWidget */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (A90729DF2CBFA015004C43C8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = BufeTecAppWidget; sourceTree = "<group>"; };
 		C11C28D12CAB382E00C0AA01 /* News */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = News; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
@@ -139,6 +180,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A90729C22CBFA013004C43C8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A90729CA2CBFA013004C43C8 /* SwiftUI.framework in Frameworks */,
+				A90729C82CBFA013004C43C8 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -146,6 +196,8 @@
 			isa = PBXGroup;
 			children = (
 				A900EBE42C954AED001E5311 /* BufeTec */,
+				A90729CB2CBFA013004C43C8 /* BufeTecAppWidget */,
+				A90729C62CBFA013004C43C8 /* Frameworks */,
 				A900EBE32C954AED001E5311 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -154,6 +206,7 @@
 			isa = PBXGroup;
 			children = (
 				A900EBE22C954AED001E5311 /* BufeTec.app */,
+				A90729C52CBFA013004C43C8 /* BufeTecAppWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -184,6 +237,15 @@
 				A900EBEC2C954AEF001E5311 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		A90729C62CBFA013004C43C8 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A90729C72CBFA013004C43C8 /* WidgetKit.framework */,
+				A90729C92CBFA013004C43C8 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		A915355C2CA0F26200DA3289 /* Components */ = {
@@ -318,10 +380,12 @@
 				A900EBDE2C954AED001E5311 /* Sources */,
 				A900EBDF2C954AED001E5311 /* Frameworks */,
 				A900EBE02C954AED001E5311 /* Resources */,
+				A90729DC2CBFA015004C43C8 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				A90729DA2CBFA015004C43C8 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				C11C28D12CAB382E00C0AA01 /* News */,
@@ -331,6 +395,28 @@
 			productReference = A900EBE22C954AED001E5311 /* BufeTec.app */;
 			productType = "com.apple.product-type.application";
 		};
+		A90729C42CBFA013004C43C8 /* BufeTecAppWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A90729E02CBFA015004C43C8 /* Build configuration list for PBXNativeTarget "BufeTecAppWidgetExtension" */;
+			buildPhases = (
+				A90729C12CBFA013004C43C8 /* Sources */,
+				A90729C22CBFA013004C43C8 /* Frameworks */,
+				A90729C32CBFA013004C43C8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				A90729CB2CBFA013004C43C8 /* BufeTecAppWidget */,
+			);
+			name = BufeTecAppWidgetExtension;
+			packageProductDependencies = (
+			);
+			productName = BufeTecAppWidgetExtension;
+			productReference = A90729C52CBFA013004C43C8 /* BufeTecAppWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -338,11 +424,14 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1520;
+				LastSwiftUpdateCheck = 1600;
 				LastUpgradeCheck = 1520;
 				TargetAttributes = {
 					A900EBE12C954AED001E5311 = {
 						CreatedOnToolsVersion = 15.2;
+					};
+					A90729C42CBFA013004C43C8 = {
+						CreatedOnToolsVersion = 16.0;
 					};
 				};
 			};
@@ -365,6 +454,7 @@
 			projectRoot = "";
 			targets = (
 				A900EBE12C954AED001E5311 /* BufeTec */,
+				A90729C42CBFA013004C43C8 /* BufeTecAppWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -378,6 +468,13 @@
 				A9DD75032CBD90A2006007FB /* GoogleService-Info.plist in Resources */,
 				A900EBEA2C954AEF001E5311 /* Assets.xcassets in Resources */,
 				A9947D8E2CA24165001F8D24 /* LaunchScreen.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A90729C32CBFA013004C43C8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -431,7 +528,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A90729C12CBFA013004C43C8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A90729DA2CBFA015004C43C8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A90729C42CBFA013004C43C8 /* BufeTecAppWidgetExtension */;
+			targetProxy = A90729D92CBFA015004C43C8 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		A900EBEE2C954AEF001E5311 /* Debug */ = {
@@ -567,6 +679,8 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = BufeTec/Info.plist;
 				INFOPLIST_KEY_NSFileProviderDomainUsageDescription = File;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Se necesita tu ubicación para mostrar tu posición en el mapa.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Se necesita para poder hablar con Bufebot Speech to Speech";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
@@ -599,6 +713,8 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = BufeTec/Info.plist;
 				INFOPLIST_KEY_NSFileProviderDomainUsageDescription = File;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Se necesita tu ubicación para mostrar tu posición en el mapa.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Se necesita para poder hablar con Bufebot Speech to Speech";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
@@ -611,6 +727,62 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = kovomie.BufeTecApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		A90729DD2CBFA015004C43C8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = TCBXDWFNX2;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BufeTecAppWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = BufeTecAppWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = kovomie.BufeTecApp.BufeTecAppWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A90729DE2CBFA015004C43C8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = TCBXDWFNX2;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BufeTecAppWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = BufeTecAppWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = kovomie.BufeTecApp.BufeTecAppWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -634,6 +806,15 @@
 			buildConfigurations = (
 				A900EBF12C954AEF001E5311 /* Debug */,
 				A900EBF22C954AEF001E5311 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A90729E02CBFA015004C43C8 /* Build configuration list for PBXNativeTarget "BufeTecAppWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A90729DD2CBFA015004C43C8 /* Debug */,
+				A90729DE2CBFA015004C43C8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

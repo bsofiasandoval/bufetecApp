@@ -20,6 +20,16 @@
 				<string>app-1-337279642634-ios-ba9993885f2cde0ee8c3f3</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.kovomie.BufeTec</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>myapp</string>
+			</array>
+		</dict>
 	</array>
 	<key>FirebaseAppDelegateProxyEnabled</key>
 	<false/>
@@ -34,14 +44,7 @@
 	<array>
 		<string>fetch</string>
 		<string>remote-notification</string>
-        <string>App provides Voice over IP services</string>
+		<string>App provides Voice over IP services</string>
 	</array>
-    <key>NSLocationWhenInUseUsageDescription</key>
-    <string>Se necesita tu ubicación para mostrar tu posición en el mapa.</string>
-    <key>NSMicrophoneUsageDescription</key>
-    <string>Se necesita para poder hablar con Bufebot Speech to Speech</string>
 </dict>
 </plist>
-
-
-
