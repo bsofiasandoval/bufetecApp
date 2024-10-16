@@ -36,7 +36,7 @@ struct AllCasesView: View {
                     
                     List(filteredCases) { legalCase in
                         NavigationLink(destination: CaseDetailView(legalCase: legalCase, isClient: false)) {
-                            CaseRowView(legalCase: legalCase)
+                            CaseRowViewB(legalCase: legalCase)
                         }
                     }
                     .refreshable {
