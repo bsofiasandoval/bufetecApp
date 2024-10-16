@@ -30,7 +30,8 @@ struct NewClientCbView: View {
     @State private var keyboardHeight: CGFloat = 0
     @State private var bottomPadding: CGFloat = 0
     @State private var isWaitingForResponse = false
-
+    @Environment(\.presentationMode) var presentationMode
+    
     var body: some View {
         GeometryReader { geometry in
             VStack(spacing: 0) {
@@ -89,11 +90,14 @@ struct NewClientCbView: View {
                 .padding()
             }
             .navigationTitle("BufeBot")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    NavigationLink(destination: ClientRegisterView(tramite: $tipoDeCaso, isLoggedOut: $isLoggedOut).environmentObject(authState)) {
-                        Text("Continuar")
-                            .foregroundColor(.blue)
+                    if shouldNavigateToRegister {
+                        NavigationLink(destination: ClientRegisterView(tramite: $tipoDeCaso, isLoggedOut: $isLoggedOut).environmentObject(authState)) {
+                            Text("Continuar")
+                                .foregroundColor(.blue)
+                        }
                     }
                 }
             }
@@ -142,6 +146,7 @@ struct NewClientCbView: View {
         chat = ""
         
         isWaitingForResponse = true
+        shouldNavigateToRegister = false  // Reset this when sending a new message
         classifyText(userMessage)
     }
 
@@ -167,14 +172,21 @@ struct NewClientCbView: View {
 
                 do {
                     let decodedResponse = try JSONDecoder().decode(ClassificationResponse.self, from: data)
-                    tipoDeCaso = decodedResponse.classification.label
+                    
+                    // Capitalize the first letter of each word in the classification
+                    let words = decodedResponse.classification.label.components(separatedBy: " ")
+                    let capitalizedWords = words.map { $0.capitalized }
+                    let capitalizedClassification = capitalizedWords.joined(separator: " ")
+                    
+                    tipoDeCaso = capitalizedClassification
                     let botResponse = CbMessageModel(
-                        text: "Tu caso parece ser un caso \(decodedResponse.classification.label).".trimmingCharacters(in: .whitespacesAndNewlines),
+                        text: "Tu caso parece ser un \(capitalizedClassification).".trimmingCharacters(in: .whitespacesAndNewlines),
                         isFromCurrentUser: false,
                         citations: nil
                     )
                     messages.append(botResponse)
                     isWaitingForResponse = false
+                    shouldNavigateToRegister = true
                 } catch {
                     print("Decoding error: \(error)")
                     handleError()

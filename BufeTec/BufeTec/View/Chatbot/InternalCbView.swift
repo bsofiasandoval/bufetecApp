@@ -88,7 +88,7 @@ struct InternalCbView: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 NavigationLink(destination: SpeechBot()) {
                     Image(systemName: "phone")
-                        .foregroundColor(.white)
+                        .foregroundColor(.blue)
                 }
             }
         }
@@ -335,7 +335,7 @@ struct CitationBox: View {
                     .foregroundColor(.white)
                 Spacer()
                 Image(systemName: "arrow.up.right.square")
-                    .foregroundColor(.white)
+                    .foregroundColor(.blue)
             }
             .padding()
             .background(Color.gradientStart)

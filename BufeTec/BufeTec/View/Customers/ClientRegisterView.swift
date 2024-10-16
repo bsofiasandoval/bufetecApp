@@ -28,7 +28,7 @@ struct ClientRegisterView: View {
     private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "kovomie.BufeTec", category: "ClientRegisterView")
     
     var body: some View {
-  
+       
             Form {
                 Section("Información Personal"){
                     HStack {
@@ -76,13 +76,13 @@ struct ClientRegisterView: View {
             }
             .navigationTitle("Crear Cuenta")
             .toolbar{
-                ToolbarItem{
+                ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Continuar"){
                         startPhoneVerification()
                     }
                 }
             }
-            .dismissKeyboardOnTap() 
+            .dismissKeyboardOnTap()
             .sheet(isPresented: $showVerificationSheet) {
                 PhoneVerificationView(
                     phoneNumber: telefono,
@@ -91,6 +91,7 @@ struct ClientRegisterView: View {
                         registerClient(uid: uid)
                         createCase(for: uid)
                         showVerificationSheet = false
+                        self.presentationMode.wrappedValue.dismiss()
                     },
                     isLoggedOut: $isLoggedOut
                 )
@@ -100,7 +101,13 @@ struct ClientRegisterView: View {
                    shouldNavigateToCases = true
                }
             }
-            .navigate(to: CasesView(clientId: Auth.auth().currentUser?.uid ?? "").environmentObject(authState), when: $shouldNavigateToCases)
+            .background(
+                NavigationLink(
+                    destination: CasesView(clientId: Auth.auth().currentUser?.uid ?? "").environmentObject(authState),
+                    isActive: $shouldNavigateToCases,
+                    label: { EmptyView() }
+                )
+            )
         
     }
     
@@ -166,7 +173,7 @@ struct ClientRegisterView: View {
                     }
                     
                     self.logger.info("Client registration successful")
-                    self.shouldNavigateToCases = true
+                    self.clientRegistered = true
                 } else {
                     if let data = data, let responseString = String(data: data, encoding: .utf8) {
                         self.showError(message: "Server error: \(responseString)")
@@ -260,15 +267,13 @@ struct ClientRegisterView: View {
             return false
         }
         if !correo.isEmpty && !isValidEmailAddress(correo) {
-                   showError(message: "Please provide a valid email address or leave it empty.")
-                   return false
-               }
+            showError(message: "Please provide a valid email address or leave it empty.")
+            return false
+        }
         
         return true
     }
-
 }
-
 
 struct PhoneVerificationView: View {
     let phoneNumber: String
@@ -282,54 +287,61 @@ struct PhoneVerificationView: View {
     @Environment(\.presentationMode) var presentationMode
     @EnvironmentObject var authState : AuthState
     
-    
     private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "kovomie.BufeTecApp", category: "PhoneVerificationView")
     
     var body: some View {
-        VStack(spacing: 30) {
-            Image(systemName: "lock.shield")
-                .font(.system(size: 60))
-                .foregroundColor(.text)
+        ZStack{
+            LinearGradient(gradient: Gradient(colors: [Color(hex: "#13295D"), Color(hex: "#2756C3")]),
+                           startPoint: .top,
+                           endPoint: .bottom)
+            .edgesIgnoringSafeArea(.all)
             
-            Text("Verifica tu número telefónico")
-                .font(.title2)
-                .fontWeight(.bold)
-                .foregroundColor(.text)
-            
-            Text("Ingresa el código de verificación que se envió a \(phoneNumber)")
-                .multilineTextAlignment(.center)
-                .foregroundColor(.textFieldText)
-                .padding(.horizontal)
-            
-            TextField("Código de verificación", text: $verificationCode)
-                .keyboardType(.numberPad)
-                .font(.title2)
-                .multilineTextAlignment(.center)
-                .padding()
-                .background(Color.textFieldBackground)
-                .cornerRadius(10)
-                .foregroundColor(.textFieldText)
+            VStack(spacing: 30) {
+                Text("Verifica tu número telefónico")
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .foregroundColor(.white)
+                    
+                Text("Ingresa el código de verificación que se envió a \(phoneNumber)")
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(.white)
+                    .padding(.horizontal)
+                
+                TextField("Código de verificación", text: $verificationCode)
+                    .keyboardType(.numberPad)
+                    .font(.title2)
+                    .multilineTextAlignment(.center)
+                    .padding()
+                    .background(Color.textFieldBackground)
+                    .cornerRadius(10)
+                    .foregroundColor(.textFieldText)
 
-            Button("Verify") {
-                verifyPhoneNumber()
+                Button(action: verifyPhoneNumber) {
+                    Text("Verificar Código")
+                        .foregroundColor(.white)
+                        .fontWeight(.medium)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.blue)
+                        .cornerRadius(10)
+                        .frame(width:250)
+                }
+                .disabled(isLoading || verificationCode.count != 6)
+                .opacity((isLoading || verificationCode.count != 6) ? 0.5 : 1)
+               
+                
+                if isLoading {
+                    ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle(tint: .text))
+                    .scaleEffect(1.5)
+                }
             }
-            .disabled(isLoading || verificationCode.count != 6)
-            .opacity((isLoading || verificationCode.count != 6) ? 0.5 : 1)
-            .shadow(radius: 5)
-            
-            if isLoading {
-                ProgressView()
-                .progressViewStyle(CircularProgressViewStyle(tint: .text))
-                .scaleEffect(1.5)
+            .padding()
+            .cornerRadius(20)
+            .alert(isPresented: $showError) {
+                Alert(title: Text("Error"), message: Text(errorMessage), dismissButton: .default(Text("OK")))
             }
-        }
-        .padding()
-        .background(Color.background)
-        .cornerRadius(20)
-        .shadow(radius: 10)
-        .padding()
-        .alert(isPresented: $showError) {
-            Alert(title: Text("Error"), message: Text(errorMessage), dismissButton: .default(Text("OK")))
+
         }
     }
     
@@ -386,21 +398,17 @@ struct PhoneVerificationView: View {
     }
 }
 
-
 #Preview {
     ClientRegisterView(tramite: .constant("Caso Civil"), isLoggedOut: .constant(false))
         .environmentObject(AuthState())
 }
-
 
 extension View {
     func navigate<NewView: View>(to view: NewView, when binding: Binding<Bool>) -> some View {
         ZStack {
             self
             NavigationLink(
-                destination: view
-                    .navigationBarTitle("")
-                    .navigationBarHidden(true),
+                destination: view,
                 isActive: binding
             ) {
                 EmptyView()
@@ -408,4 +416,3 @@ extension View {
         }
     }
 }
-

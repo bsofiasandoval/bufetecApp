@@ -133,7 +133,14 @@ struct ClientLoginView: View {
     
     private var verificationCodeView: some View {
         VStack(spacing: 20) {
-            TextField("Enter verification code", text: $verificationCode)
+            
+            Text("Ingresa el código de verificación que se envió a \(phoneNumber)")
+                .multilineTextAlignment(.center)
+                .foregroundColor(.white)
+                .padding(.horizontal)
+                
+            
+            TextField("Ingresa el codigo de verificacion", text: $verificationCode)
                 .keyboardType(.numberPad)
                 .padding()
                 .background(Color.white.opacity(0.2))
@@ -141,7 +148,7 @@ struct ClientLoginView: View {
                 .foregroundColor(.white)
             
             Button(action: verifyCode) {
-                Text("Verify Code")
+                Text("Verificar Código")
                     .foregroundColor(.white)
                     .fontWeight(.medium)
                     .frame(maxWidth: .infinity)

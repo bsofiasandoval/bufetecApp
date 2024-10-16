@@ -179,6 +179,7 @@ struct MessageDetailView: View {
             case .success(let user):
                 DispatchQueue.main.async {
                     isAbogado = true
+                    self.userNames[userId] = user.nombre
                 }
             case .failure:
                 // Si falla, intenta obtener el usuario como becario

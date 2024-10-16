@@ -16,7 +16,7 @@ struct AssignedCasesView: View {
         VStack {
             if viewModel.isLoading {
                 // Show a loading spinner when data is being fetched
-                ProgressView("Loading cases...")
+                ProgressView("Cargando casos...")
             } else if let errorMessage = viewModel.errorMessage {
                 // Show an error message if there's a problem fetching the data
                 Text(errorMessage)
@@ -24,7 +24,7 @@ struct AssignedCasesView: View {
                     .padding()
             } else if viewModel.cases.isEmpty {
                 // Show a message if no cases are found
-                Text("Aun no tienes casos asignados.")
+                Text("Aún no tienes casos asignados.")
                     .font(.headline)
             } else {
                 // Display the list of cases

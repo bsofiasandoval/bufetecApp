@@ -20,11 +20,10 @@ struct GoogleSignInBtn: View {
                     .padding(8)
                     .background(Color.white)
                     .clipShape(Circle())
-                
+                Spacer()
                 Text("Inicia Sesión")
                     .fontWeight(.medium)
                     .foregroundColor(.black)
-                
                 Spacer()
             }
             .padding(.horizontal)

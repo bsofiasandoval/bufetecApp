@@ -26,50 +26,60 @@ struct LocationCheckView: View {
             LinearGradient(gradient: Gradient(colors: [Color(hex: "#13295D"), Color(hex: "#2756C3")]),
                            startPoint: .top,
                            endPoint: .bottom)
-                .edgesIgnoringSafeArea(.all)
+            .edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 20) {
+                HStack{
+                    Button(action: {
+                        self.presentationMode.wrappedValue.dismiss()
+                    }) {
+                        Image(systemName: "chevron.left")
+                            .foregroundColor(.white)
+                    }
+                    Spacer()
+                }
+                .padding(.horizontal)
                 Text("¿Te encuentras en la zona del municipio de Monterrey o Santiago?")
                     .fontWeight(.bold)
                     .foregroundColor(.white)
                     .multilineTextAlignment(.center)
-                    
-                    
-
+                
+                
+                
                 MapViewRepresentable(region: $region, userLocation: $locationManager.userLocation)
                     .frame(height: 500)
                     .cornerRadius(15)
                     .padding(.horizontal)
                     .padding(.bottom)
                     .shadow(radius: 10)
-
+                
                 HStack(spacing: 20) {
-                   Button(action: {
-                       if let helpURL = URL(string: "http://10.14.255.51:3000") {
-                           openURL(helpURL)
-                       }
-                   }) {
-                       Text("No")
-                           .frame(minWidth: 100)
-                           .fontWeight(.medium)
-                           .padding()
-                           .background(Color.white)
-                           .foregroundColor(Color(hex: "#13295D"))
-                           .cornerRadius(10)
-                   }
-                   
-                   // Use NavigationLink for "Sí" button
+                    Button(action: {
+                        if let helpURL = URL(string: "http://10.14.255.51:3000") {
+                            openURL(helpURL)
+                        }
+                    }) {
+                        Text("No")
+                            .frame(minWidth: 100)
+                            .fontWeight(.medium)
+                            .padding()
+                            .background(Color.white)
+                            .foregroundColor(Color(hex: "#13295D"))
+                            .cornerRadius(10)
+                    }
+                    
+                    // Use NavigationLink for "Sí" button
                     NavigationLink(destination: NewClientCbView().environmentObject(authState)) {
-                       Text("Sí")
-                           .frame(minWidth: 100)
-                           .fontWeight(.medium)
-                           .padding()
-                           .background(Color.white)
-                           .foregroundColor(Color(hex: "#13295D"))
-                           .cornerRadius(10)
-                   }
-               }
-               .padding()
+                        Text("Sí")
+                            .frame(minWidth: 100)
+                            .fontWeight(.medium)
+                            .padding()
+                            .background(Color.white)
+                            .foregroundColor(Color(hex: "#13295D"))
+                            .cornerRadius(10)
+                    }
+                }
+                .padding()
             }
             .padding()
         }
@@ -77,12 +87,9 @@ struct LocationCheckView: View {
             locationManager.requestLocation()
         }
         .navigationBarBackButtonHidden(true)
-        .navigationBarItems(leading: Button(action: {
-            self.presentationMode.wrappedValue.dismiss()
-        }) {
-            Image(systemName: "chevron.left")
-                .foregroundColor(.white)
-        })
+        .navigationTitle("Ubicación")
+        .navigationBarHidden(true)
+        
     }
 }
 
